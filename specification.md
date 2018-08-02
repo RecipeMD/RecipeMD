@@ -1,21 +1,21 @@
 # Markdown Recipe Specification
 
 - a *valid* recipe consists of:
-    - a title
-    - *optional*: a short description
-    - *optional*: 1..n tags
+	- a title
+	- *optional*: a short description
+	- *optional*: 1..n tags
 	- *optional*: A number of servings
 	- 1..n ingredients
 	- *optional*: instructions
 
 - the Markdown representation shall be as follows:
-    1. the title
-    2. *optional*: the short description
-    3. *optional*: the tags, including the number of servings
-    5. a horizontal line
-    6. the ingredients
-    7. a horizontal line -- this may be omitted if there are no instructions
-    8. *optional* the instructions
+	1. the title
+	2. *optional*: the short description
+	3. *optional*: the tags, including the number of servings
+	5. a horizontal line
+	6. the ingredients
+	7. a horizontal line -- this may be omitted if there are no instructions
+	8. *optional* the instructions
 
 - the title is noted as a first level header:
 ```# Guacamole```
