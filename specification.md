@@ -1,5 +1,7 @@
 # Markdown Recipe Specification
 
+
+
 - a *valid* recipe consists of:
 	- a title
 	- *optional*: a short description
@@ -15,7 +17,7 @@
 	5. a horizontal line
 	6. the ingredients
 	7. a horizontal line -- this may be omitted if there are no instructions
-	8. *optional* the instructions
+	8. *optional*: the instructions
 
 - the title is noted as a first level header:
 ```# Guacamole```
@@ -27,9 +29,9 @@
 ```
 *servings: 4, vegan, sauce*
 ```
-- the ingredients are noted as list items. The amount of each ingredient is noted in italic case:
+- the ingredients are noted as leaf list items (list items with no children). Any other markup is ignored. The amount of each ingredient is noted in italic case:
 ```
 - *1* avocado
 - *1 teaspoon* salt
 ```
-- anything following the second horizontal line or not considered otherwise is considered instructions
+- anything following the second horizontal line is considered instructions
