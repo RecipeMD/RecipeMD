@@ -15,7 +15,9 @@
 	2. *optional*: the short description
 	3. *optional*: the tags, including the number of servings
 	5. a horizontal line
-	6. the ingredients
+	6. the ingredients, consisting of
+	    1. headings to group ingredients
+	    2. lists, where each list item is an ingredient
 	7. a horizontal line -- this may be omitted if there are no instructions
 	8. *optional*: the instructions
 
@@ -30,10 +32,11 @@
 ```
 *servings: 4, vegan, sauce*
 ```
-- the ingredients are noted as leaf list items (list items with no children). Any other markup is ignored. The amount of each ingredient (if given) is noted in italic case:
+- the ingredients are noted as list items. The headings form the titles of ingredient groups. The amount of each ingredient (if given) is noted in italic case. Amounts may be expressed as decimals (dividers "." and ",") and fractions:
 ```
 - *1* avocado
-- *1 teaspoon* salt
-- pepper
+- *.5 teaspoon* salt
+- *1 1/2 pinches* red pepper flakes
+- lemon juice
 ```
 - anything following the second horizontal line is considered instructions

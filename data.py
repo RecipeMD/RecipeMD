@@ -3,7 +3,8 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from decimal import Decimal
-from typing import List, Optional
+from pprint import pprint
+from typing import List, Optional, Union
 
 import CommonMark
 from CommonMark.node import Node
@@ -12,30 +13,15 @@ from CommonMarkExtensions.plaintext import CommonMarkToCommonMarkRenderer
 
 @dataclass
 class IngredientGroup:
-    prefix: Optional[str] = None
-    ingredients: List[Ingredient] = field(default_factory=list)
+    title: Optional[str] = None
+    children: List[Union[Ingredient, IngredientGroup]] = field(default_factory=list)
 
-    def __repr__(self):
-        ingredients_repr = "\n".join(repr(i) for i in self.ingredients)
-        if self.prefix is not None:
-            return f'{self.prefix}\n\n{ingredients_repr}'
-        return ingredients_repr
 
 @dataclass
 class Ingredient:
     name: str
     amount: Optional[Decimal] = None
     unit: Optional[str] = None
-
-    def __repr__(self):
-        if self.amount is not None and self.unit is not None:
-            return f'- *{self.amount} {self.unit}* {self.name}'
-        elif self.amount is not None:
-            return f'- *{self.amount}* {self.name}'
-        elif self.unit is not None:
-            return f'- *{self.unit}* {self.name}'
-        else:
-            return f'- {self.name}'
 
 
 @dataclass
@@ -44,22 +30,49 @@ class Recipe:
     description: Optional[str] = None
     tags: List[str] = field(default_factory=list)
     servings: Optional[int] = None
-    ingredient_groups: List[IngredientGroup] = field(default_factory=list)
+    ingredients: List[Union[Ingredient, IngredientGroup]] = field(default_factory=list)
     instructions: Optional[str] = None
 
-    def __repr__(self):
+    @property
+    def leaf_ingredients(self):
+        yield from self._get_leaf_ingredients(self.ingredients)
+
+    def _get_leaf_ingredients(self, ingredients: List[Union[Ingredient, IngredientGroup]]):
+        for ingr in ingredients:
+            if isinstance(ingr, IngredientGroup):
+                yield from self._get_leaf_ingredients(ingr.children)
+            else:
+                yield ingr
+
+
+class RecipeSerializer:
+    def serialize(self, recipe: Recipe):
         rep = ""
-        rep += f'# {self.title}\n\n'
-        if self.description is not None:
-            rep += f'{self.description}\n\n'
-        if len(self.tags) > 0:
-            rep += f'*{", ".join(self.tags)}*\n\n'
+        rep += f'# {recipe.title}\n\n'
+        if recipe.description is not None:
+            rep += f'{recipe.description}\n\n'
+        if len(recipe.tags) > 0:
+            rep += f'*{", ".join(recipe.tags)}*\n\n'
         rep += f'---\n\n'
-        rep += "\n\n".join(repr(g) for g in self.ingredient_groups)
-        if self.instructions is not None:
+        rep += ("\n".join(self._serialize_ingredient(g, 2) for g in recipe.ingredients)).strip()
+        if recipe.instructions is not None:
             rep += f'\n\n---\n\n'
-            rep += self.instructions
+            rep += recipe.instructions
         return rep
+
+    def _serialize_ingredient(self, ingredient, level):
+        if isinstance(ingredient, IngredientGroup):
+            return f'\n{"#" * level} {ingredient.title}\n\n'\
+                   + "\n".join(self._serialize_ingredient(i, level+1) for i in ingredient.children)
+        else:
+            if ingredient.amount is not None and ingredient.unit is not None:
+                return f'- *{ingredient.amount} {ingredient.unit}* {ingredient.name}'
+            elif ingredient.amount is not None:
+                return f'- *{ingredient.amount}* {ingredient.name}'
+            elif ingredient.unit is not None:
+                return f'- *{ingredient.unit}* {ingredient.name}'
+            else:
+                return f'- {ingredient.name}'
 
 
 class RecipeParser:
@@ -95,8 +108,12 @@ class RecipeParser:
 
         self._parse_ingredients()
 
-        if self.current is not None and self.current.t == 'thematic_break':
-            self._next_node()
+        if self.current is not None:
+            if self.current.t == 'thematic_break':
+                self._next_node()
+            else:
+                # TODO this divider is required, but we might just continue anyways?
+                raise RuntimeError("Invalid, expected divider after ingredients")
 
         self.recipe.instructions = self._get_source_until()
 
@@ -121,24 +138,36 @@ class RecipeParser:
             self._next_node()
 
     def _parse_ingredients(self):
-        while self.current is not None and self.current.t != 'thematic_break':
-            group_prefix = self._get_source_until(lambda n: n.t != 'list' and n.t != 'thematic_break')
-            group_children = None
+        while self.current is not None and (self.current.t == 'heading' or self.current.t == 'list'):
+            if self.current.t == 'heading':
+                self._parse_ingredient_groups(self.recipe.ingredients, parent_level=-1)
+            elif self.current is not None and self.current.t == 'list':
+                self._parse_ingredient_list_node(self.recipe.ingredients)
+
+    def _parse_ingredient_groups(self, ingredients, parent_level):
+        while self.current is not None and self.current.t == 'heading':
+            level = self.current.level
+            if level <= parent_level:
+                return
+
+            group = IngredientGroup()
+            group.title = self._get_node_source(self.current.first_child)
+            self._next_node()
+
             if self.current is not None and self.current.t == 'list':
-                group_children = self._parse_ingredient_list_node()
+                self._parse_ingredient_list_node(group.children)
 
-            if group_prefix is not None or group_children is not None:
-                self.recipe.ingredient_groups.append(IngredientGroup(prefix=group_prefix, ingredients=group_children))
+            ingredients.append(group)
 
-    def _parse_ingredient_list_node(self):
-        ingredients = []
+            self._parse_ingredient_groups(group.children, parent_level=level)
+
+    def _parse_ingredient_list_node(self, ingredients):
         self._enter_node()
         while self.current is not None:
             ingredients.append(self._parse_ingredient())
             self._next_node()
         self._exit_node()
         self._next_node()
-        return ingredients
 
     def _parse_ingredient(self):
         self._enter_node()
@@ -178,24 +207,28 @@ class RecipeParser:
         return Ingredient(name=name, amount=amount, unit=unit)
 
     def _parse_amount(self, amount_str):
+        # improper fraction
         match = re.match(r'^\s*(\d+)\s+(\d+)\s*/\s*(\d+)(.*)$', amount_str)
         if match:
             amount = Decimal(match.group(1)) + (Decimal(match.group(2)) / Decimal(match.group(3)))
             unit = match.group(4).strip()
             return amount, unit
 
+        # proper fraction
         match = re.match(r'^\s*(\d+)\s*/\s*(\d+)(.*)$', amount_str)
         if match:
             amount = (Decimal(match.group(1)) / Decimal(match.group(2)))
             unit = match.group(3).strip()
             return amount, unit
 
+        # decimal
         match = re.match(r'^\s*(\d*)[.,](\d+)(.*)$', amount_str)
         if match:
             amount = Decimal(match.group(1) + '.' + match.group(2))
             unit = match.group(3).strip()
             return amount, unit
 
+        # integer
         match = re.match(r'^\s*(\d+)(.*)$', amount_str)
         if match:
             amount = Decimal(match.group(1))
@@ -204,9 +237,9 @@ class RecipeParser:
 
         return None, amount_str.strip()
 
-
     def _is_tags(self, ast_node: Node):
-        return ast_node.t == 'paragraph' and ast_node.first_child.t == 'emph' and ast_node.first_child == ast_node.last_child
+        return ast_node.t == 'paragraph' and ast_node.first_child.t == 'emph' \
+               and ast_node.first_child == ast_node.last_child
 
     def _next_node(self):
         self.current = self.current.nxt
@@ -256,9 +289,11 @@ class RecipeParser:
 
 
 if __name__ == "__main__":
-    #src = open('examples/schwarzbierbrot.md', 'r').read()
+    # src = open('examples/schwarzbierbrot.md', 'r').read()
     src = open('examples/griechischer_kartoffeltopf.md', 'r').read()
 
     rp = RecipeParser()
     r = rp.parse(src)
-    print(r)
+    pprint(r.ingredients)
+    rs = RecipeSerializer()
+    print(rs.serialize(r))
