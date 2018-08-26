@@ -16,7 +16,7 @@
 	3. *optional*: the tags, including the number of servings
 	5. a horizontal line
 	6. the ingredients, consisting of
-	    1. headings to group ingredients
+	    1. *optional*: headings to group ingredients
 	    2. lists, where each list item is an ingredient
 	7. a horizontal line -- this may be omitted if there are no instructions
 	8. *optional*: the instructions
