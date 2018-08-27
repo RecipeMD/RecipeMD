@@ -179,7 +179,7 @@ class RecipeParser:
         if self.current.t == 'paragraph' and self.current.first_child.t == 'emph':
             self._enter_node()
             self._enter_node()
-            amount, unit = self._parse_amount(self._get_node_source(self.current))
+            amount, unit = self.parse_amount(self._get_node_source(self.current))
             self._exit_node()
             self._next_node()
             while self.current is not None:
@@ -206,7 +206,8 @@ class RecipeParser:
 
         return Ingredient(name=name, amount=amount, unit=unit)
 
-    def _parse_amount(self, amount_str):
+    @staticmethod
+    def parse_amount(amount_str):
         # improper fraction
         match = re.match(r'^\s*(\d+)\s+(\d+)\s*/\s*(\d+)(.*)$', amount_str)
         if match:
