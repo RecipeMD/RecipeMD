@@ -213,30 +213,30 @@ class RecipeParser:
         if match:
             amount = Decimal(match.group(1)) + (Decimal(match.group(2)) / Decimal(match.group(3)))
             unit = match.group(4).strip()
-            return amount, unit
+            return amount, unit or None
 
         # proper fraction
         match = re.match(r'^\s*(\d+)\s*/\s*(\d+)(.*)$', amount_str)
         if match:
             amount = (Decimal(match.group(1)) / Decimal(match.group(2)))
             unit = match.group(3).strip()
-            return amount, unit
+            return amount, unit or None
 
         # decimal
         match = re.match(r'^\s*(\d*)[.,](\d+)(.*)$', amount_str)
         if match:
             amount = Decimal(match.group(1) + '.' + match.group(2))
             unit = match.group(3).strip()
-            return amount, unit
+            return amount, unit or None
 
         # integer
         match = re.match(r'^\s*(\d+)(.*)$', amount_str)
         if match:
             amount = Decimal(match.group(1))
             unit = match.group(2).strip()
-            return amount, unit
+            return amount, unit or None
 
-        return None, amount_str.strip()
+        return None, amount_str.strip() or None
 
     def _is_tags(self, ast_node: Node):
         return ast_node.t == 'paragraph' and ast_node.first_child.t == 'emph' \
