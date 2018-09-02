@@ -245,7 +245,7 @@ class RecipeParser:
             unit = match.group(2).strip()
             return amount, unit or None
 
-        return None, amount_str.strip() or None
+        return None, amount_str.strip() if amount_str is not None else None
 
     def _is_tags(self, ast_node: Node):
         return ast_node.t == 'paragraph' and ast_node.first_child.t == 'emph' \
