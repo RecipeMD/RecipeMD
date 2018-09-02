@@ -151,7 +151,8 @@ class RecipeParser:
                 return
 
             group = IngredientGroup()
-            group.title = self._get_node_source(self.current.first_child)
+            if self.current.first_child is not None:
+                group.title = self._get_node_source(self.current.first_child)
             self._next_node()
 
             if self.current is not None and self.current.t == 'list':
