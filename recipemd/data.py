@@ -29,12 +29,20 @@ class Recipe:
     title: str
     description: Optional[str] = None
     tags: List[str] = field(default_factory=list)
-    servings: Optional[int] = None
     ingredients: List[Union[Ingredient, IngredientGroup]] = field(default_factory=list)
     instructions: Optional[str] = None
 
     @property
-    def leaf_ingredients(self):
+    def servings(self) -> Optional[int]:
+        if len(self.recipe.tags) > 0:
+            first_tag = self.recipe.tags[0]
+            match = re.search("\d+", first_tag)
+            if match:
+                return int(match.group(0))
+        return None
+
+    @property
+    def leaf_ingredients(self) -> List[Ingredient]:
         yield from self._get_leaf_ingredients(self.ingredients)
 
     def _get_leaf_ingredients(self, ingredients: List[Union[Ingredient, IngredientGroup]]):
