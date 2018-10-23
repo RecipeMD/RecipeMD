@@ -4,6 +4,7 @@ import re
 from dataclasses import dataclass, field
 from decimal import Decimal
 from pprint import pprint
+import copy
 from typing import List, Optional, Union
 
 import CommonMark
@@ -33,13 +34,19 @@ class Recipe:
     instructions: Optional[str] = None
 
     @property
-    def servings(self) -> Optional[int]:
-        if len(self.recipe.tags) > 0:
-            first_tag = self.recipe.tags[0]
-            match = re.search("\d+", first_tag)
+    def servings(self) -> Optional[Decimal]:
+        if len(self.tags) > 0:
+            match = re.search("\d+", self.tags[0])
             if match:
-                return int(match.group(0))
+                return Decimal(match.group(0))
         return None
+
+    @servings.setter
+    def servings(self, servings: Decimal):
+        if self.servings is not None:
+            self.tags[0] = re.sub("\d+", str(servings), self.tags[0])
+        else:
+            self.tags.insert(0, f"serves {servings}")
 
     @property
     def leaf_ingredients(self) -> List[Ingredient]:
@@ -217,21 +224,21 @@ class RecipeParser:
 
     @staticmethod
     def parse_amount(amount_str):
-        # improper fraction
+        # improper fraction (1 1/2)
         match = re.match(r'^\s*(\d+)\s+(\d+)\s*/\s*(\d+)(.*)$', amount_str)
         if match:
             amount = Decimal(match.group(1)) + (Decimal(match.group(2)) / Decimal(match.group(3)))
             unit = match.group(4).strip()
             return amount, unit or None
 
-        # proper fraction
+        # proper fraction (5/6)
         match = re.match(r'^\s*(\d+)\s*/\s*(\d+)(.*)$', amount_str)
         if match:
             amount = (Decimal(match.group(1)) / Decimal(match.group(2)))
             unit = match.group(3).strip()
             return amount, unit or None
 
-        # decimal
+        # decimal (5,4 or 5.6)
         match = re.match(r'^\s*(\d*)[.,](\d+)(.*)$', amount_str)
         if match:
             amount = Decimal(match.group(1) + '.' + match.group(2))
@@ -296,6 +303,22 @@ class RecipeParser:
         lines[-1] = lines[-1][:last_line_end_offset]
 
         return "\n".join(lines)
+
+
+def multiply_recipe(base_recipe: Recipe, multiplier: Decimal):
+    recipe = copy.deepcopy(base_recipe)
+    if recipe.servings is not None:
+        recipe.servings = recipe.servings * multiplier
+    _multiply_ingredients(recipe.ingredients, multiplier)
+    return recipe
+
+
+def _multiply_ingredients(ingredients: List[Union[Ingredient, IngredientGroup]], multiplier: Decimal):
+    for ingr in ingredients:
+        if hasattr(ingr, 'amount') and ingr.amount is not None:
+            ingr.amount *= multiplier
+        if hasattr(ingr, 'children'):
+            _multiply_ingredients(ingr.children, multiplier)
 
 
 if __name__ == "__main__":
