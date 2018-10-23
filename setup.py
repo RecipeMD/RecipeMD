@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="recipemd",
     version="1.0.0",
-    author="AberDerBart, Tilman Stehr",
+    author="Tilman Stehr",
     author_email="tilman@tilman.ninja",
     description="Reference implementation of recipemd",
     long_description=long_description,
@@ -18,6 +18,11 @@ setuptools.setup(
        'CommonMark',
        'commonmarkextensions'
     ],
+    entry_points={
+        'console_scripts': [
+            'recipemd=recipemd.cli:main',
+        ],
+    },
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Environment :: Console",

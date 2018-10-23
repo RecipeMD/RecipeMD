@@ -6,7 +6,7 @@ See [specification.md](./specification.md) for the current specification and [ex
 
 You can use [recipemd-extract](https://github.com/AberDerBart/recipemd-extract) to fetch recipes from the web.
 
-## Installation
+## Installation of CLI tool
 
 1. Check out repo
 2. Install via pip: `pip install <path to repo>`
