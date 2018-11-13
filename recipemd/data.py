@@ -19,36 +19,25 @@ class IngredientGroup:
     title: Optional[str] = None
     children: List[Union[Ingredient, IngredientGroup]] = field(default_factory=list)
 
+@dataclass
+class Amount:
+    factor: Optional[Decimal] = None
+    unit: Optional[str] = None
 
 @dataclass
 class Ingredient:
     name: str
-    amount: Optional[Decimal] = None
-    unit: Optional[str] = None
+    amount: Optional[Amount]
 
 
 @dataclass
 class Recipe:
     title: str
     description: Optional[str] = None
+    yields: List[Amount] = field(default_factory=list)
     tags: List[str] = field(default_factory=list)
     ingredients: List[Union[Ingredient, IngredientGroup]] = field(default_factory=list)
     instructions: Optional[str] = None
-
-    @property
-    def servings(self) -> Optional[Decimal]:
-        if len(self.tags) > 0:
-            match = re.search("\d+", self.tags[0])
-            if match:
-                return Decimal(match.group(0))
-        return None
-
-    @servings.setter
-    def servings(self, servings: Decimal):
-        if self.servings is not None:
-            self.tags[0] = re.sub("\d+", str(servings), self.tags[0])
-        else:
-            self.tags.insert(0, f"serves {servings}")
 
     @property
     def leaf_ingredients(self) -> List[Ingredient]:
@@ -70,6 +59,8 @@ class RecipeSerializer:
             rep += f'{recipe.description}\n\n'
         if len(recipe.tags) > 0:
             rep += f'*{", ".join(recipe.tags)}*\n\n'
+        if len(recipe.yields) > 0:
+            rep += f'**{", ".join(self._serialize_amount(a) for a in recipe.yields)}**\n\n'
         rep += f'---\n\n'
         rep += ("\n".join(self._serialize_ingredient(g, 2) for g in recipe.ingredients)).strip()
         if recipe.instructions is not None:
@@ -82,17 +73,22 @@ class RecipeSerializer:
             return f'\n{"#" * level} {ingredient.title}\n\n'\
                    + "\n".join(self._serialize_ingredient(i, level+1) for i in ingredient.children)
         else:
-            if ingredient.amount is not None and ingredient.unit is not None:
-                return f'- *{ingredient.amount} {ingredient.unit}* {ingredient.name}'
-            elif ingredient.amount is not None:
-                return f'- *{ingredient.amount}* {ingredient.name}'
-            elif ingredient.unit is not None:
-                return f'- *{ingredient.unit}* {ingredient.name}'
-            else:
-                return f'- {ingredient.name}'
+            if ingredient.amount is not None:
+                return f'- *{self._serialize_amount(ingredient.amount)}* {ingredient.name}'
+            return f'- {ingredient.name}'
+
+    def _serialize_amount(self, amount):
+        if amount.factor is not None and amount.unit is not None:
+            return f'{amount.factor} {amount.unit}'
+        if amount.factor is not None:
+            return f'{amount.factor}'
+        if amount.unit is not None:
+            return f'{amount.unit}'
 
 
 class RecipeParser:
+    _list_split = re.compile("(?<!\d),|,(?!\d)")
+
     src: Optional[str]
     recipe: Optional[Recipe]
     parents: List[Node]
@@ -115,7 +111,7 @@ class RecipeParser:
 
         self._parse_title()
         self._parse_description()
-        self._parse_tags()
+        self._parse_tags_and_yields()
 
         if self.current is not None and self.current.t == 'thematic_break':
             self._next_node()
@@ -145,13 +141,18 @@ class RecipeParser:
             raise RuntimeError("Invalid, title required")
 
     def _parse_description(self):
-        result = self._get_source_until(lambda n: n.t != 'thematic_break' and not self._is_tags(n))
+        result = self._get_source_until(lambda n: n.t != 'thematic_break' and not self._is_tags(n)
+                                        and not self._is_yields(n))
         self.recipe.description = result
 
-    def _parse_tags(self):
-        if self.current is not None and self._is_tags(self.current):
-            tags_text = self._get_node_source(self.current.first_child.first_child)
-            self.recipe.tags = [t.strip() for t in tags_text.split(',')]
+    def _parse_tags_and_yields(self):
+        while self.current is not None and (self._is_tags(self.current) or self._is_yields(self.current)):
+            if self._is_tags(self.current):
+                tags_text = self._get_node_source(self.current.first_child.first_child)
+                self.recipe.tags = [t.strip() for t in self._list_split.split(tags_text)]
+            else:
+                yields_text = self._get_node_source(self.current.first_child.first_child)
+                self.recipe.yields = [self.parse_amount(t.strip()) for t in self._list_split.split(yields_text)]
             self._next_node()
 
     def _parse_ingredients(self):
@@ -197,7 +198,7 @@ class RecipeParser:
         if self.current.t == 'paragraph' and self.current.first_child.t == 'emph':
             self._enter_node()
             self._enter_node()
-            amount, unit = self.parse_amount(self._get_node_source(self.current))
+            amount = self.parse_amount(self._get_node_source(self.current))
             self._exit_node()
             self._next_node()
             while self.current is not None:
@@ -222,42 +223,46 @@ class RecipeParser:
 
         self._exit_node()
 
-        return Ingredient(name=name, amount=amount, unit=unit)
+        return Ingredient(name=name, amount=amount)
 
     @staticmethod
     def parse_amount(amount_str):
         # improper fraction (1 1/2)
         match = re.match(r'^\s*(\d+)\s+(\d+)\s*/\s*(\d+)(.*)$', amount_str)
         if match:
-            amount = Decimal(match.group(1)) + (Decimal(match.group(2)) / Decimal(match.group(3)))
+            factor = Decimal(match.group(1)) + (Decimal(match.group(2)) / Decimal(match.group(3)))
             unit = match.group(4).strip()
-            return amount, unit or None
+            return Amount(factor, unit or None)
 
         # proper fraction (5/6)
         match = re.match(r'^\s*(\d+)\s*/\s*(\d+)(.*)$', amount_str)
         if match:
-            amount = (Decimal(match.group(1)) / Decimal(match.group(2)))
+            factor = (Decimal(match.group(1)) / Decimal(match.group(2)))
             unit = match.group(3).strip()
-            return amount, unit or None
+            return Amount(factor, unit or None)
 
         # decimal (5,4 or 5.6)
         match = re.match(r'^\s*(\d*)[.,](\d+)(.*)$', amount_str)
         if match:
-            amount = Decimal(match.group(1) + '.' + match.group(2))
+            factor = Decimal(match.group(1) + '.' + match.group(2))
             unit = match.group(3).strip()
-            return amount, unit or None
+            return Amount(factor, unit or None)
 
         # integer
         match = re.match(r'^\s*(\d+)(.*)$', amount_str)
         if match:
-            amount = Decimal(match.group(1))
+            factor = Decimal(match.group(1))
             unit = match.group(2).strip()
-            return amount, unit or None
+            return Amount(factor, unit or None)
 
-        return None, amount_str.strip() if amount_str is not None else None
+        return Amount(None, amount_str.strip()) if amount_str is not None else None
 
     def _is_tags(self, ast_node: Node):
         return ast_node.t == 'paragraph' and ast_node.first_child.t == 'emph' \
+               and ast_node.first_child == ast_node.last_child
+
+    def _is_yields(self, ast_node: Node):
+        return ast_node.t == 'paragraph' and ast_node.first_child.t == 'strong' \
                and ast_node.first_child == ast_node.last_child
 
     def _next_node(self):
@@ -324,11 +329,11 @@ def _multiply_ingredients(ingredients: List[Union[Ingredient, IngredientGroup]],
 
 
 if __name__ == "__main__":
-    # src = open('examples/schwarzbierbrot.md', 'r').read()
-    src = open('examples/griechischer_kartoffeltopf.md', 'r').read()
+    src = open('examples/schwarzbierbrot.md', 'r').read()
+    # src = open('examples/griechischer_kartoffeltopf.md', 'r').read()
 
     rp = RecipeParser()
     r = rp.parse(src)
-    pprint(r.ingredients)
+    pprint(r.yields)
     rs = RecipeSerializer()
     print(rs.serialize(r))
