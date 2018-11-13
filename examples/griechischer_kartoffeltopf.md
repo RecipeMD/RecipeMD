@@ -2,8 +2,10 @@
 
 Das ist ein sehr leckeres Rezept.
 
-*6 Portionen, vegetarisch, griechisch*
- 
+*vegetarisch, griechisch*
+
+**6 Portionen**
+
 --- 
  
 ## Gemüsebasis

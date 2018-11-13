@@ -2,7 +2,9 @@
 
 Ein einfaches Brot aus Schwarzbier
 
-*5 Portionen, vegetarisch*
+*vegetarisch*
+
+**1 Brot**
 
 ---
 

@@ -1,4 +1,4 @@
-# Recipemd
+# RecipeMD
 
 A standard format for recipes as [Markdown](https://commonmark.org) files and a python reference implementation.
 

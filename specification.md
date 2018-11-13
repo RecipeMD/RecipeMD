@@ -1,6 +1,6 @@
-# Markdown Recipe Specification
+# RecipeMD: Markdown Recipe Specification
 
-
+This is version 2.0.0 of the RecipeMD specification.
 
 - a *valid* recipe consists of:
 	- a title
@@ -13,7 +13,8 @@
 - the Markdown representation shall be as follows:
 	1. the title
 	2. *optional*: the short description
-	3. *optional*: the tags, including the number of servings
+	3. *optional*: the yield
+	4. *optional*: the tags
 	5. a horizontal line
 	6. the ingredients, consisting of
 	    1. *optional*: headings to group ingredients
@@ -26,12 +27,13 @@
 ```# Guacamole```
 - the short description is noted as a single paragraph:
 ```Some people call it guac.```
-- the tags are noted as paragraph containing only a comma seperated list in italic case:
+- the tags are noted as paragraph containing only a comma seperated
+  list in italic case:
 ```*sauce, vegan*```
-- the number of servings is noted as the first number in the first tag (this implies that no other numbers shall be used in the first tag):
-```
-*servings: 4, vegan, sauce*
-```
+- the yield is noted as paragraph containing only a comma seperated
+  list in bold case (note that commas between two numbers are ignored
+  as decimal separators):
+```**4 Servings, 200g**```
 - the ingredients are noted as list items. The headings form the titles of ingredient groups. The amount of each ingredient (if given) is noted in italic case. Amounts may be expressed as decimals (dividers "." and ",") and fractions:
 ```
 - *1* avocado
