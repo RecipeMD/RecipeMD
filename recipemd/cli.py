@@ -8,7 +8,9 @@ def main():
     parser = argparse.ArgumentParser(description='Read and process recipemd recipes')
 
     parser.add_argument('file', type=open, help='A recipemd file')
-    parser.add_argument('-i', '--ingredients', action='store_true', help='Display ingredients')
+    display_parser = parser.add_mutually_exclusive_group()
+    display_parser.add_argument('-t', '--title', action='store_true', help='Display recipe title')
+    display_parser.add_argument('-i', '--ingredients', action='store_true', help='Display recipe ingredients')
 
     scale_parser = parser.add_mutually_exclusive_group()
     scale_parser.add_argument('-m', '--multiply', type=Decimal, help='Multiply recipe by N', metavar='N')
@@ -29,10 +31,11 @@ def main():
     elif args.multiply:
         r = multiply_recipe(r, args.multiply)
 
-
-    rs = RecipeSerializer()
-    if args.ingredients:
+    if args.title:
+        print(r.title)
+    elif args.ingredients:
         for ingr in r.leaf_ingredients:
             print(' '.join(str(r) for r in (ingr.amount, ingr.unit, ingr.name) if r is not None))
     else:
+        rs = RecipeSerializer()
         print(rs.serialize(r))
