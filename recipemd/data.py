@@ -27,7 +27,7 @@ class Amount:
 @dataclass
 class Ingredient:
     name: str
-    amount: Optional[Amount]
+    amount: Optional[Amount] = None
 
 
 @dataclass
