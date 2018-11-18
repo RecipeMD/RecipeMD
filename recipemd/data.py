@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+import copy
 import re
 from dataclasses import dataclass, field
 from decimal import Decimal
 from pprint import pprint
-import copy
 from typing import List, Optional, Union
 
 import CommonMark
@@ -23,6 +23,10 @@ class IngredientGroup:
 class Amount:
     factor: Optional[Decimal] = None
     unit: Optional[str] = None
+
+    def __post_init__(self):
+        if self.factor is None and self.unit is None:
+            raise TypeError(f"Factor and unit may not both be None")
 
 @dataclass
 class Ingredient:
@@ -226,7 +230,7 @@ class RecipeParser:
         return Ingredient(name=name, amount=amount)
 
     @staticmethod
-    def parse_amount(amount_str):
+    def parse_amount(amount_str: str) -> Amount:
         # improper fraction (1 1/2)
         match = re.match(r'^\s*(\d+)\s+(\d+)\s*/\s*(\d+)(.*)$', amount_str)
         if match:
@@ -255,7 +259,8 @@ class RecipeParser:
             unit = match.group(2).strip()
             return Amount(factor, unit or None)
 
-        return Amount(None, amount_str.strip()) if amount_str is not None else None
+        unit = amount_str.strip()
+        return Amount(None, unit) if unit else None
 
     def _is_tags(self, ast_node: Node):
         return ast_node.t == 'paragraph' and ast_node.first_child.t == 'emph' \
@@ -314,8 +319,8 @@ class RecipeParser:
 
 def multiply_recipe(base_recipe: Recipe, multiplier: Decimal):
     recipe = copy.deepcopy(base_recipe)
-    if recipe.servings is not None:
-        recipe.servings = recipe.servings * multiplier
+    for yield_ in recipe.yields:
+        yield_.factor *= multiplier
     _multiply_ingredients(recipe.ingredients, multiplier)
     return recipe
 
@@ -323,7 +328,7 @@ def multiply_recipe(base_recipe: Recipe, multiplier: Decimal):
 def _multiply_ingredients(ingredients: List[Union[Ingredient, IngredientGroup]], multiplier: Decimal):
     for ingr in ingredients:
         if hasattr(ingr, 'amount') and ingr.amount is not None:
-            ingr.amount *= multiplier
+            ingr.amount.factor *= multiplier
         if hasattr(ingr, 'children'):
             _multiply_ingredients(ingr.children, multiplier)
 
