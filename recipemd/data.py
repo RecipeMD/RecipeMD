@@ -81,7 +81,8 @@ class RecipeSerializer:
                 return f'- *{self._serialize_amount(ingredient.amount)}* {ingredient.name}'
             return f'- {ingredient.name}'
 
-    def _serialize_amount(self, amount):
+    @staticmethod
+    def _serialize_amount(amount):
         if amount.factor is not None and amount.unit is not None:
             return f'{amount.factor} {amount.unit}'
         if amount.factor is not None:

@@ -4,7 +4,7 @@ from decimal import Decimal
 from pprint import pprint
 from typing import Union
 
-from recipemd.data import RecipeParser, RecipeSerializer, multiply_recipe, Amount
+from recipemd.data import RecipeParser, RecipeSerializer, multiply_recipe, Amount, Ingredient
 
 __all__ = ['main']
 
@@ -57,7 +57,13 @@ def main():
         print(r.title)
     elif args.ingredients:
         for ingr in r.leaf_ingredients:
-            print(' '.join(str(r) for r in (ingr.amount.factor, ingr.amount.unit, ingr.name) if r is not None))
+            print(_ingredient_to_string(ingr))
     else:
         rs = RecipeSerializer()
         print(rs.serialize(r))
+
+
+def _ingredient_to_string(ingr: Ingredient):
+    if ingr.amount is not None:
+        return f'{RecipeSerializer._serialize_amount(ingr.amount)} {ingr.name}'
+    return ingr.name
