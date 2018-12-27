@@ -15,8 +15,8 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires='>=3.7,<4',
     install_requires=[
-       'commonmark==0.8.0',
-       'commonmarkextensions'
+        'CommonMark==0.7.5',
+        'commonmarkextensions==0.0.3'
     ],
     entry_points={
         'console_scripts': [
