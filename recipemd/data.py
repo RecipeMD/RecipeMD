@@ -139,7 +139,7 @@ class RecipeParser:
 
     def _parse_title(self):
         if self.current is not None and self.current.t == 'heading' and self.current.level == 1:
-            self.recipe.title = self._get_node_source(self.current.first_child)
+            self.recipe.title = self._get_current_node_children_source()
             self._next_node()
         else:
             # TODO title is required according to spec, maybe the parser might be more foregiving?
@@ -153,10 +153,14 @@ class RecipeParser:
     def _parse_tags_and_yields(self):
         while self.current is not None and (self._is_tags(self.current) or self._is_yields(self.current)):
             if self._is_tags(self.current):
-                tags_text = self._get_node_source(self.current.first_child.first_child)
+                self._enter_node()
+                tags_text = self._get_current_node_children_source()
+                self._exit_node()
                 self.recipe.tags = [t.strip() for t in self._list_split.split(tags_text)]
             else:
-                yields_text = self._get_node_source(self.current.first_child.first_child)
+                self._enter_node()
+                yields_text = self._get_current_node_children_source()
+                self._exit_node()
                 self.recipe.yields = [self.parse_amount(t.strip()) for t in self._list_split.split(yields_text)]
             self._next_node()
 
@@ -174,8 +178,7 @@ class RecipeParser:
                 return
 
             group = IngredientGroup()
-            if self.current.first_child is not None:
-                group.title = self._get_node_source(self.current.first_child)
+            group.title = self._get_current_node_children_source()
             self._next_node()
 
             if self.current is not None and self.current.t == 'list':
@@ -303,6 +306,16 @@ class RecipeParser:
         if ast_node.literal is not None:
             return ast_node.literal
         return CommonMarkToCommonMarkRenderer().render(ast_node)
+
+    def _get_current_node_children_source(self):
+        source = ""
+        if self.current.first_child is not None:
+            self._enter_node()
+            while self.current is not None:
+                source += self._get_node_source(self.current)
+                self._next_node()
+            self._exit_node()
+        return source
 
     def _get_sourcepos_source(self, sourcepos):
         start_line = sourcepos[0][0] - 1
