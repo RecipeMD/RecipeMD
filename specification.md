@@ -103,6 +103,7 @@ If a name contains a [link reference](https://spec.commonmark.org/0.28/#link-ref
 If the link reference specifies a title, it becomes the name of the ingredient.
 If the link reference does not specify a title, the name of the ingredient is overridden by the title of the link target.
 If the link target specifies a yield and the ingredient does not specify an amount, the yield of the target becomes the amount of the ingredient.
+The tags of the recipe become the union of the current tags and the tags of the target.
 
 ### Ingredient Group
 
