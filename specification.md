@@ -95,7 +95,14 @@ An ingredient consists of
 An ingredient is represented as follows:
 
 1. The amount in italics
-2. Everything following is part of the name
+2. Everything following until the end of the line is part of the name.
+
+#### Name
+
+If a name contains a [link reference](https://spec.commonmark.org/0.28/#link-reference-definitions), the title of the link target recipe becomes the name of the ingredient.
+If the link reference specifies a title, it becomes the name of the ingredient.
+If the link reference does not specify a title, the name of the ingredient is overridden by the title of the link target.
+If the link target specifies a yield and the ingredient does not specify an amount, the yield of the target becomes the amount of the ingredient.
 
 ### Ingredient Group
 
