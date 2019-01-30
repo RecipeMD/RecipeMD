@@ -95,7 +95,7 @@ An ingredient consists of
 An ingredient is represented as follows:
 
 1. The amount in italics
-2. Everything following until the end of the line is part of the name.
+2. Everything following until the end of the list item is part of the name.
 
 #### Name
 
