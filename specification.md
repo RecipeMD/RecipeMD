@@ -99,11 +99,9 @@ An ingredient is represented as follows:
 
 #### Name
 
-If a name contains a [link reference](https://spec.commonmark.org/0.28/#link-reference-definitions), the title of the link target recipe becomes the name of the ingredient.
-If the link reference specifies a title, it becomes the name of the ingredient.
-If the link reference does not specify a title, the name of the ingredient is overridden by the title of the link target.
-If the link target specifies a yield and the ingredient does not specify an amount, the yield of the target becomes the amount of the ingredient.
-The tags of the recipe become the union of the current tags and the tags of the target.
+If a name contains a [inline-link](https://spec.commonmark.org/0.28/#inline-link), the [link-text](https://spec.commonmark.org/0.28/#link-text) becomes the name of the ingredient.
+If the linked recipe specifies a yield and the ingredient does not specify an amount, the yield of the linked recipe becomes the amount of the ingredient.
+The tags of the linked recipe are added to the tags of the recipe.
 
 ### Ingredient Group
 
