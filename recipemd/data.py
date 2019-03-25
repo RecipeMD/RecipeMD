@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import re
+import unicodedata
 from dataclasses import dataclass, field
 from decimal import Decimal
 from pprint import pprint
@@ -242,12 +243,32 @@ class RecipeParser:
             unit = match.group(4).strip()
             return Amount(factor, unit or None)
 
+        # improper fraction with unicode vulgar fraction (1 ½)
+        match = re.match(r'^\s*(\d+)\s+([\u00BC-\u00BE\u2150-\u215E])(.*)$', amount_str)
+        if match:
+            try:
+                factor = Decimal(match.group(1)) + Decimal(unicodedata.numeric(match.group(2)))
+                unit = match.group(3).strip()
+                return Amount(factor, unit or None)
+            except ValueError:
+                pass
+
         # proper fraction (5/6)
         match = re.match(r'^\s*(\d+)\s*/\s*(\d+)(.*)$', amount_str)
         if match:
             factor = (Decimal(match.group(1)) / Decimal(match.group(2)))
             unit = match.group(3).strip()
             return Amount(factor, unit or None)
+
+        # proper fraction with unicode vulgar fraction (⅚)
+        match = re.match(r'^\s*([\u00BC-\u00BE\u2150-\u215E])(.*)$', amount_str)
+        if match:
+            try:
+                factor = Decimal(unicodedata.numeric(match.group(1)))
+                unit = match.group(2).strip()
+                return Amount(factor, unit or None)
+            except ValueError:
+                pass
 
         # decimal (5,4 or 5.6)
         match = re.match(r'^\s*(\d*)[.,](\d+)(.*)$', amount_str)

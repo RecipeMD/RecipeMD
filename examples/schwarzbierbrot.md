@@ -8,7 +8,7 @@ Ein einfaches Brot aus Schwarzbier
 
 ---
 
-- *0,5 l* Schwarzbier
+- *½ l* Schwarzbier
 - *500 g* Mehl
 - *1 TL* Salz
 - *1 Pck.* Backpulver

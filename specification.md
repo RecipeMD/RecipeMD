@@ -1,6 +1,6 @@
 # RecipeMD: Markdown Recipe Specification
 
-This is version 2.0.1 of the RecipeMD specification.
+This is version 2.1.0 of the RecipeMD specification.
 
 RecipeMD is a Markdown-based format for writing down recipes. It
 defines a certain structure which a document must follow to be a
@@ -78,8 +78,11 @@ An amount is represented as follows:
 1. A number, which may have one of the following formats
     - improper fraction (e.g. `1 1/5`)
     - proper fraction (e.g `3/7`)
+    - [unicode vulgar fractions] (like ½) may also be used
     - decimal with dividers "." and "," (e.g. "41.9")
 2. A unit which is just everything following the number
+
+[unicode vulgar fractions]: http://unicode.org/cldr/utility/list-unicodeset.jsp?a=[:Decomposition_Type=Fraction:]
 
 Note that when an amount is inside of a comma separated list, a comma
 is treated as a decimal divider if the characters directly before and
