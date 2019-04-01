@@ -99,9 +99,9 @@ An ingredient is represented as follows:
 
 #### Name
 
-If a name contains a [inline-link](https://spec.commonmark.org/0.28/#inline-link), the [link-text](https://spec.commonmark.org/0.28/#link-text) becomes the name of the ingredient.
-If the linked recipe specifies a yield and the ingredient does not specify an amount, the yield of the linked recipe becomes the amount of the ingredient.
-The tags of the linked recipe are added to the tags of the recipe.
+If a name contains an [inline-link](https://spec.commonmark.org/0.28/#inline-link), the [link-text](https://spec.commonmark.org/0.28/#link-text) represents the common name of the ingredient and the [link-destination](https://spec.commonmark.org/0.28/#link-destination) specifies a resource that contains a recipe for the ingredient.
+
+Otherwise, the name is taken litteraly as the common name of the ingredient.
 
 ### Ingredient Group
 
