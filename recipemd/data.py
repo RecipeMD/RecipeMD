@@ -81,8 +81,13 @@ class RecipeSerializer:
                    + "\n".join(self._serialize_ingredient(i, level+1) for i in ingredient.children)
         else:
             if ingredient.amount is not None:
-                return f'- *{self._serialize_amount(ingredient.amount)}* {ingredient.name}'
-            return f'- {ingredient.name}'
+                return f'- *{self._serialize_amount(ingredient.amount)}* {self._serialize_ingredient_text(ingredient)}'
+            return f'- {self._serialize_ingredient_text(ingredient)}'
+
+    def _serialize_ingredient_text(self, ingredient):
+        if ingredient.link:
+            return f'[{ingredient.name}]({ingredient.link})'
+        return ingredient.name
 
     @staticmethod
     def _serialize_amount(amount):
