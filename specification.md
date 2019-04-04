@@ -91,17 +91,21 @@ An ingredient consists of
 
 - *optional* an amount
 - a name
+- *optional* a link to a recipe for the ingredient
 
 An ingredient is represented as follows:
 
 1. The amount in italics
-2. Everything following until the end of the list item is part of the name.
+2. Everything following until the end of the list item is part of the
+   name or the link as specified below:
+   1. If a name contains only an [inline-link], the [link-text]
+      represents the name of the ingredient and the [link-destination]
+      specifies a resource that contains a recipe for the ingredient
+   2. Otherwise, the text is the name and the link is not set
 
-#### Name
-
-If a name contains an [inline-link](https://spec.commonmark.org/0.28/#inline-link), the [link-text](https://spec.commonmark.org/0.28/#link-text) represents the common name of the ingredient and the [link-destination](https://spec.commonmark.org/0.28/#link-destination) specifies a resource that contains a recipe for the ingredient.
-
-Otherwise, the name is taken litteraly as the common name of the ingredient.
+[inline-link]: https://spec.commonmark.org/0.28/#inline-link
+[link-text]: https://spec.commonmark.org/0.28/#link-text
+[link-destination]: https://spec.commonmark.org/0.28/#link-destination
 
 ### Ingredient Group
 
