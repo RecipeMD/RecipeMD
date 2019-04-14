@@ -215,17 +215,18 @@ class RecipeParser:
         link_destination = None
         link_text = None
 
-        if self.current.t == 'paragraph' and self.current.first_child.t == 'emph':
+        if self.current.t == 'paragraph':
             # enter paragraph
             self._enter_node()
-            # enter emph
-            self._enter_node()
-            amount = self.parse_amount(self._get_node_source(self.current))
-            # leave emph
-            self._exit_node()
 
-            # parse rest of first paragraph
-            self._next_node()
+            if self.current.t == 'emph':
+                # enter emph
+                self._enter_node()
+                amount = self.parse_amount(self._get_node_source(self.current))
+                # leave emph
+                self._exit_node()
+                # parse rest of first paragraph
+                self._next_node()
 
             while self.current is not None:
                 if first_paragraph is None:
