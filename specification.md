@@ -113,7 +113,7 @@ An ingredient group is a group of related ingredients, e.g. the
 ingredients making up one component of a dish. It consists of:
 
 - *optional* a title
-- 1..2 ingredients
+- 1..n ingredients
 
 
 

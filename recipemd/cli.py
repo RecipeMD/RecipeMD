@@ -1,10 +1,16 @@
 import argparse
+import copy
+import os
+import re
 import sys
-from decimal import Decimal
-from pprint import pprint
-from typing import Union
+import urllib.parse
+import urllib.request
+from typing import List, Union, Dict
 
-from recipemd.data import RecipeParser, RecipeSerializer, multiply_recipe, Amount, Ingredient
+from yarl import URL
+
+from recipemd.data import RecipeParser, RecipeSerializer, multiply_recipe, Ingredient, get_recipe_with_yield, \
+    IngredientGroup, Recipe
 
 __all__ = ['main']
 
@@ -12,10 +18,14 @@ __all__ = ['main']
 def main():
     parser = argparse.ArgumentParser(description='Read and process recipemd recipes')
 
-    parser.add_argument('file', type=open, help='A recipemd file')
+    parser.add_argument('file', type=argparse.FileType('r', encoding='UTF-8'), help='A recipemd file')
+
     display_parser = parser.add_mutually_exclusive_group()
     display_parser.add_argument('-t', '--title', action='store_true', help='Display recipe title')
     display_parser.add_argument('-i', '--ingredients', action='store_true', help='Display recipe ingredients')
+
+    parser.add_argument('-f', '--flatten', action='store_true',
+                        help='Flatten ingredients and instructions of linked recipes into main recipe')
 
     scale_parser = parser.add_mutually_exclusive_group()
     scale_parser.add_argument('-m', '--multiply', type=str, help='Multiply recipe by N', metavar='N')
@@ -29,29 +39,13 @@ def main():
     rp = RecipeParser()
     r = rp.parse(src)
 
-    if args.required_yield is not None:
-        required_yield = RecipeParser.parse_amount(args.required_yield)
-        if required_yield is None or required_yield.factor is None:
-            print(f'Given yield is not valid', file=sys.stderr)
-            exit(1)
-        matching_recipe_yield = next((y for y in r.yields if y.unit == required_yield.unit), None)
-        if matching_recipe_yield is None:
-            if required_yield.unit is None:
-                matching_recipe_yield = Amount(Decimal(1))
-            else:
-                print(f'Recipe "{r.title}" does not specify a yield in the unit "{required_yield.unit}". The '
-                      f'following units can be used: ' + ", ".join(f'"{y.unit}"' for y in r.yields), file=sys.stderr)
-                exit(1)
-        r = multiply_recipe(r, required_yield.factor / matching_recipe_yield.factor)
-    elif args.multiply is not None:
-        multiply = RecipeParser.parse_amount(args.multiply)
-        if multiply is None or multiply.factor is None:
-            print(f'Given multiplier is not valid', file=sys.stderr)
-            exit(1)
-        if multiply.unit is not None:
-            print(f'A recipe can only be multiplied with a unitless amount', file=sys.stderr)
-            exit(1)
-        r = multiply_recipe(r, multiply.factor)
+    # scale recipe
+    r = _process_scaling(r, args)
+
+    # flatten recipe
+    if args.flatten:
+        base_url = URL(f'file://{os.path.abspath(args.file.name)}')
+        r = _get_flattened_ingredients_recipe(r, base_url=base_url, parser=rp)
 
     if args.title:
         print(r.title)
@@ -63,7 +57,132 @@ def main():
         print(rs.serialize(r))
 
 
-def _ingredient_to_string(ingr: Ingredient):
+def _process_scaling(r, args):
+    if args.required_yield is not None:
+        required_yield = RecipeParser.parse_amount(args.required_yield)
+        if required_yield is None or required_yield.factor is None:
+            print(f'Given yield is not valid', file=sys.stderr)
+            exit(1)
+        try:
+            r = get_recipe_with_yield(r, required_yield)
+        except StopIteration:
+            print(f'Recipe "{r.title}" does not specify a yield in the unit "{required_yield.unit}". The '
+                  f'following units can be used: ' + ", ".join(f'"{y.unit}"' for y in r.yields), file=sys.stderr)
+            exit(1)
+    elif args.multiply is not None:
+        multiply = RecipeParser.parse_amount(args.multiply)
+        if multiply is None or multiply.factor is None:
+            print(f'Given multiplier is not valid', file=sys.stderr)
+            exit(1)
+        if multiply.unit is not None:
+            print(f'A recipe can only be multiplied with a unitless amount', file=sys.stderr)
+            exit(1)
+        r = multiply_recipe(r, multiply.factor)
+    return r
+
+
+def _get_flattened_ingredients_recipe(recipe: Recipe, *, base_url: URL, parser: RecipeParser) -> Recipe:
+    link_ingredients = [i for i in recipe.leaf_ingredients if i.link is not None]
+    link_to_recipe = dict()
+    for ingredient in link_ingredients:
+        try:
+            link_to_recipe[ingredient.link] = _get_linked_recipe(ingredient, base_url=base_url, parser=parser, flatten=True)
+        except Exception as e:
+            print(f'{e}: {e.__cause__}', file=sys.stderr)
+
+    # recipes that contain no links need not be processed
+    if not link_to_recipe:
+        return recipe
+
+    new_recipe = copy.deepcopy(recipe)
+
+    # ingredients
+    new_recipe.ingredients = _create_flattened_substituted_ingredients(new_recipe.ingredients, link_to_recipe)
+
+    # instructions
+    instruction_sections = []
+    for ingredient in link_ingredients:
+        try:
+            link_recipe = link_to_recipe[ingredient.link]
+        except KeyError:
+            pass
+        else:
+            if link_recipe.instructions:
+                instruction_sections.append((_link_ingredient_title(ingredient, link_recipe), link_recipe.instructions))
+
+    if recipe.instructions:
+        instruction_sections.append((recipe.title, recipe.instructions))
+
+    instructions = []
+    for heading, body in instruction_sections:
+        # find headings (see https://spec.commonmark.org/0.29/#atx-heading) and increase level by one
+        # note that only up to level 6 is allowed, so we will do 5 -> 6 but not 6 -> 7
+        new_body = re.sub(r'^( {0,3})(#{1,5}.*)$', r'\1#\2', body, flags=re.MULTILINE)
+        instructions.append(f'## {heading}\n\n{new_body}')
+
+    new_recipe.instructions = '\n\n'.join(instructions)
+
+    return new_recipe
+
+
+def _get_linked_recipe(ingredient: Ingredient, *, base_url: URL, parser: RecipeParser, flatten: bool=True) -> Recipe:
+    url = base_url.join(URL(ingredient.link))
+    try:
+        with urllib.request.urlopen(str(url)) as req:
+            encoding = req.info().get_content_charset() or 'UTF-8'
+            src = req.read().decode(encoding)
+    except Exception as e:
+        raise RuntimeError(f'''Couldn't find linked recipe for ingredient "{ingredient.name}"''') from e
+
+    try:
+        link_recipe = parser.parse(src)
+    except Exception as e:
+        raise RuntimeError(f'''Couldn't parse linked recipe for ingredient "{ingredient.name}"''') from e
+
+    if flatten:
+        link_recipe = _get_flattened_ingredients_recipe(link_recipe, base_url=url, parser=parser)
+
+    return link_recipe
+
+
+def _create_flattened_substituted_ingredients(ingredients: List[Union[Ingredient, IngredientGroup]],
+                                              link_to_recipe: Dict[str, Recipe]) -> List[Ingredient]:
+    result_ingredients = []
+    result_groups = []
+    for ingr in ingredients:
+        if isinstance(ingr, IngredientGroup):
+            new_group = copy.deepcopy(ingr)
+            new_group.children = _create_flattened_substituted_ingredients(new_group.children, link_to_recipe)
+            result_groups.append(new_group)
+        elif ingr.link in link_to_recipe:
+            try:
+                link_recipe = get_recipe_with_yield(link_to_recipe[ingr.link], ingr.amount)
+            except StopIteration:
+                result_ingredients.append(ingr)
+            else:
+                new_group = IngredientGroup(title=_link_ingredient_title(ingr, link_recipe))
+                new_group.children = link_recipe.ingredients
+                result_groups.append(new_group)
+        else:
+            result_ingredients.append(ingr)
+
+    # groups must come after ingredients, see https://github.com/tstehr/RecipeMD/issues/6
+    return result_ingredients + result_groups
+
+
+def _link_ingredient_title(ingr: Ingredient, link_recipe: Recipe) -> str:
+    if ingr.name == link_recipe.title:
+        title = f'[{_ingredient_to_string(ingr)}]({ingr.link})'
+    else:
+        title = f'[{_ingredient_to_string(ingr)}: {link_recipe.title}]({ingr.link})'
+    return title
+
+
+def _ingredient_to_string(ingr: Ingredient) -> str:
     if ingr.amount is not None:
         return f'{RecipeSerializer._serialize_amount(ingr.amount)} {ingr.name}'
     return ingr.name
+
+
+if __name__ == "__main__":
+    main()

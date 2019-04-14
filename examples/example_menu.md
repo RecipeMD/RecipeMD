@@ -7,8 +7,8 @@ Tags and amounts depend on recipes.
 
 ## Main course
 
-- *4 l* [Kartoffeltopf *test*](file:griechischer_kartoffeltopf.md)
-- *1* [Brot](file:schwarzbierbrot.md)
+- *4 l* [Kartoffeltopf](griechischer_kartoffeltopf.md)
+- *1* [Brot](schwarzbierbrot.md)
 
 ## Dessert
 

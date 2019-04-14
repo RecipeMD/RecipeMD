@@ -84,7 +84,8 @@ class RecipeSerializer:
                 return f'- *{self._serialize_amount(ingredient.amount)}* {self._serialize_ingredient_text(ingredient)}'
             return f'- {self._serialize_ingredient_text(ingredient)}'
 
-    def _serialize_ingredient_text(self, ingredient):
+    @staticmethod
+    def _serialize_ingredient_text(ingredient):
         if ingredient.link:
             return f'[{ingredient.name}]({ingredient.link})'
         return ingredient.name
@@ -376,6 +377,18 @@ def multiply_recipe(base_recipe: Recipe, multiplier: Decimal):
     return recipe
 
 
+def get_recipe_with_yield(recipe, required_yield):
+    matching_recipe_yield = next((y for y in recipe.yields if y.unit == required_yield.unit), None)
+    if matching_recipe_yield is None:
+        # no unit in required amount is interpreted as "one recipe"
+        if required_yield.unit is None:
+            matching_recipe_yield = Amount(Decimal(1))
+        else:
+            raise StopIteration
+    recipe = multiply_recipe(recipe, required_yield.factor / matching_recipe_yield.factor)
+    return recipe
+
+
 def _multiply_ingredients(ingredients: List[Union[Ingredient, IngredientGroup]], multiplier: Decimal):
     for ingr in ingredients:
         if hasattr(ingr, 'amount') and ingr.amount is not None:
@@ -391,6 +404,6 @@ if __name__ == "__main__":
 
     rp = RecipeParser()
     r = rp.parse(src)
-    pprint([i for i in r.leaf_ingredients])
+    pprint(r.ingredients)
     #rs = RecipeSerializer()
     #print(rs.serialize(r))
