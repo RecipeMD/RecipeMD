@@ -1,2 +1,3 @@
 CommonMark==0.7.5
 commonmarkextensions==0.0.3
+yarl==1.3.0

@@ -1,6 +1,6 @@
 # RecipeMD: Markdown Recipe Specification
 
-This is version 2.1.0 of the RecipeMD specification.
+This is version 2.2.0 of the RecipeMD specification.
 
 RecipeMD is a Markdown-based format for writing down recipes. It
 defines a certain structure which a document must follow to be a
@@ -94,11 +94,21 @@ An ingredient consists of
 
 - *optional* an amount
 - a name
+- *optional* a link to a recipe for the ingredient
 
 An ingredient is represented as follows:
 
 1. The amount in italics
-2. Everything following is part of the name
+2. Everything following until the end of the list item is part of the
+   name or the link as specified below:
+   1. If a name contains only an [inline-link], the [link-text]
+      represents the name of the ingredient and the [link-destination]
+      specifies a resource that contains a recipe for the ingredient
+   2. Otherwise, the text is the name and the link is not set
+
+[inline-link]: https://spec.commonmark.org/0.28/#inline-link
+[link-text]: https://spec.commonmark.org/0.28/#link-text
+[link-destination]: https://spec.commonmark.org/0.28/#link-destination
 
 ### Ingredient Group
 
@@ -106,7 +116,7 @@ An ingredient group is a group of related ingredients, e.g. the
 ingredients making up one component of a dish. It consists of:
 
 - *optional* a title
-- 1..2 ingredients
+- 1..n ingredients
 
 
 

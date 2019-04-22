@@ -20,6 +20,7 @@ class IngredientGroup:
     title: Optional[str] = None
     children: List[Union[Ingredient, IngredientGroup]] = field(default_factory=list)
 
+
 @dataclass
 class Amount:
     factor: Optional[Decimal] = None
@@ -29,10 +30,12 @@ class Amount:
         if self.factor is None and self.unit is None:
             raise TypeError(f"Factor and unit may not both be None")
 
+
 @dataclass
 class Ingredient:
     name: str
     amount: Optional[Amount] = None
+    link: Optional[str] = None
 
 
 @dataclass
@@ -79,8 +82,14 @@ class RecipeSerializer:
                    + "\n".join(self._serialize_ingredient(i, level+1) for i in ingredient.children)
         else:
             if ingredient.amount is not None:
-                return f'- *{self._serialize_amount(ingredient.amount)}* {ingredient.name}'
-            return f'- {ingredient.name}'
+                return f'- *{self._serialize_amount(ingredient.amount)}* {self._serialize_ingredient_text(ingredient)}'
+            return f'- {self._serialize_ingredient_text(ingredient)}'
+
+    @staticmethod
+    def _serialize_ingredient_text(ingredient):
+        if ingredient.link:
+            return f'[{ingredient.name}]({ingredient.link})'
+        return ingredient.name
 
     @staticmethod
     def _serialize_amount(amount):
@@ -201,26 +210,55 @@ class RecipeParser:
         self._enter_node()
 
         amount = None
-        unit = None
         first_paragraph = None
 
-        if self.current.t == 'paragraph' and self.current.first_child.t == 'emph':
+        can_have_link = True
+        has_link = False
+        link_destination = None
+        link_text = None
+
+        if self.current.t == 'paragraph':
+            # enter paragraph
             self._enter_node()
-            self._enter_node()
-            amount = self.parse_amount(self._get_node_source(self.current))
-            self._exit_node()
-            self._next_node()
+
+            if self.current.t == 'emph':
+                # enter emph
+                self._enter_node()
+                amount = self.parse_amount(self._get_node_source(self.current))
+                # leave emph
+                self._exit_node()
+                # parse rest of first paragraph
+                self._next_node()
+
             while self.current is not None:
                 if first_paragraph is None:
                     first_paragraph = ""
-                first_paragraph += self._get_node_source(self.current)
+                node_source = self._get_node_source(self.current)
+
+                if can_have_link:
+                    # to have a link, the first paragraph may only contain space and one link
+                    if not has_link and self.current.t == 'link':
+                        link_destination = self.current.destination
+                        link_text = self._get_current_node_children_source()
+                        has_link = True
+                    elif not node_source.isspace():
+                        can_have_link = False
+
+                first_paragraph += node_source
                 self._next_node()
+
+            # leave first paragraph
             self._exit_node()
             self._next_node()
 
         following_paragraphs = self._get_source_until()
 
-        if first_paragraph is not None and following_paragraphs is not None:
+        if following_paragraphs is not None and not following_paragraphs.isspace():
+            can_have_link = False
+
+        if can_have_link and has_link:
+            name = link_text
+        elif first_paragraph is not None and following_paragraphs is not None:
             name = first_paragraph + "\n\n" + following_paragraphs
         elif first_paragraph is not None:
             name = first_paragraph
@@ -232,7 +270,7 @@ class RecipeParser:
 
         self._exit_node()
 
-        return Ingredient(name=name, amount=amount)
+        return Ingredient(name=name, amount=amount, link=link_destination)
 
     @staticmethod
     def parse_amount(amount_str: str) -> Amount:
@@ -360,6 +398,18 @@ def multiply_recipe(base_recipe: Recipe, multiplier: Decimal):
     return recipe
 
 
+def get_recipe_with_yield(recipe, required_yield):
+    matching_recipe_yield = next((y for y in recipe.yields if y.unit == required_yield.unit), None)
+    if matching_recipe_yield is None:
+        # no unit in required amount is interpreted as "one recipe"
+        if required_yield.unit is None:
+            matching_recipe_yield = Amount(Decimal(1))
+        else:
+            raise StopIteration
+    recipe = multiply_recipe(recipe, required_yield.factor / matching_recipe_yield.factor)
+    return recipe
+
+
 def _multiply_ingredients(ingredients: List[Union[Ingredient, IngredientGroup]], multiplier: Decimal):
     for ingr in ingredients:
         if hasattr(ingr, 'amount') and ingr.amount is not None:
@@ -369,11 +419,12 @@ def _multiply_ingredients(ingredients: List[Union[Ingredient, IngredientGroup]],
 
 
 if __name__ == "__main__":
-    src = open('examples/schwarzbierbrot.md', 'r').read()
+    # src = open('examples/schwarzbierbrot.md', 'r').read()
     # src = open('examples/griechischer_kartoffeltopf.md', 'r').read()
+    src = open('examples/example_menu.md', 'r').read()
 
     rp = RecipeParser()
     r = rp.parse(src)
-    pprint(r.yields)
-    rs = RecipeSerializer()
-    print(rs.serialize(r))
+    pprint(r.ingredients)
+    #rs = RecipeSerializer()
+    #print(rs.serialize(r))
