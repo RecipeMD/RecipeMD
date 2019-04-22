@@ -1,6 +1,6 @@
 # RecipeMD: Markdown Recipe Specification
 
-This is version 2.1.0 of the RecipeMD specification.
+This is version 2.2.0 of the RecipeMD specification.
 
 RecipeMD is a Markdown-based format for writing down recipes. It
 defines a certain structure which a document must follow to be a
