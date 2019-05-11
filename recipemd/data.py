@@ -8,9 +8,9 @@ from decimal import Decimal
 from pprint import pprint
 from typing import List, Optional, Union
 
-import CommonMark
-from CommonMark.node import Node
-from CommonMarkExtensions.plaintext import CommonMarkToCommonMarkRenderer
+import commonmark
+from commonmark.node import Node
+from commonmark_extensions.plaintext import CommonMarkToCommonMarkRenderer
 
 __all__ = ['IngredientGroup', 'Ingredient', 'Recipe', 'RecipeParser', 'RecipeSerializer', 'multiply_recipe']
 
@@ -119,7 +119,7 @@ class RecipeParser:
         self.src = src
         self.recipe = Recipe(title=None)
 
-        parser = CommonMark.Parser()
+        parser = commonmark.Parser()
         ast = parser.parse(src)
 
         self.current = ast.first_child

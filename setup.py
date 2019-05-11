@@ -15,8 +15,10 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires='>=3.7,<4',
     install_requires=[
-        'CommonMark==0.7.5',
-        'commonmarkextensions==0.0.3'
+        'yarl==1.3.0',
+        'commonmarkextensions==0.0.5',
+        # commonmark is automatically installed as dependency of commonmarkextensions
+        # 'commonmark',
     ],
     entry_points={
         'console_scripts': [
