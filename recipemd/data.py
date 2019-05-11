@@ -60,7 +60,7 @@ class Recipe:
 
 
 class RecipeSerializer:
-    def serialize(self, recipe: Recipe):
+    def serialize(self, recipe: Recipe, *, rounding: Optional[int]=None):
         rep = ""
         rep += f'# {recipe.title}\n\n'
         if recipe.description is not None:
@@ -68,21 +68,21 @@ class RecipeSerializer:
         if len(recipe.tags) > 0:
             rep += f'*{", ".join(recipe.tags)}*\n\n'
         if len(recipe.yields) > 0:
-            rep += f'**{", ".join(self._serialize_amount(a) for a in recipe.yields)}**\n\n'
+            rep += f'**{", ".join(self._serialize_amount(a, rounding=rounding) for a in recipe.yields)}**\n\n'
         rep += f'---\n\n'
-        rep += ("\n".join(self._serialize_ingredient(g, 2) for g in recipe.ingredients)).strip()
+        rep += ("\n".join(self._serialize_ingredient(g, 2, rounding=rounding) for g in recipe.ingredients)).strip()
         if recipe.instructions is not None:
             rep += f'\n\n---\n\n'
             rep += recipe.instructions
         return rep
 
-    def _serialize_ingredient(self, ingredient, level):
+    def _serialize_ingredient(self, ingredient, level, *, rounding: Optional[int]=None):
         if isinstance(ingredient, IngredientGroup):
             return f'\n{"#" * level} {ingredient.title}\n\n'\
-                   + "\n".join(self._serialize_ingredient(i, level+1) for i in ingredient.children)
+                   + "\n".join(self._serialize_ingredient(i, level+1, rounding=rounding) for i in ingredient.children)
         else:
             if ingredient.amount is not None:
-                return f'- *{self._serialize_amount(ingredient.amount)}* {self._serialize_ingredient_text(ingredient)}'
+                return f'- *{self._serialize_amount(ingredient.amount, rounding=rounding)}* {self._serialize_ingredient_text(ingredient)}'
             return f'- {self._serialize_ingredient_text(ingredient)}'
 
     @staticmethod
@@ -92,13 +92,21 @@ class RecipeSerializer:
         return ingredient.name
 
     @staticmethod
-    def _serialize_amount(amount):
+    def _serialize_amount(amount, *, rounding: Optional[int]=None):
         if amount.factor is not None and amount.unit is not None:
-            return f'{amount.factor} {amount.unit}'
+            return f'{RecipeSerializer._normalize_factor(amount.factor, rounding=rounding)} {amount.unit}'
         if amount.factor is not None:
-            return f'{amount.factor}'
+            return f'{RecipeSerializer._normalize_factor(amount.factor, rounding=rounding)}'
         if amount.unit is not None:
             return f'{amount.unit}'
+
+    @staticmethod
+    def _normalize_factor(factor: Decimal, *, rounding: Optional[int]=None):
+        if rounding is not None:
+            factor = round(factor, rounding)
+        # remove trailing zeros (https://docs.python.org/3/library/decimal.html#decimal-faq)
+        factor = factor.quantize(Decimal(1)) if factor == factor.to_integral() else factor.normalize()
+        return factor
 
 
 class RecipeParser:

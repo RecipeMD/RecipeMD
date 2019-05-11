@@ -5,7 +5,8 @@ import re
 import sys
 import urllib.parse
 import urllib.request
-from typing import List, Union, Dict
+from pprint import pprint
+from typing import List, Union, Dict, Optional
 
 from yarl import URL
 
@@ -26,6 +27,9 @@ def main():
 
     parser.add_argument('-f', '--flatten', action='store_true',
                         help='Flatten ingredients and instructions of linked recipes into main recipe')
+
+    parser.add_argument('-r', '--round', type=lambda s: None if s.lower() == 'no' else int(s), metavar='n', default=2,
+                        help='Round amount to n digits after decimal point. Default is "2", use "no" to disable rounding.')
 
     scale_parser = parser.add_mutually_exclusive_group()
     scale_parser.add_argument('-m', '--multiply', type=str, help='Multiply recipe by N', metavar='N')
@@ -51,10 +55,10 @@ def main():
         print(r.title)
     elif args.ingredients:
         for ingr in r.leaf_ingredients:
-            print(_ingredient_to_string(ingr))
+            print(_ingredient_to_string(ingr, rounding=args.round))
     else:
         rs = RecipeSerializer()
-        print(rs.serialize(r))
+        print(rs.serialize(r, rounding=args.round))
 
 
 def _process_scaling(r, args):
@@ -178,9 +182,9 @@ def _link_ingredient_title(ingr: Ingredient, link_recipe: Recipe) -> str:
     return title
 
 
-def _ingredient_to_string(ingr: Ingredient) -> str:
+def _ingredient_to_string(ingr: Ingredient, *, rounding: Optional[int]=None) -> str:
     if ingr.amount is not None:
-        return f'{RecipeSerializer._serialize_amount(ingr.amount)} {ingr.name}'
+        return f'{RecipeSerializer._serialize_amount(ingr.amount, rounding=rounding)} {ingr.name}'
     return ingr.name
 
 
