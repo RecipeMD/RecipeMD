@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="recipemd",
-    version="2.2.0",
+    version="2.2.1",
     author="Tilman Stehr",
     author_email="tilman@tilman.ninja",
     description="Reference implementation of recipemd",
@@ -19,6 +19,7 @@ setuptools.setup(
         'commonmarkextensions==0.0.5',
         # commonmark is automatically installed as dependency of commonmarkextensions
         # 'commonmark',
+        'argcomplete==1.10.0',
     ],
     entry_points={
         'console_scripts': [

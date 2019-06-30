@@ -1,3 +1,5 @@
+# PYTHON_ARGCOMPLETE_OK
+
 import argparse
 import copy
 import os
@@ -7,11 +9,13 @@ import urllib.parse
 import urllib.request
 from pprint import pprint
 from typing import List, Union, Dict, Optional
-
+import decimal
+import argcomplete
+from argcomplete.completers import ChoicesCompleter, FilesCompleter
 from yarl import URL
 
 from recipemd.data import RecipeParser, RecipeSerializer, multiply_recipe, Ingredient, get_recipe_with_yield, \
-    IngredientGroup, Recipe
+    IngredientGroup, Recipe, Amount
 
 __all__ = ['main']
 
@@ -19,27 +23,39 @@ __all__ = ['main']
 def main():
     parser = argparse.ArgumentParser(description='Read and process recipemd recipes')
 
-    parser.add_argument('file', type=argparse.FileType('r', encoding='UTF-8'), help='A recipemd file')
+    parser.add_argument(
+        'file', type=argparse.FileType('r', encoding='UTF-8'), help='A recipemd file'
+    ).completer = FilesCompleter(allowednames='*.md')
 
     display_parser = parser.add_mutually_exclusive_group()
     display_parser.add_argument('-t', '--title', action='store_true', help='Display recipe title')
     display_parser.add_argument('-i', '--ingredients', action='store_true', help='Display recipe ingredients')
 
-    parser.add_argument('-f', '--flatten', action='store_true',
-                        help='Flatten ingredients and instructions of linked recipes into main recipe')
+    parser.add_argument(
+        '-f', '--flatten', action='store_true',
+        help='Flatten ingredients and instructions of linked recipes into main recipe'
+    )
 
-    parser.add_argument('-r', '--round', type=lambda s: None if s.lower() == 'no' else int(s), metavar='n', default=2,
-                        help='Round amount to n digits after decimal point. Default is "2", use "no" to disable rounding.')
+    parser.add_argument(
+        '-r', '--round', type=lambda s: None if s.lower() == 'no' else int(s), metavar='n', default=2,
+        help='Round amount to n digits after decimal point. Default is "2", use "no" to disable rounding.'
+    ).completer = ChoicesCompleter(('no', *range(0, decimal.getcontext().prec + 1)))
 
     scale_parser = parser.add_mutually_exclusive_group()
     scale_parser.add_argument('-m', '--multiply', type=str, help='Multiply recipe by N', metavar='N')
-    scale_parser.add_argument('-y', '--yield', type=str, help='Scale the recipe for yield Y', metavar='Y',
-                              dest='required_yield')
+    scale_parser.add_argument(
+        '-y', '--yield', type=str, help='Scale the recipe for yield Y, e.g. "5 servings"',
+        metavar='Y', dest='required_yield'
+    ).completer = _yield_completer
 
+    # completions
+    argcomplete.autocomplete(parser)
+
+    # parse args
     args = parser.parse_args()
 
+    # read and parse recipe
     src = args.file.read()
-
     rp = RecipeParser()
     r = rp.parse(src)
 
@@ -51,6 +67,7 @@ def main():
         base_url = URL(f'file://{os.path.abspath(args.file.name)}')
         r = _get_flattened_ingredients_recipe(r, base_url=base_url, parser=rp)
 
+    # create output depending on arguments
     if args.title:
         print(r.title)
     elif args.ingredients:
@@ -59,6 +76,22 @@ def main():
     else:
         rs = RecipeSerializer()
         print(rs.serialize(r, rounding=args.round))
+
+
+def _yield_completer(prefix, action, parser, parsed_args):
+    try:
+        src = parsed_args.file.read()
+        r = RecipeParser().parse(src)
+
+        parsed_yield = RecipeParser.parse_amount(prefix)
+        if parsed_yield is None or parsed_yield.factor is None:
+            return [RecipeSerializer._serialize_amount(a) for a in r.yields]
+
+        return [RecipeSerializer._serialize_amount(Amount(parsed_yield.factor, a.unit)) for a in r.yields
+                if parsed_yield.unit is None or (a.unit is not None and a.unit.startswith(parsed_yield.unit))]
+    except Exception as e:
+        print(e)
+        return []
 
 
 def _process_scaling(r, args):
