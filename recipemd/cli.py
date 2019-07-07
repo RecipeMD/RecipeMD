@@ -2,14 +2,14 @@
 
 import argparse
 import copy
+import decimal
 import os
 import re
 import sys
 import urllib.parse
 import urllib.request
-from pprint import pprint
 from typing import List, Union, Dict, Optional
-import decimal
+
 import argcomplete
 from argcomplete.completers import ChoicesCompleter, FilesCompleter
 from yarl import URL

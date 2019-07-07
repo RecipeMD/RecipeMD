@@ -12,7 +12,8 @@ import commonmark
 from commonmark.node import Node
 from commonmark_extensions.plaintext import CommonMarkToCommonMarkRenderer
 
-__all__ = ['IngredientGroup', 'Ingredient', 'Recipe', 'RecipeParser', 'RecipeSerializer', 'multiply_recipe']
+__all__ = ['Amount', 'IngredientGroup', 'Ingredient', 'Recipe', 'RecipeParser', 'RecipeSerializer', 'multiply_recipe',
+           'get_recipe_with_yield']
 
 
 @dataclass
