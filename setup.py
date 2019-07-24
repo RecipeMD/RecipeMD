@@ -23,7 +23,8 @@ setuptools.setup(
     ],
     entry_points={
         'console_scripts': [
-            'recipemd=recipemd.cli:main',
+            'recipemd=recipemd.cli.main:main',
+            'recipemd-tags=recipemd.cli.tags:main',
         ],
     },
     classifiers=[
