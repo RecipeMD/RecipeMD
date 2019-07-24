@@ -22,7 +22,7 @@ def main():
     parser.add_argument('-f', '--filter', type=filter_string, help='Filter recipes by tags. Expects a boolean string, '
                                                                    'e.g. "cake and vegan"')
 
-    subparsers = parser.add_subparsers()
+    subparsers = parser.add_subparsers(metavar="action", required=True)
 
     parser_recipes = subparsers.add_parser('recipes', help='list recipe paths')
     parser_list = subparsers.add_parser('list', help="list used tags")
