@@ -1,7 +1,10 @@
 import argparse
 import glob
 import os
+import shutil
 import sys
+import unicodedata
+from math import floor
 
 from argcomplete import FilesCompleter
 from boolean import boolean, AND, OR, NOT, Symbol
@@ -15,29 +18,44 @@ def main():
     parser = argparse.ArgumentParser(description='List and edit recipemd tags')
 
     parser.add_argument(
+        '-f', '--filter', type=filter_string,
+        help='Filter recipes by tags. Expects a boolean string, e.g. "cake and vegan"'
+    )
+    parser.add_argument('-s', '--no-messages', action='store_true', default=False, help='suppress error messages')
+    parser.add_argument(
+        '-1', action='store_true', dest='one_per_line', default=False,
+        help=' Force output to be one entry per line. This is the default when output is not to a terminal.'
+    )
+
+    subparsers = parser.add_subparsers(metavar="action", required=True)
+
+    # recipes
+    parser_recipes = subparsers.add_parser('recipes', help='list recipe paths')
+    parser_recipes.set_defaults(func=recipes)
+
+    parser_recipes.add_argument(
         'folder', type=dir_path, nargs='?', default='.', help='Path to a folder containing recipemd files. Works '
                                                               'recursively for all *.md files. '
     ).completer = FilesCompleter()
 
-    parser.add_argument('-f', '--filter', type=filter_string, help='Filter recipes by tags. Expects a boolean string, '
-                                                                   'e.g. "cake and vegan"')
-
-    subparsers = parser.add_subparsers(metavar="action", required=True)
-
-    parser_recipes = subparsers.add_parser('recipes', help='list recipe paths')
+    # list tags
     parser_list = subparsers.add_parser('list', help="list used tags")
-    # parser_edit = subparsers.add_parser('edit', help='edit tags')
-
-    parser_recipes.set_defaults(func=recipes)
     parser_list.set_defaults(func=list_tags)
+
+    parser_list.add_argument(
+        'folder', type=dir_path, nargs='?', default='.', help='Path to a folder containing recipemd files. Works '
+                                                              'recursively for all *.md files. '
+    ).completer = FilesCompleter()
+
+    # TODO edit
+    # parser_edit = subparsers.add_parser('edit', help='edit tags')
 
     args = parser.parse_args()
     args.func(args)
 
 
 def recipes(args):
-    for recipe, path in get_filtered_recipes(args):
-        print(path)
+    print_result([path for recipe, path in get_filtered_recipes(args)], args.one_per_line)
 
 
 def list_tags(args):
@@ -46,7 +64,7 @@ def list_tags(args):
         result.update(recipe.tags)
     result = list(result)
     result.sort()
-    print("\n".join(result))
+    print_result(result, args.one_per_line)
 
 
 def get_filtered_recipes(args):
@@ -60,8 +78,29 @@ def get_filtered_recipes(args):
             if evaluate(args.filter, tags):
                 result.append((recipe, os.path.relpath(path, args.folder)))
         except Exception as e:
-            print(f"An error occurred, skipping {os.path.relpath(path, args.folder)}: {e.args[0]}", file=sys.stderr)
+            if not args.no_messages:
+                print(f"An error occurred, skipping {os.path.relpath(path, args.folder)}: {e.args[0]}", file=sys.stderr)
     return result
+
+
+def print_result(items, one_per_line):
+    if os.isatty(sys.stdout.fileno()) and not one_per_line:
+        print_columns(items)
+    else:
+        print("\n".join(items))
+
+
+def print_columns(items):
+    items = [unicodedata.normalize('NFKC', item).strip() for item in items]
+    max_item_width = max(len(item) for item in items)
+    column_width = max_item_width + 2
+    line_width, _ = shutil.get_terminal_size((80, 20))
+    items_per_line = floor(line_width / column_width)
+    matrix = [items[i:i+items_per_line] for i in range(0, len(items), items_per_line)]
+    for row in matrix:
+        padded_row = [val.ljust(column_width) for val in row[0:-1]]
+        padded_row.append(row[-1])
+        print("".join(padded_row))
 
 
 def evaluate(expr, tags):
