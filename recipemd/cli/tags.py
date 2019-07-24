@@ -1,3 +1,5 @@
+# PYTHON_ARGCOMPLETE_OK
+
 import argparse
 import glob
 import os
@@ -6,6 +8,7 @@ import sys
 import unicodedata
 from math import floor
 
+import argcomplete
 from argcomplete import FilesCompleter
 from boolean import boolean, AND, OR, NOT, Symbol
 
@@ -35,8 +38,9 @@ def main():
 
     parser_recipes.add_argument(
         'folder', type=dir_path, nargs='?', default='.', help='Path to a folder containing recipemd files. Works '
-                                                              'recursively for all *.md files. '
-    ).completer = FilesCompleter()
+                                                              'recursively for all *.md files.'
+        # very unlikely file extension so completer only returns folders
+    ).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
 
     # list tags
     parser_list = subparsers.add_parser('list', help="list used tags")
@@ -44,11 +48,15 @@ def main():
 
     parser_list.add_argument(
         'folder', type=dir_path, nargs='?', default='.', help='Path to a folder containing recipemd files. Works '
-                                                              'recursively for all *.md files. '
-    ).completer = FilesCompleter()
+                                                              'recursively for all *.md files.'
+        # very unlikely file extension so completer only returns folders
+    ).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
 
     # TODO edit
     # parser_edit = subparsers.add_parser('edit', help='edit tags')
+
+    # completions
+    argcomplete.autocomplete(parser)
 
     args = parser.parse_args()
     args.func(args)
@@ -91,6 +99,8 @@ def print_result(items, one_per_line):
 
 
 def print_columns(items):
+    if not items:
+        return
     items = [unicodedata.normalize('NFKC', item).strip() for item in items]
     max_item_width = max(len(item) for item in items)
     column_width = max_item_width + 2
@@ -128,7 +138,7 @@ def dir_path(path):
     if os.path.isdir(path):
         return path
     else:
-        raise argparse.ArgumentTypeError(f'"{path}" is not a valid path')
+        raise argparse.ArgumentTypeError(f'"{path}" is not a valid folder')
 
 
 def filter_string(filter_expr):
