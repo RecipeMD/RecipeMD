@@ -1,6 +1,7 @@
 # PYTHON_ARGCOMPLETE_OK
 
 import argparse
+import collections
 import glob
 import os
 import shutil
@@ -37,7 +38,7 @@ def main():
     parser_recipes.set_defaults(func=recipes)
 
     parser_recipes.add_argument(
-        'folder', type=dir_path, nargs='?', default='.', help='Path to a folder containing recipemd files. Works '
+        'folder', type=dir_path, nargs='?', default='.', help='path to a folder containing recipemd files. Works '
                                                               'recursively for all *.md files.'
         # very unlikely file extension so completer only returns folders
     ).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
@@ -46,8 +47,9 @@ def main():
     parser_list = subparsers.add_parser('list', help="list used tags")
     parser_list.set_defaults(func=list_tags)
 
+    parser_list.add_argument('-c', '--count', action='store_true', help="count number of uses per tag")
     parser_list.add_argument(
-        'folder', type=dir_path, nargs='?', default='.', help='Path to a folder containing recipemd files. Works '
+        'folder', type=dir_path, nargs='?', default='.', help='path to a folder containing recipemd files. Works '
                                                               'recursively for all *.md files.'
         # very unlikely file extension so completer only returns folders
     ).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
@@ -67,11 +69,21 @@ def recipes(args):
 
 
 def list_tags(args):
-    result = set()
+    tag_counter = collections.Counter()
+
     for recipe, path in get_filtered_recipes(args):
-        result.update(recipe.tags)
-    result = list(result)
-    result.sort()
+        tag_counter.update(recipe.tags)
+
+    if args.count:
+        result = list(tag_counter.items())
+        result.sort(key=lambda pair: pair[1], reverse=True)
+        max_count_length = max(len(str(c)) for c in tag_counter.values())
+        result = [f'{count:>{max_count_length}} {tag}' for tag, count in result]
+    else:
+        result = list(tag_counter)
+        result.sort()
+
+
     print_result(result, args.one_per_line)
 
 
@@ -101,7 +113,8 @@ def print_result(items, one_per_line):
 def print_columns(items):
     if not items:
         return
-    items = [unicodedata.normalize('NFKC', item).strip() for item in items]
+    # normalize items so decomposed unicode chars don't break lines
+    items = [unicodedata.normalize('NFKC', item) for item in items]
     max_item_width = max(len(item) for item in items)
     column_width = max_item_width + 2
     line_width, _ = shutil.get_terminal_size((80, 20))
