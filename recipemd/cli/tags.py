@@ -65,7 +65,9 @@ def get_filtered_recipes(args):
 
 
 def evaluate(expr, tags):
-    if isinstance(expr, AND):
+    if expr is None:
+        return True
+    elif isinstance(expr, AND):
         b = True
         for e in expr.args:
             b = b and evaluate(e, tags)
