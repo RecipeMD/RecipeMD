@@ -60,7 +60,7 @@ def get_filtered_recipes(args):
             if evaluate(args.filter, tags):
                 result.append((recipe, os.path.relpath(path, args.folder)))
         except Exception as e:
-            print(f"An error occurred, skipping {os.path.relpath(path, args.folder)}: "+e.args[0], file=sys.stderr)
+            print(f"An error occurred, skipping {os.path.relpath(path, args.folder)}: {e.args[0]}", file=sys.stderr)
     return result
 
 
@@ -89,7 +89,7 @@ def dir_path(path):
     if os.path.isdir(path):
         return path
     else:
-        raise argparse.ArgumentTypeError(f"readable_dir:{path} is not a valid path")
+        raise argparse.ArgumentTypeError(f'"{path}" is not a valid path')
 
 
 def filter_string(filter_expr):
@@ -97,7 +97,7 @@ def filter_string(filter_expr):
         algebra = boolean.BooleanAlgebra()
         return algebra.parse(filter_expr)
     except boolean.ParseError:
-        raise argparse.ArgumentTypeError(f"\"{filter_expr}\" is not a valid boolean string")
+        raise argparse.ArgumentTypeError(f'"{filter_expr}" is not a valid boolean string')
 
 
 if __name__ == "__main__":
