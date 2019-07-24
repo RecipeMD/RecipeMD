@@ -20,6 +20,7 @@ setuptools.setup(
         # commonmark is automatically installed as dependency of commonmarkextensions
         # 'commonmark',
         'argcomplete==1.10.0',
+        'boolean.py==3.6',
     ],
     entry_points={
         'console_scripts': [
