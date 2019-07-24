@@ -402,7 +402,8 @@ class RecipeParser:
 def multiply_recipe(base_recipe: Recipe, multiplier: Decimal):
     recipe = copy.deepcopy(base_recipe)
     for yield_ in recipe.yields:
-        yield_.factor *= multiplier
+        if yield_.factor:
+            yield_.factor *= multiplier
     _multiply_ingredients(recipe.ingredients, multiplier)
     return recipe
 
