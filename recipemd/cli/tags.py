@@ -46,7 +46,7 @@ def list_tags(args):
         result.update(recipe.tags)
     result = list(result)
     result.sort()
-    print(result)
+    print("\n".join(result))
 
 
 def get_filtered_recipes(args):
