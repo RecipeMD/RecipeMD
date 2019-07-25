@@ -130,15 +130,9 @@ def evaluate(expr, tags):
     if expr is None:
         return True
     elif isinstance(expr, AND):
-        b = True
-        for e in expr.args:
-            b = b and evaluate(e, tags)
-        return b
+        return all(evaluate(e, tags) for e in expr.args)
     elif isinstance(expr, OR):
-        b = True
-        for e in expr.args:
-            b = b or evaluate(e, tags)
-        return b
+        return any(evaluate(e, tags) for e in expr.args)
     elif isinstance(expr, NOT):
         return not evaluate(expr.args[0], tags)
     elif isinstance(expr, Symbol):
