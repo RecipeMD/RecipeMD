@@ -141,7 +141,7 @@ class RecipeParser:
             self._next_node()
         else:
             # TODO this divider is required, but we might just continue anyways?
-            raise RuntimeError(f"Invalid, expected divider before ingredient list, got {self.current.t} instead")
+            raise RuntimeError(f"Invalid, expected divider before ingredient list, got {self.current and self.current.t} instead")
 
         self._parse_ingredients()
 
@@ -150,7 +150,7 @@ class RecipeParser:
                 self._next_node()
             else:
                 # TODO this divider is required, but we might just continue anyways?
-                raise RuntimeError(f"Invalid, expected divider before ingredient list, got {self.current.t} instead")
+                raise RuntimeError(f"Invalid, expected divider before ingredient list, got {self.current and self.current.t} instead")
 
         self.recipe.instructions = self._get_source_until()
 
@@ -163,7 +163,7 @@ class RecipeParser:
         else:
             # TODO title is required according to spec, maybe the parser might be more foregiving?
             raise RuntimeError(f"Invalid, title (heading with level 1) required, got "
-                               f"{self.current.t if self.current.t != 'heading' else f'level {self.current.level }'} "
+                               f"{self.current and self.current.t if not self.current or self.current.t != 'heading' else f'level {self.current.level }'} "
                                f"instead")
 
     def _parse_description(self):
