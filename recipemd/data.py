@@ -424,7 +424,7 @@ def get_recipe_with_yield(recipe, required_yield):
 
 def _multiply_ingredients(ingredients: List[Union[Ingredient, IngredientGroup]], multiplier: Decimal):
     for ingr in ingredients:
-        if hasattr(ingr, 'amount') and ingr.amount is not None:
+        if hasattr(ingr, 'amount') and ingr.amount is not None and ingr.amount.factor is not None:
             ingr.amount.factor *= multiplier
         if hasattr(ingr, 'children'):
             _multiply_ingredients(ingr.children, multiplier)
