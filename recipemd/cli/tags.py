@@ -119,6 +119,8 @@ def print_columns(items):
     column_width = max_item_width + 2
     line_width, _ = shutil.get_terminal_size((80, 20))
     items_per_line = floor(line_width / column_width)
+    if items_per_line == 0:
+        items_per_line = 1
     matrix = [items[i:i+items_per_line] for i in range(0, len(items), items_per_line)]
     for row in matrix:
         padded_row = [val.ljust(column_width) for val in row[0:-1]]
