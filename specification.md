@@ -10,9 +10,31 @@ All RecipeMD files shall follow the [commonmark] specification.
 
 [commonmark]: https://commonmark.org
 
+
 ## Example
 
 This example presents the basic format of a recipemd recipe
+
+```markdown
+# Guacamole
+
+Some people call it guac.
+
+*sauce, vegan*
+
+**4 Servings, 200g**
+
+---
+
+- *1* avocado
+- *.5 teaspoon* salt
+- *1 1/2 pinches* red pepper flakes
+- lemon juice
+
+---
+
+Remove flesh from avocado and roughly mash with fork. Season to taste with salt pepper and lemon juice.
+```
 
 - the title is noted as a first level header:
   ```# Guacamole```
@@ -28,13 +50,16 @@ This example presents the basic format of a recipemd recipe
   titles of ingredient groups. The amount of each ingredient (if given)
   is noted in italic case. Amounts may be expressed as decimals
   (dividers "." and ",") and fractions:
-    ```
+  
+    ```markdown
     - *1* avocado
     - *.5 teaspoon* salt
     - *1 1/2 pinches* red pepper flakes
     - lemon juice
     ```
 - anything following the second horizontal line is considered instructions
+
+
 
 ## RecipeMD Data types
 
@@ -53,7 +78,7 @@ A recipe is represented in markdown as follows:
 
 1. Title as a first level heading
 2. Short description as zero or more paragraphs
-3. Yield and Tags (Ordering :
+3. Yield and Tags (arbitrary order):
     - Tags as a paragraph which is completely in italics. Tags are a
       comma separated list of strings.
     - Yields as a paragraph which is completely in bold. Yields are a

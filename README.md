@@ -2,50 +2,23 @@
 
 A standard format for recipes as [Markdown](https://commonmark.org) files and a python reference implementation.
 
-See [specification.md](./specification.md) for the current specification and [examples](./examples) for some example recipes.
 
-You can use [recipemd-extract](https://github.com/AberDerBart/recipemd-extract) to fetch recipes from the web.
+## Specification
 
-## Installation of CLI tool
+See [specification.md](./specification.md) for the current specification and [examples](https://github.com/tstehr/RecipeMD/tree/master/examples) for some example recipes.
+
+
+## CLI tool
 
 1. Check out repo
 2. Install via pip: `pip install <path to repo>`
-3. The command line tool provides completions via [argcomplete]. See [below](#install-completions) for installation 
+3. *Optional:* The command line tool provides completions via [argcomplete]. See [below](#install-completions) for installation 
    instructions.
 
 [argcomplete]: https://github.com/kislyuk/argcomplete
 
-### Install completions
 
-Completion installation depends on your shell. Read the [argcomplete documentation][argcomplete] for more detail. 
-
-#### Bash
-
-```
-activate-global-python-argcomplete
-```
-
-#### Zsh
-
-```
-autoload -U bashcompinit
-bashcompinit
-eval "$(register-python-argcomplete recipemd)"
-```
-
-#### Tcsh
-
-```
-eval `register-python-argcomplete --shell tcsh recipemd`
-```
-
-#### Fish
-
-```
-register-python-argcomplete --shell fish recipemd > ~/.config/fish/completions/recipemd.fish
-```
-
-## How to use
+### How to use
 
 Display and validate a recipe:
 
@@ -78,3 +51,46 @@ Scale recipe for a given yield (e.g. number of servings, volume, mass, amount):
 ```
 recipemd <path/to/recipe.md> -y "10 servings"
 ```
+
+
+### Install completions
+
+Completion installation depends on your shell. Read the [argcomplete documentation][argcomplete] for more detail. 
+
+#### Bash
+
+```
+activate-global-python-argcomplete
+```
+
+#### Zsh
+
+```
+autoload -U bashcompinit
+bashcompinit
+eval "$(register-python-argcomplete recipemd)"
+```
+
+#### Tcsh
+
+```
+eval `register-python-argcomplete --shell tcsh recipemd`
+```
+
+#### Fish
+
+```
+register-python-argcomplete --shell fish recipemd > ~/.config/fish/completions/recipemd.fish
+```
+
+## Resources
+
+You can use [recipemd-extract](https://github.com/AberDerBart/recipemd-extract) to fetch and extract recipes from the web.
+
+Some RecipeMD repositories:
+
+- [AberDerBart](https://github.com/AberDerBart/recipes)
+- [dasnessie](https://github.com/dasnessie/recipes)
+- [sonea-pm8](https://github.com/sonea-pm8/recipes)
+- [timschubert](https://github.com/timschubert/recipes)
+- [tstehr](https://github.com/tstehr/recipes)
