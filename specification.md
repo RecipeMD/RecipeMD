@@ -13,7 +13,7 @@ All RecipeMD files shall follow the [commonmark] specification.
 
 ## Example
 
-This example presents the basic format of a recipemd recipe
+This example presents the basic format of a RecipeMD recipe
 
 ```markdown
 # Guacamole
@@ -143,6 +143,12 @@ ingredients making up one component of a dish. It consists of:
 - *optional* a title
 - 1..n ingredients
 
+An ingredient group us represented as follows:
+
+1. A [heading], whose contents are the group's title
+2. A list of ingredients
+
+[heading](https://spec.commonmark.org/0.28/#atx-headings)
 
 
 
