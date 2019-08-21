@@ -52,6 +52,18 @@ Scale recipe for a given yield (e.g. number of servings, volume, mass, amount):
 recipemd <path/to/recipe.md> -y "10 servings"
 ```
 
+Get all tags of all recipes in the current folder:
+
+```
+recipemd-tags list
+```
+
+Get recipes by tag:
+
+```
+recipemd-tags --filter "cheese or summer" recipes
+```
+
 
 ### Install completions
 
