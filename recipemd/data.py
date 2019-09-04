@@ -390,7 +390,7 @@ def multiply_recipe(base_recipe: Recipe, multiplier: Decimal):
     return recipe
 
 
-def get_recipe_with_yield(recipe, required_yield):
+def get_recipe_with_yield(recipe: Recipe, required_yield: Amount):
     matching_recipe_yield = next((y for y in recipe.yields if y.unit == required_yield.unit), None)
     if matching_recipe_yield is None:
         # no unit in required amount is interpreted as "one recipe"

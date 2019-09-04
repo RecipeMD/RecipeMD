@@ -192,14 +192,19 @@ def _create_flattened_substituted_ingredients(ingredients: List[Union[Ingredient
             new_group.children = _create_flattened_substituted_ingredients(new_group.children, link_to_recipe)
             result_groups.append(new_group)
         elif ingr.link in link_to_recipe:
-            try:
-                link_recipe = get_recipe_with_yield(link_to_recipe[ingr.link], ingr.amount)
-            except StopIteration:
-                result_ingredients.append(ingr)
+            if ingr.amount is None:
+                link_recipe = link_to_recipe[ingr.link]
             else:
+                try:
+                    link_recipe = get_recipe_with_yield(link_to_recipe[ingr.link], ingr.amount)
+                except StopIteration:
+                    link_recipe = None
+            if link_recipe is not None:
                 new_group = IngredientGroup(title=_link_ingredient_title(ingr, link_recipe))
                 new_group.children = link_recipe.ingredients
                 result_groups.append(new_group)
+            else:
+                result_ingredients.append(ingr)
         else:
             result_ingredients.append(ingr)
 
