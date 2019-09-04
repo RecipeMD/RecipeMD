@@ -145,17 +145,20 @@ def _get_flattened_ingredients_recipe(recipe: Recipe, *, base_url: URL, parser: 
             pass
         else:
             if link_recipe.instructions:
-                instruction_sections.append((_link_ingredient_title(ingredient, link_recipe), link_recipe.instructions))
+                instruction_sections.append((_link_ingredient_title(ingredient, link_recipe), link_recipe.instructions, False))
 
     if recipe.instructions:
-        instruction_sections.append((recipe.title, recipe.instructions))
+        instruction_sections.append((recipe.title, recipe.instructions, True))
 
     instructions = []
-    for heading, body in instruction_sections:
-        # find headings (see https://spec.commonmark.org/0.29/#atx-heading) and increase level by one
-        # note that only up to level 6 is allowed, so we will do 5 -> 6 but not 6 -> 7
-        new_body = re.sub(r'^( {0,3})(#{1,5}.*)$', r'\1#\2', body, flags=re.MULTILINE)
-        instructions.append(f'## {heading}\n\n{new_body}')
+    if len(instruction_sections) == 1 and instruction_sections[0][2]:
+        instructions.append(instruction_sections[0][1])
+    else:
+        for heading, body, is_main_instructions in instruction_sections:
+            # find headings (see https://spec.commonmark.org/0.29/#atx-heading) and increase level by one
+            # note that only up to level 6 is allowed, so we will do 5 -> 6 but not 6 -> 7
+            new_body = re.sub(r'^( {0,3})(#{1,5}.*)$', r'\1#\2', body, flags=re.MULTILINE)
+            instructions.append(f'## {heading}\n\n{new_body}')
 
     new_recipe.instructions = '\n\n'.join(instructions)
 
