@@ -37,6 +37,11 @@ def main():
     )
 
     parser.add_argument(
+        '--export-linked', action='store_true',
+        help='Export linked recipes as required for the main recipe'
+    )
+
+    parser.add_argument(
         '-r', '--round', type=lambda s: None if s.lower() == 'no' else int(s), metavar='n', default=2,
         help='Round amount to n digits after decimal point. Default is "2", use "no" to disable rounding.'
     ).completer = ChoicesCompleter(('no', *range(0, decimal.getcontext().prec + 1)))
@@ -61,6 +66,10 @@ def main():
 
     # scale recipe
     r = _process_scaling(r, args)
+
+    # export linked recipes
+    if args.export_linked:
+        print('el')
 
     # flatten recipe
     if args.flatten:
@@ -118,37 +127,46 @@ def _process_scaling(r, args):
     return r
 
 
-def _get_flattened_ingredients_recipe(recipe: Recipe, *, base_url: URL, parser: RecipeParser) -> Recipe:
+def _get_linked_recipes(recipe: Recipe, *, base_url: URL, parser: RecipeParser, flatten: bool = True):
+    """
+    Gets all ingredients that have a link and a dict of the ingredient id to to recipe instances
+    """
     link_ingredients = [i for i in recipe.leaf_ingredients if i.link is not None]
-    link_to_recipe = dict()
+    ingr_id_to_recipe = dict()
     for ingredient in link_ingredients:
         try:
-            link_to_recipe[ingredient.link] = _get_linked_recipe(ingredient, base_url=base_url, parser=parser, flatten=True)
+            ingr_id_to_recipe[id(ingredient)] = _get_linked_recipe(ingredient, base_url=base_url, parser=parser,
+                                                                   flatten=flatten)
         except Exception as e:
             print(f'{e}: {e.__cause__}', file=sys.stderr)
+    return link_ingredients, ingr_id_to_recipe
 
-    # recipes that contain no links need not be processed
-    if not link_to_recipe:
-        return recipe
 
+def _get_flattened_ingredients_recipe(recipe: Recipe, *, base_url: URL, parser: RecipeParser) -> Recipe:
     new_recipe = copy.deepcopy(recipe)
 
+    link_ingredients, ingr_id_to_recipe = _get_linked_recipes(new_recipe, base_url=base_url, parser=parser)
+
+    # recipes that contain no links need not be processed
+    if not ingr_id_to_recipe:
+        return recipe
+
     # ingredients
-    new_recipe.ingredients = _create_flattened_substituted_ingredients(new_recipe.ingredients, link_to_recipe)
+    new_recipe.ingredients = _create_flattened_substituted_ingredients(new_recipe.ingredients, ingr_id_to_recipe)
 
     # instructions
     instruction_sections = []
     for ingredient in link_ingredients:
         try:
-            link_recipe = link_to_recipe[ingredient.link]
+            link_recipe = ingr_id_to_recipe[id(ingredient)]
         except KeyError:
             pass
         else:
             if link_recipe.instructions:
                 instruction_sections.append((_link_ingredient_title(ingredient, link_recipe), link_recipe.instructions, False))
 
-    if recipe.instructions:
-        instruction_sections.append((recipe.title, recipe.instructions, True))
+    if new_recipe.instructions:
+        instruction_sections.append((new_recipe.title, new_recipe.instructions, True))
 
     instructions = []
     if len(instruction_sections) == 1 and instruction_sections[0][2]:
@@ -165,7 +183,7 @@ def _get_flattened_ingredients_recipe(recipe: Recipe, *, base_url: URL, parser: 
     return new_recipe
 
 
-def _get_linked_recipe(ingredient: Ingredient, *, base_url: URL, parser: RecipeParser, flatten: bool=True) -> Recipe:
+def _get_linked_recipe(ingredient: Ingredient, *, base_url: URL, parser: RecipeParser, flatten: bool = True) -> Recipe:
     url = base_url.join(URL(ingredient.link))
     try:
         with urllib.request.urlopen(str(url)) as req:
@@ -182,32 +200,27 @@ def _get_linked_recipe(ingredient: Ingredient, *, base_url: URL, parser: RecipeP
     if flatten:
         link_recipe = _get_flattened_ingredients_recipe(link_recipe, base_url=url, parser=parser)
 
+    if ingredient.amount:
+        link_recipe = get_recipe_with_yield(link_recipe, ingredient.amount)
+
     return link_recipe
 
 
 def _create_flattened_substituted_ingredients(ingredients: List[Union[Ingredient, IngredientGroup]],
-                                              link_to_recipe: Dict[str, Recipe]) -> List[Ingredient]:
+                                              ingr_id_to_recipe: Dict[int, Recipe]) \
+        -> List[Union[Ingredient, IngredientGroup]]:
     result_ingredients = []
     result_groups = []
     for ingr in ingredients:
         if isinstance(ingr, IngredientGroup):
             new_group = copy.deepcopy(ingr)
-            new_group.children = _create_flattened_substituted_ingredients(new_group.children, link_to_recipe)
+            new_group.children = _create_flattened_substituted_ingredients(ingr.children, ingr_id_to_recipe)
             result_groups.append(new_group)
-        elif ingr.link in link_to_recipe:
-            if ingr.amount is None:
-                link_recipe = link_to_recipe[ingr.link]
-            else:
-                try:
-                    link_recipe = get_recipe_with_yield(link_to_recipe[ingr.link], ingr.amount)
-                except StopIteration:
-                    link_recipe = None
-            if link_recipe is not None:
-                new_group = IngredientGroup(title=_link_ingredient_title(ingr, link_recipe))
-                new_group.children = link_recipe.ingredients
-                result_groups.append(new_group)
-            else:
-                result_ingredients.append(ingr)
+        elif id(ingr) in ingr_id_to_recipe and ingr_id_to_recipe[id(ingr)] is not None:
+            link_recipe = ingr_id_to_recipe[id(ingr)]
+            new_group = IngredientGroup(title=_link_ingredient_title(ingr, link_recipe))
+            new_group.children = link_recipe.ingredients
+            result_groups.append(new_group)
         else:
             result_ingredients.append(ingr)
 
