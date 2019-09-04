@@ -283,55 +283,35 @@ class RecipeParser:
 
         return Ingredient(name=name, amount=amount, link=link_destination)
 
+    _value_formats = [
+        # improper fraction (1 1/2)
+        (r'(\d+)\s+(\d+)\s*/\s*(\d+)', lambda match: Decimal(match.group(2)) + (Decimal(match.group(3)) / Decimal(match.group(4))), 3),
+        # improper fraction with unicode vulgar fraction (1 ½)
+        (r'(\d+)\s+([\u00BC-\u00BE\u2150-\u215E])', lambda match: Decimal(match.group(2)) + Decimal(unicodedata.numeric(match.group(3))), 2),
+        # proper fraction (5/6)
+        (r'(\d+)\s*/\s*(\d+)', lambda match: Decimal(match.group(2)) / Decimal(match.group(3)), 2),
+        # proper fraction with unicode vulgar fraction (⅚)
+        (r'([\u00BC-\u00BE\u2150-\u215E])', lambda match: Decimal(unicodedata.numeric(match.group(2))), 1),
+        # decimal (5,4 or 5.6)
+        (r'(\d*)[.,](\d+)', lambda match: Decimal(match.group(2) + '.' + match.group(3)), 2),
+        # integer (4)
+        (r'(\d+)', lambda match: Decimal(match.group(2)), 1)
+    ]
+
     @staticmethod
     def parse_amount(amount_str: str) -> Amount:
-        # improper fraction (1 1/2)
-        match = re.match(r'^\s*(\d+)\s+(\d+)\s*/\s*(\d+)(.*)$', amount_str)
-        if match:
-            factor = Decimal(match.group(1)) + (Decimal(match.group(2)) / Decimal(match.group(3)))
-            unit = match.group(4).strip()
-            return Amount(factor, unit or None)
-
-        # improper fraction with unicode vulgar fraction (1 ½)
-        match = re.match(r'^\s*(\d+)\s+([\u00BC-\u00BE\u2150-\u215E])(.*)$', amount_str)
-        if match:
-            try:
-                factor = Decimal(match.group(1)) + Decimal(unicodedata.numeric(match.group(2)))
-                unit = match.group(3).strip()
-                return Amount(factor, unit or None)
-            except ValueError:
-                pass
-
-        # proper fraction (5/6)
-        match = re.match(r'^\s*(\d+)\s*/\s*(\d+)(.*)$', amount_str)
-        if match:
-            factor = (Decimal(match.group(1)) / Decimal(match.group(2)))
-            unit = match.group(3).strip()
-            return Amount(factor, unit or None)
-
-        # proper fraction with unicode vulgar fraction (⅚)
-        match = re.match(r'^\s*([\u00BC-\u00BE\u2150-\u215E])(.*)$', amount_str)
-        if match:
-            try:
-                factor = Decimal(unicodedata.numeric(match.group(1)))
-                unit = match.group(2).strip()
-                return Amount(factor, unit or None)
-            except ValueError:
-                pass
-
-        # decimal (5,4 or 5.6)
-        match = re.match(r'^\s*(\d*)[.,](\d+)(.*)$', amount_str)
-        if match:
-            factor = Decimal(match.group(1) + '.' + match.group(2))
-            unit = match.group(3).strip()
-            return Amount(factor, unit or None)
-
-        # integer
-        match = re.match(r'^\s*(\d+)(.*)$', amount_str)
-        if match:
-            factor = Decimal(match.group(1))
-            unit = match.group(2).strip()
-            return Amount(factor, unit or None)
+        # iterate over different value format
+        for regexp, factor_function, group_count in RecipeParser._value_formats:
+            match = re.match(r'^\s*(-?)\s*' + regexp + r'(.*)$', amount_str)
+            if match:
+                try:
+                    factor = factor_function(match)
+                    if match.group(1) == '-':
+                        factor = -1 * factor
+                    unit = match.group(group_count + 2).strip()
+                    return Amount(factor, unit or None)
+                except ValueError:
+                    pass
 
         unit = amount_str.strip()
         return Amount(None, unit) if unit else None
@@ -433,7 +413,7 @@ def _multiply_ingredients(ingredients: List[Union[Ingredient, IngredientGroup]],
 if __name__ == "__main__":
     # src = open('examples/schwarzbierbrot.md', 'r').read()
     # src = open('examples/griechischer_kartoffeltopf.md', 'r').read()
-    src = open('examples/example_menu.md', 'r').read()
+    src = open('examples/schwarzbierbrot.md', 'r').read()
 
     rp = RecipeParser()
     r = rp.parse(src)
