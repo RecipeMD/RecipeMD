@@ -209,9 +209,9 @@ def _create_flattened_substituted_ingredients(ingredients: List[Union[Ingredient
 
 def _link_ingredient_title(ingr: Ingredient, link_recipe: Recipe) -> str:
     if ingr.name == link_recipe.title:
-        title = f'[{_ingredient_to_string(ingr)}]({ingr.link})'
+        title = f'[{ingr.name}]({ingr.link})'
     else:
-        title = f'[{_ingredient_to_string(ingr)}: {link_recipe.title}]({ingr.link})'
+        title = f'[{ingr.name}: {link_recipe.title}]({ingr.link})'
     return title
 
 
