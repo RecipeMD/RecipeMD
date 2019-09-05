@@ -32,16 +32,6 @@ def main():
     display_parser.add_argument('-t', '--title', action='store_true', help='Display recipe title')
     display_parser.add_argument('-i', '--ingredients', action='store_true', help='Display recipe ingredients')
 
-    flatten_parser = parser.add_mutually_exclusive_group()
-    flatten_parser.add_argument(
-        '-f', '--flatten', action='store_true',
-        help='Flatten ingredients and instructions of linked recipes into main recipe'
-    )
-    flatten_parser.add_argument(
-        '--export-linked', action='store_true',
-        help='Export flattened linked recipes as required for the main recipe'
-    )
-
     parser.add_argument(
         '-r', '--round', type=lambda s: None if s.lower() == 'no' else int(s), metavar='n', default=2,
         help='Round amount to n digits after decimal point. Default is "2", use "no" to disable rounding.'
@@ -53,6 +43,16 @@ def main():
         '-y', '--yield', type=str, help='Scale the recipe for yield Y, e.g. "5 servings"',
         metavar='Y', dest='required_yield'
     ).completer = _yield_completer
+
+    flatten_parser = parser.add_mutually_exclusive_group()
+    flatten_parser.add_argument(
+        '-f', '--flatten', action='store_true',
+        help='Flatten ingredients and instructions of linked recipes into main recipe'
+    )
+    flatten_parser.add_argument(
+        '--export-links', type=str, metavar='DIR', nargs='?', default=False, const=True,
+        help='Export flattened linked recipes as required for the main recipe to DIR (DIR defaults to recipe file name)'
+    )
 
     # completions
     argcomplete.autocomplete(parser)
@@ -75,31 +75,16 @@ def main():
     base_url = URL(f'file://{os.path.abspath(args.file.name)}')
 
     # export linked recipes
-    if args.export_linked:
-        folder = args.file.name.rsplit('.', 1)[0]
-        os.makedirs(folder, exist_ok=True)
-        link_ingredients, ingr_id_to_recipe = _get_linked_recipes(r, base_url=base_url, parser=rp, flatten=True)
-        for ingredient in link_ingredients:
-            try:
-                recipe = ingr_id_to_recipe[id(ingredient)]
-            except KeyError:
-                continue
-            url = base_url.join(URL(ingredient.link))
-            filename = os.path.join(folder, url.parts[-1])
-            with open(filename, 'w') as f:
-                f.write(rs.serialize(recipe, rounding=args.round))
+    if args.export_links:
+        _export_links(r, args, base_url, rp, rs)
+        return
+
     # flatten recipe
-    elif args.flatten:
-        r = _get_flattened_ingredients_recipe(r, base_url=base_url, parser=rp)
+    if args.flatten:
+        r = _get_flattened_recipe(r, base_url=base_url, parser=rp)
 
     # create output depending on arguments
-    if args.title:
-        print(r.title)
-    elif args.ingredients:
-        for ingr in r.leaf_ingredients:
-            print(_ingredient_to_string(ingr, rounding=args.round))
-    else:
-        print(rs.serialize(r, rounding=args.round))
+    print(_create_recipe_output(r, rs, args))
 
 
 def _yield_completer(prefix, action, parser, parsed_args):
@@ -119,6 +104,7 @@ def _yield_completer(prefix, action, parser, parsed_args):
 
 
 def _process_scaling(r, args):
+    """Returns recipes scaled according to --multiply or --yield"""
     if args.required_yield is not None:
         required_yield = RecipeParser.parse_amount(args.required_yield)
         if required_yield is None or required_yield.factor is None:
@@ -142,22 +128,37 @@ def _process_scaling(r, args):
     return r
 
 
-def _get_linked_recipes(recipe: Recipe, *, base_url: URL, parser: RecipeParser, flatten: bool = True):
-    """
-    Gets all ingredients that have a link and a dict of the ingredient id() to recipe instance
-    """
-    link_ingredients = [i for i in recipe.leaf_ingredients if i.link is not None]
-    ingr_id_to_recipe = dict()
+def _export_links(r, args, base_url, parser, serializer):
+    if type(args.export_links) == bool:
+        folder = args.file.name.rsplit('.', 1)[0]
+    else:
+        folder = args.export_links
+    os.makedirs(folder, exist_ok=True)
+    link_ingredients, ingr_id_to_recipe = _get_linked_recipes(r, base_url=base_url, parser=parser, flatten=True)
     for ingredient in link_ingredients:
         try:
-            ingr_id_to_recipe[id(ingredient)] = _get_linked_recipe(ingredient, base_url=base_url, parser=parser,
-                                                                   flatten=flatten)
-        except Exception as e:
-            print(f'{e}: {e.__cause__}', file=sys.stderr)
-    return link_ingredients, ingr_id_to_recipe
+            recipe = ingr_id_to_recipe[id(ingredient)]
+        except KeyError:
+            continue
+        url = base_url.join(URL(ingredient.link))
+        filename = os.path.join(folder, url.parts[-1])
+        with open(filename, 'w') as f:
+            print(f'Created {filename} for "{recipe.title}"')
+            f.write(_create_recipe_output(recipe, serializer, args))
 
 
-def _get_flattened_ingredients_recipe(recipe: Recipe, *, base_url: URL, parser: RecipeParser) -> Recipe:
+def _create_recipe_output(recipe, serializer, args):
+    """Serializes a recipes according to formatting options"""
+    if args.title:
+        return recipe.title
+    elif args.ingredients:
+        return "\n".join(_ingredient_to_string(ingr, rounding=args.round) for ingr in recipe.leaf_ingredients)
+    else:
+        return serializer.serialize(recipe, rounding=args.round)
+
+
+def _get_flattened_recipe(recipe: Recipe, *, base_url: URL, parser: RecipeParser) -> Recipe:
+    """Creates a new recipe with linked recipes recursively flattened"""
     new_recipe = copy.deepcopy(recipe)
 
     link_ingredients, ingr_id_to_recipe = _get_linked_recipes(new_recipe, base_url=base_url, parser=parser)
@@ -198,6 +199,19 @@ def _get_flattened_ingredients_recipe(recipe: Recipe, *, base_url: URL, parser: 
     return new_recipe
 
 
+def _get_linked_recipes(recipe: Recipe, *, base_url: URL, parser: RecipeParser, flatten: bool = True):
+    """Gets all ingredients that have a link and a dict of the ingredient id() to recipe instance"""
+    link_ingredients = [i for i in recipe.leaf_ingredients if i.link is not None]
+    ingr_id_to_recipe = dict()
+    for ingredient in link_ingredients:
+        try:
+            ingr_id_to_recipe[id(ingredient)] = _get_linked_recipe(ingredient, base_url=base_url, parser=parser,
+                                                                   flatten=flatten)
+        except Exception as e:
+            print(f'{e}: {e.__cause__}', file=sys.stderr)
+    return link_ingredients, ingr_id_to_recipe
+
+
 def _get_linked_recipe(ingredient: Ingredient, *, base_url: URL, parser: RecipeParser, flatten: bool = True) -> Recipe:
     url = base_url.join(URL(ingredient.link))
     try:
@@ -213,7 +227,7 @@ def _get_linked_recipe(ingredient: Ingredient, *, base_url: URL, parser: RecipeP
         raise RuntimeError(f'''Couldn't parse linked recipe for ingredient "{ingredient.name}"''') from e
 
     if flatten:
-        link_recipe = _get_flattened_ingredients_recipe(link_recipe, base_url=url, parser=parser)
+        link_recipe = _get_flattened_recipe(link_recipe, base_url=url, parser=parser)
 
     if ingredient.amount:
         link_recipe = get_recipe_with_yield(link_recipe, ingredient.amount)
