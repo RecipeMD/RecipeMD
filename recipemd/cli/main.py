@@ -8,6 +8,7 @@ import re
 import sys
 import urllib.parse
 import urllib.request
+from dataclasses import replace
 from typing import List, Union, Dict, Optional
 
 import argcomplete
@@ -31,14 +32,14 @@ def main():
     display_parser.add_argument('-t', '--title', action='store_true', help='Display recipe title')
     display_parser.add_argument('-i', '--ingredients', action='store_true', help='Display recipe ingredients')
 
-    parser.add_argument(
+    flatten_parser = parser.add_mutually_exclusive_group()
+    flatten_parser.add_argument(
         '-f', '--flatten', action='store_true',
         help='Flatten ingredients and instructions of linked recipes into main recipe'
     )
-
-    parser.add_argument(
+    flatten_parser.add_argument(
         '--export-linked', action='store_true',
-        help='Export linked recipes as required for the main recipe'
+        help='Export flattened linked recipes as required for the main recipe'
     )
 
     parser.add_argument(
@@ -59,21 +60,36 @@ def main():
     # parse args
     args = parser.parse_args()
 
+    # initialize
+    rp = RecipeParser()
+    rs = RecipeSerializer()
+
     # read and parse recipe
     src = args.file.read()
-    rp = RecipeParser()
     r = rp.parse(src)
 
     # scale recipe
     r = _process_scaling(r, args)
 
+    # base url for late use
+    base_url = URL(f'file://{os.path.abspath(args.file.name)}')
+
     # export linked recipes
     if args.export_linked:
-        print('el')
-
+        folder = args.file.name.rsplit('.', 1)[0]
+        os.makedirs(folder, exist_ok=True)
+        link_ingredients, ingr_id_to_recipe = _get_linked_recipes(r, base_url=base_url, parser=rp, flatten=True)
+        for ingredient in link_ingredients:
+            try:
+                recipe = ingr_id_to_recipe[id(ingredient)]
+            except KeyError:
+                continue
+            url = base_url.join(URL(ingredient.link))
+            filename = os.path.join(folder, url.parts[-1])
+            with open(filename, 'w') as f:
+                f.write(rs.serialize(recipe, rounding=args.round))
     # flatten recipe
-    if args.flatten:
-        base_url = URL(f'file://{os.path.abspath(args.file.name)}')
+    elif args.flatten:
         r = _get_flattened_ingredients_recipe(r, base_url=base_url, parser=rp)
 
     # create output depending on arguments
@@ -83,7 +99,6 @@ def main():
         for ingr in r.leaf_ingredients:
             print(_ingredient_to_string(ingr, rounding=args.round))
     else:
-        rs = RecipeSerializer()
         print(rs.serialize(r, rounding=args.round))
 
 
@@ -129,7 +144,7 @@ def _process_scaling(r, args):
 
 def _get_linked_recipes(recipe: Recipe, *, base_url: URL, parser: RecipeParser, flatten: bool = True):
     """
-    Gets all ingredients that have a link and a dict of the ingredient id to to recipe instances
+    Gets all ingredients that have a link and a dict of the ingredient id() to recipe instance
     """
     link_ingredients = [i for i in recipe.leaf_ingredients if i.link is not None]
     ingr_id_to_recipe = dict()
@@ -213,13 +228,11 @@ def _create_flattened_substituted_ingredients(ingredients: List[Union[Ingredient
     result_groups = []
     for ingr in ingredients:
         if isinstance(ingr, IngredientGroup):
-            new_group = copy.deepcopy(ingr)
-            new_group.children = _create_flattened_substituted_ingredients(ingr.children, ingr_id_to_recipe)
+            new_group = replace(ingr, children=_create_flattened_substituted_ingredients(ingr.children, ingr_id_to_recipe))
             result_groups.append(new_group)
         elif id(ingr) in ingr_id_to_recipe and ingr_id_to_recipe[id(ingr)] is not None:
             link_recipe = ingr_id_to_recipe[id(ingr)]
-            new_group = IngredientGroup(title=_link_ingredient_title(ingr, link_recipe))
-            new_group.children = link_recipe.ingredients
+            new_group = IngredientGroup(title=_link_ingredient_title(ingr, link_recipe), children=link_recipe.ingredients)
             result_groups.append(new_group)
         else:
             result_ingredients.append(ingr)
