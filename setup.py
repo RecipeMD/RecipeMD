@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="recipemd",
-    version="2.2.2",
+    version="3.0.0",
     author="Tilman Stehr",
     author_email="tilman@tilman.ninja",
     description="Reference implementation of recipemd",
