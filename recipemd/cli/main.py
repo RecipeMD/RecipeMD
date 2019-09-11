@@ -133,6 +133,7 @@ def _export_links(r, args, base_url, parser, serializer):
     else:
         folder = args.export_links
     os.makedirs(folder, exist_ok=True)
+    print(f'Writing to {folder}', file=sys.stderr)
     link_ingredients, ingr_to_recipe = _get_linked_recipes(r, base_url=base_url, parser=parser, flatten=True)
     for ingredient in link_ingredients:
         try:
@@ -142,7 +143,7 @@ def _export_links(r, args, base_url, parser, serializer):
         url = base_url.join(URL(ingredient.link))
         filename = os.path.join(folder, url.parts[-1])
         with open(filename, 'w') as f:
-            print(f'Created {filename} for "{recipe.title}"')
+            print(f'Created {filename} for "{recipe.title}"', file=sys.stderr)
             f.write(_create_recipe_output(recipe, serializer, args))
 
 
