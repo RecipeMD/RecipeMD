@@ -3,39 +3,42 @@
 import argparse
 import collections
 import glob
+import itertools
 import os
 import shutil
 import sys
 import unicodedata
 from math import floor
+from typing import Callable, Iterable
 
 import argcomplete
+import pyparsing
 from argcomplete import FilesCompleter
-from boolean import boolean, AND, OR, NOT, Symbol
 
-from recipemd.data import RecipeParser
+from recipemd.data import RecipeParser, Recipe
+from recipemd.filter import filter_expr, FilterElement
 
 __all__ = ['main']
 
 
 def main():
-    parser = argparse.ArgumentParser(description='List and edit recipemd tags')
+    parser = argparse.ArgumentParser(description='Find recipes, ingredients and units by filter expression')
 
     parser.add_argument(
-        '-f', '--filter', type=filter_string,
-        help='Filter recipes by tags. Expects a boolean string, e.g. "cake and vegan"'
+        '-e', '--expression', type=create_filter_expr,
+        help='Filter expression. Expects a boolean string, e.g. "cake and vegan"'
     )
     parser.add_argument('-s', '--no-messages', action='store_true', default=False, help='suppress error messages')
     parser.add_argument(
         '-1', action='store_true', dest='one_per_line', default=False,
-        help=' Force output to be one entry per line. This is the default when output is not to a terminal.'
+        help='Force output to be one entry per line. This is the default when output is not to a terminal.'
     )
 
     subparsers = parser.add_subparsers(metavar="action", required=True)
 
     # recipes
     parser_recipes = subparsers.add_parser('recipes', help='list recipe paths')
-    parser_recipes.set_defaults(func=recipes)
+    parser_recipes.set_defaults(func=list_recipes)
 
     parser_recipes.add_argument(
         'folder', type=dir_path, nargs='?', default='.', help='path to a folder containing recipemd files. Works '
@@ -44,11 +47,33 @@ def main():
     ).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
 
     # list tags
-    parser_list = subparsers.add_parser('list', help="list used tags")
-    parser_list.set_defaults(func=list_tags)
+    parser_tags = subparsers.add_parser('tags', help="list used tags")
+    parser_tags.set_defaults(func=list_tags)
 
-    parser_list.add_argument('-c', '--count', action='store_true', help="count number of uses per tag")
-    parser_list.add_argument(
+    parser_tags.add_argument('-c', '--count', action='store_true', help="count number of uses per tag")
+    parser_tags.add_argument(
+        'folder', type=dir_path, nargs='?', default='.', help='path to a folder containing recipemd files. Works '
+                                                              'recursively for all *.md files.'
+        # very unlikely file extension so completer only returns folders
+    ).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
+
+    # list ingredients
+    parser_ingredients = subparsers.add_parser('ingredients', help="list used ingredients")
+    parser_ingredients.set_defaults(func=list_ingredients)
+
+    parser_ingredients.add_argument('-c', '--count', action='store_true', help="count number of uses per ingredient")
+    parser_ingredients.add_argument(
+        'folder', type=dir_path, nargs='?', default='.', help='path to a folder containing recipemd files. Works '
+                                                              'recursively for all *.md files.'
+        # very unlikely file extension so completer only returns folders
+    ).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
+
+    # list units
+    parser_units = subparsers.add_parser('units', help="list used units")
+    parser_units.set_defaults(func=list_units)
+
+    parser_units.add_argument('-c', '--count', action='store_true', help="count number of uses per unit")
+    parser_units.add_argument(
         'folder', type=dir_path, nargs='?', default='.', help='path to a folder containing recipemd files. Works '
                                                               'recursively for all *.md files.'
         # very unlikely file extension so completer only returns folders
@@ -64,25 +89,43 @@ def main():
     args.func(args)
 
 
-def recipes(args):
+def list_recipes(args):
     print_result([path for recipe, path in get_filtered_recipes(args)], args.one_per_line)
 
 
 def list_tags(args):
-    tag_counter = collections.Counter()
+    list_elements(args, lambda recipe: recipe.tags)
+
+
+def list_ingredients(args):
+    list_elements(args, lambda recipe: [ingr.name for ingr in recipe.leaf_ingredients if ingr.name is not None])
+
+
+def get_units(recipe: Recipe) -> Iterable[str]:
+    ingredient_units = (ingr.amount.unit for ingr in recipe.leaf_ingredients if
+                        ingr.amount is not None and ingr.amount.unit is not None)
+    yield_units = (yield_.unit for yield_ in recipe.yields if yield_.unit is not None)
+    return itertools.chain(ingredient_units, yield_units)
+
+
+def list_units(args):
+    list_elements(args, lambda recipe: get_units(recipe))
+
+
+def list_elements(args, extractor: Callable[[Recipe], Iterable[str]]):
+    counter = collections.Counter()
 
     for recipe, path in get_filtered_recipes(args):
-        tag_counter.update(recipe.tags)
+        counter.update(extractor(recipe))
 
     if args.count:
-        result = list(tag_counter.items())
+        result = list(counter.items())
         result.sort(key=lambda pair: pair[1], reverse=True)
-        max_count_length = max(len(str(c)) for c in tag_counter.values())
+        max_count_length = max(len(str(c)) for c in counter.values())
         result = [f'{count:>{max_count_length}} {tag}' for tag, count in result]
     else:
-        result = list(tag_counter)
-        result.sort()
-
+        result = list(counter)
+        result.sort(key=lambda s: s.casefold())
 
     print_result(result, args.one_per_line)
 
@@ -94,8 +137,7 @@ def get_filtered_recipes(args):
         try:
             with open(path, 'r', encoding='UTF-8') as file:
                 recipe = rp.parse(file.read())
-            tags = recipe.tags
-            if evaluate(args.filter, tags):
+            if args.expression is None or args.expression.evaluate(recipe):
                 result.append((recipe, os.path.relpath(path, args.folder)))
         except Exception as e:
             if not args.no_messages:
@@ -128,21 +170,6 @@ def print_columns(items):
         print("".join(padded_row))
 
 
-def evaluate(expr, tags):
-    if expr is None:
-        return True
-    elif isinstance(expr, AND):
-        return all(evaluate(e, tags) for e in expr.args)
-    elif isinstance(expr, OR):
-        return any(evaluate(e, tags) for e in expr.args)
-    elif isinstance(expr, NOT):
-        return not evaluate(expr.args[0], tags)
-    elif isinstance(expr, Symbol):
-        return expr.obj in tags
-    else:
-        raise RecursionError('something went horribly wrong')
-
-
 def dir_path(path):
     if os.path.isdir(path):
         return path
@@ -150,12 +177,11 @@ def dir_path(path):
         raise argparse.ArgumentTypeError(f'"{path}" is not a valid folder')
 
 
-def filter_string(filter_expr):
+def create_filter_expr(filter_expr_string) -> FilterElement:
     try:
-        algebra = boolean.BooleanAlgebra()
-        return algebra.parse(filter_expr)
-    except boolean.ParseError:
-        raise argparse.ArgumentTypeError(f'"{filter_expr}" is not a valid boolean string')
+        return filter_expr.parseString(filter_expr_string, parseAll=True)[0]
+    except pyparsing.ParseBaseException:
+        raise argparse.ArgumentTypeError(f'"{filter_expr_string}" is not a valid boolean string')
 
 
 if __name__ == "__main__":
