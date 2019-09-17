@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import copy
 import re
 import unicodedata
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from decimal import Decimal
 from pprint import pprint
 from typing import List, Optional, Union
@@ -16,13 +15,13 @@ __all__ = ['Amount', 'IngredientGroup', 'Ingredient', 'Recipe', 'RecipeParser', 
            'get_recipe_with_yield']
 
 
-@dataclass
+@dataclass(frozen=True)
 class IngredientGroup:
     title: Optional[str] = None
     children: List[Union[Ingredient, IngredientGroup]] = field(default_factory=list)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Amount:
     factor: Optional[Decimal] = None
     unit: Optional[str] = None
@@ -32,14 +31,14 @@ class Amount:
             raise TypeError(f"Factor and unit may not both be None")
 
 
-@dataclass
+@dataclass(frozen=True)
 class Ingredient:
     name: str
     amount: Optional[Amount] = None
     link: Optional[str] = None
 
 
-@dataclass
+@dataclass(frozen=True)
 class Recipe:
     title: str
     description: Optional[str] = None
@@ -152,13 +151,13 @@ class RecipeParser:
                 # TODO this divider is required, but we might just continue anyways?
                 raise RuntimeError(f"Invalid, expected divider before ingredient list, got {self.current and self.current.t} instead")
 
-        self.recipe.instructions = self._get_source_until()
+        self.recipe = replace(self.recipe, instructions=self._get_source_until())
 
         return self.recipe
 
     def _parse_title(self):
         if self.current is not None and self.current.t == 'heading' and self.current.level == 1:
-            self.recipe.title = self._get_current_node_children_source()
+            self.recipe = replace(self.recipe, title=self._get_current_node_children_source())
             self._next_node()
         else:
             # TODO title is required according to spec, maybe the parser might be more foregiving?
@@ -169,7 +168,7 @@ class RecipeParser:
     def _parse_description(self):
         result = self._get_source_until(lambda n: n.t != 'thematic_break' and not self._is_tags(n)
                                         and not self._is_yields(n))
-        self.recipe.description = result
+        self.recipe = replace(self.recipe, description=result)
 
     def _parse_tags_and_yields(self):
         while self.current is not None and (self._is_tags(self.current) or self._is_yields(self.current)):
@@ -177,12 +176,12 @@ class RecipeParser:
                 self._enter_node()
                 tags_text = self._get_current_node_children_source()
                 self._exit_node()
-                self.recipe.tags = [t.strip() for t in self._list_split.split(tags_text)]
+                self.recipe = replace(self.recipe, tags=[t.strip() for t in self._list_split.split(tags_text)])
             else:
                 self._enter_node()
                 yields_text = self._get_current_node_children_source()
                 self._exit_node()
-                self.recipe.yields = [self.parse_amount(t.strip()) for t in self._list_split.split(yields_text)]
+                self.recipe = replace(self.recipe, yields=[self.parse_amount(t.strip()) for t in self._list_split.split(yields_text)])
             self._next_node()
 
     def _parse_ingredients(self):
@@ -198,8 +197,7 @@ class RecipeParser:
             if level <= parent_level:
                 return
 
-            group = IngredientGroup()
-            group.title = self._get_current_node_children_source()
+            group = IngredientGroup(title=self._get_current_node_children_source())
             self._next_node()
 
             if self.current is not None and self.current.t == 'list':
@@ -381,12 +379,9 @@ class RecipeParser:
         return "\n".join(lines)
 
 
-def multiply_recipe(base_recipe: Recipe, multiplier: Decimal):
-    recipe = copy.deepcopy(base_recipe)
-    for yield_ in recipe.yields:
-        if yield_.factor:
-            yield_.factor *= multiplier
-    _multiply_ingredients(recipe.ingredients, multiplier)
+def multiply_recipe(recipe: Recipe, multiplier: Decimal):
+    recipe = replace(recipe, yields=[replace(y, factor=y.factor * multiplier) for y in recipe.yields])
+    recipe = replace(recipe, ingredients=_multiply_ingredients(recipe.ingredients, multiplier))
     return recipe
 
 
@@ -403,11 +398,15 @@ def get_recipe_with_yield(recipe: Recipe, required_yield: Amount):
 
 
 def _multiply_ingredients(ingredients: List[Union[Ingredient, IngredientGroup]], multiplier: Decimal):
-    for ingr in ingredients:
-        if hasattr(ingr, 'amount') and ingr.amount is not None and ingr.amount.factor is not None:
-            ingr.amount.factor *= multiplier
-        if hasattr(ingr, 'children'):
-            _multiply_ingredients(ingr.children, multiplier)
+    return [_multiply_ingredient(ingr, multiplier) for ingr in ingredients]
+
+
+def _multiply_ingredient(ingr: Union[Ingredient, IngredientGroup], multiplier: Decimal):
+    if hasattr(ingr, 'amount') and ingr.amount is not None and ingr.amount.factor is not None:
+        return replace(ingr, amount=replace(ingr.amount, factor=ingr.amount.factor*multiplier))
+    if hasattr(ingr, 'children'):
+        return replace(ingr, children=_multiply_ingredients(ingr.children, multiplier))
+    return ingr
 
 
 if __name__ == "__main__":
