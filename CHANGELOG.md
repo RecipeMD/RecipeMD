@@ -1,10 +1,18 @@
 # Version Next
 
 - *Breaking:* Classes in `recipemd.data` are now frozen
-- Add option `--export-linked` to export linked recipes in the correct scale to a folder
+- *Breaking:* Rename `recipemd-tags` to `recipemd-find` and option  `-f/--filter` to `-e/--expression`
+- Prevent duplicated headlines when flattening
 - Amount values can be negative to allow simple stock keeping
 - Remove linked recipe amount from title in instructions as it is confusing with multiple levels of flattened recipes
-- Prevent duplicated headlines when flattening
+- Add option `--export-linked` to export linked recipes in the correct scale to a folder 
+- `recipemd-find` now searches tags, ingredient names and units
+- Advanced expression syntax in recipemd-find
+    - Terms can be quoted to allow searching for terms that include whitespace
+    - Simple terms are now case insensitive by default
+    - Implement substring matching by prefixing a term with `~`
+    - Allow `tag:`, `ingr:` or `unit:` as prefix for terms to restrict term to tag, ingredient or unit
+    - Search via regular expressions is possible by surrounding a term with `/`
 - Add option `-j/--json` for JSON output of recipe
 - *Fix:* Exception in flattening if link ingredient has no amount
 
