@@ -173,6 +173,7 @@ class FilterParser:
 
     @staticmethod
     def _create_parser() -> ParserElement:
+        # operators in the format later used by infixNotation
         operator_list = [
             (None, 2, opAssoc.LEFT,  BooleanAndExpression.create_from_implicit_tokens),
             (CaselessKeyword('not'), 1, opAssoc.RIGHT, BooleanNotOperation.create_from_tokens),
@@ -181,6 +182,7 @@ class FilterParser:
             (CaselessKeyword('or'), 2, opAssoc.LEFT, BooleanOrExpression.create_from_tokens),
         ]
 
+        # terms (atoms) that will be combined with the boolean operators
         term_list = [
             (CaselessKeyword('tag:'), TagFilterTerm.create_from_tokens),
             (CaselessKeyword('ingr:'), IngredientFilterTerm.create_from_tokens),
@@ -188,20 +190,25 @@ class FilterParser:
             (None, AnyFilterTerm.create_from_tokens),
         ]
 
+        # extract keywords that can
         operator_expressions = [om[0] for om in operator_list if om[0] is not None]
         term_expressions = [tm[0] for tm in term_list if tm[0] is not None]
-
         reserved_expressions = operator_expressions + term_expressions
 
+        # strings may be single quoted, double quoted or not at all quoted (in this case the can't contain whitespace
+        # or be a keyword)
         single_quoted_string = QuotedString('"', escChar='\\')
         double_quoted_string = QuotedString("'", escChar='\\')
         unquoted_string = ~Or(reserved_expressions) + CharsNotIn(" \t\r\n()")
+        # unquoted_string must be last, so that initial quotes are handled correctly
         base_filter_string = single_quoted_string | double_quoted_string | unquoted_string
         base_filter_string.setParseAction(lambda toks: toks[0])
 
+        # filter string may be prefixed by ~ to indicate substring match
         simple_filter_string = pyparsing.Optional("~").setResultsName("contains") + base_filter_string.setResultsName("string")
         simple_filter_string.setParseAction(SimpleFilterString.create_from_tokens)
 
+        # regular expressions aren't parsed in the grammar but delegated to python re.compile in the parser action
         regex_filter_string = QuotedString('/', escChar='\\')
         regex_filter_string.setParseAction(RegexFilterString.create_from_tokens)
 
