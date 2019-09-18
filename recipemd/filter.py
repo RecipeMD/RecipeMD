@@ -4,8 +4,7 @@ import unicodedata
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import reduce
-from pprint import pprint
-from typing import List, Iterable, Pattern, Optional, ClassVar, Any
+from typing import List, Iterable, Pattern, Optional
 
 import pyparsing
 from pyparsing import infixNotation, QuotedString, CaselessKeyword, opAssoc, CharsNotIn, ParserElement, Or, Combine, \
@@ -45,11 +44,9 @@ class SimpleFilterString(FilterString):
         else:
             return any(to_find_caseless == self._normalize_str(el) for el in to_search)
 
-    def _normalize_str(self, text: str):
+    @staticmethod
+    def _normalize_str(text: str):
         return unicodedata.normalize("NFKD", text.strip().casefold())
-
-    def __str__(self):
-        return f'{"~" if self.contains else ""}{self.string!r}'
 
 
 @dataclass(frozen=True)
@@ -62,9 +59,6 @@ class RegexFilterString(FilterString):
 
     def contained_in(self, to_search: Iterable[str]):
         return any(self.regex.search(el) for el in to_search)
-
-    def __str__(self):
-        return f'/{self.regex.pattern}/'
 
 
 @dataclass(frozen=True)
@@ -88,18 +82,12 @@ class TagFilterTerm(FilterTerm):
     def evaluate(self, recipe: Recipe) -> bool:
         return self.filter_string.contained_in(recipe.tags)
 
-    def __str__(self):
-        return f'tag:{self.filter_string!r}'
-
 
 @dataclass(frozen=True)
 class IngredientFilterTerm(FilterTerm):
     def evaluate(self, recipe: Recipe) -> bool:
         ingredient_names = (ingr.name for ingr in recipe.leaf_ingredients if ingr.name is not None)
         return self.filter_string.contained_in(ingredient_names)
-
-    def __str__(self):
-        return f'ingr:{self.filter_string!r}'
 
 
 @dataclass(frozen=True)
@@ -109,9 +97,6 @@ class UnitFilterTerm(FilterTerm):
         yield_units = (yield_.unit for yield_ in recipe.yields if yield_.unit is not None)
         return self.filter_string.contained_in(itertools.chain(ingredient_units, yield_units))
 
-    def __str__(self):
-        return f'unit:{self.filter_string!r}'
-
 
 @dataclass(frozen=True)
 class AnyFilterTerm(IngredientFilterTerm, TagFilterTerm, UnitFilterTerm):
@@ -119,32 +104,17 @@ class AnyFilterTerm(IngredientFilterTerm, TagFilterTerm, UnitFilterTerm):
         return IngredientFilterTerm.evaluate(self, recipe) or TagFilterTerm.evaluate(self, recipe) \
                or UnitFilterTerm.evaluate(self, recipe)
 
-    def __str__(self):
-        return f'{self.filter_string!r}'
-
 
 @dataclass(frozen=True)
 class BooleanOperation(FilterElement, ABC):
-    OPERATOR: ClassVar[str]
-    ASSOCIATIVITY: ClassVar[Any]
-    ARITY: ClassVar[int]
     operands: List[FilterElement]
-
-    @classmethod
-    def get_operator_expression(cls) -> Optional[ParserElement]:
-        return CaselessKeyword(cls.OPERATOR)
 
 
 @dataclass(frozen=True)
 class BooleanUnaryOperation(BooleanOperation, ABC):
-    ARITY = 1
-
     @classmethod
     def create_from_tokens(cls, toks: ParseResults):
         return cls(operands=[toks[0][1]])
-
-    def __str__(self):
-        return f'({self.OPERATOR} {self.operands[0]})'
 
 
 @dataclass(frozen=True)
@@ -153,23 +123,15 @@ class BooleanBinaryOperation(BooleanOperation, ABC):
     def create_from_tokens(cls, toks: ParseResults):
         return cls(operands=toks[0][0::2])
 
-    def __str__(self):
-        op = f' {self.OPERATOR} '
-        return f'({op.join([repr(oper) for oper in self.operands])})'
-
 
 @dataclass(frozen=True)
 class BooleanNotOperation(BooleanUnaryOperation):
-    OPERATOR = "not"
-
     def evaluate(self, recipe: Recipe) -> bool:
         return not self.operands[0].evaluate(recipe)
 
 
 @dataclass(frozen=True)
 class BooleanAndExpression(BooleanBinaryOperation):
-    OPERATOR = "and"
-
     def evaluate(self, recipe: Recipe) -> bool:
         return all(oper.evaluate(recipe) for oper in self.operands)
 
@@ -180,8 +142,6 @@ class BooleanAndExpression(BooleanBinaryOperation):
 
 @dataclass(frozen=True)
 class BooleanOrExpression(BooleanBinaryOperation):
-    OPERATOR = "or"
-
     def evaluate(self, recipe: Recipe) -> bool:
         return any(oper.evaluate(recipe) for oper in self.operands)
 
@@ -201,9 +161,18 @@ class FilterParser:
         self.filter_expression_parser = self._create_parser()
 
     def parse_filter_string(self, filter_string) -> FilterElement:
+        """
+        Parses a filter string into an evaluateable ast.
+
+        :param filter_string: A string representing a recipe filter
+        :return: filter_element: A filter ast, subclass of FilterElement
+        :raises ParseBaseException: If string is not a valid filter
+        :raises re.error: If a regular expression used in a filter term is not syntactically correct
+        """
         return self.filter_expression_parser.parseString(filter_string, parseAll=True)[0]
 
-    def _create_parser(self) -> ParserElement:
+    @staticmethod
+    def _create_parser() -> ParserElement:
         operator_list = [
             (None, 2, opAssoc.LEFT,  BooleanAndExpression.create_from_implicit_tokens),
             (CaselessKeyword('not'), 1, opAssoc.RIGHT, BooleanNotOperation.create_from_tokens),
@@ -252,6 +221,7 @@ class FilterParser:
         filter_expr = infixNotation(filter_term, operator_list)
 
         return filter_expr
+
 
 if __name__ == "__main__":
     filter_parser = FilterParser()

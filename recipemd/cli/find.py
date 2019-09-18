@@ -5,6 +5,7 @@ import collections
 import glob
 import itertools
 import os
+import re
 import shutil
 import sys
 import unicodedata
@@ -26,7 +27,7 @@ def main():
 
     parser.add_argument(
         '-e', '--expression', type=create_filter_expr,
-        help='Filter expression. Expects a boolean string, e.g. "cake and vegan"'
+        help='Filter expression. Expects a boolean string, e.g. "cake and vegan or ingr:cheese"'
     )
     parser.add_argument('-s', '--no-messages', action='store_true', default=False, help='suppress error messages')
     parser.add_argument(
@@ -180,8 +181,10 @@ def dir_path(path):
 def create_filter_expr(filter_string) -> FilterElement:
     try:
         return FilterParser().parse_filter_string(filter_string)
-    except pyparsing.ParseBaseException:
-        raise argparse.ArgumentTypeError(f'"{filter_string}" is not a valid boolean string')
+    except pyparsing.ParseBaseException as e:
+        raise argparse.ArgumentTypeError(f'"{filter_string}" is not a valid filter: {e}')
+    except re.error as e:
+        raise argparse.ArgumentTypeError(f'"{filter_string}" contains the regular expression "{e.pattern}": {e}')
 
 
 if __name__ == "__main__":
