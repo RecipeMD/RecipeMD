@@ -16,7 +16,7 @@ import pyparsing
 from argcomplete import FilesCompleter
 
 from recipemd.data import RecipeParser, Recipe
-from recipemd.filter import filter_expr, FilterElement
+from recipemd.filter import FilterElement, FilterParser
 
 __all__ = ['main']
 
@@ -177,11 +177,11 @@ def dir_path(path):
         raise argparse.ArgumentTypeError(f'"{path}" is not a valid folder')
 
 
-def create_filter_expr(filter_expr_string) -> FilterElement:
+def create_filter_expr(filter_string) -> FilterElement:
     try:
-        return filter_expr.parseString(filter_expr_string, parseAll=True)[0]
+        return FilterParser().parse_filter_string(filter_string)
     except pyparsing.ParseBaseException:
-        raise argparse.ArgumentTypeError(f'"{filter_expr_string}" is not a valid boolean string')
+        raise argparse.ArgumentTypeError(f'"{filter_string}" is not a valid boolean string')
 
 
 if __name__ == "__main__":
