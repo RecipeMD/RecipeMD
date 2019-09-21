@@ -8,18 +8,19 @@ setuptools.setup(
     version="2.2.2",
     author="Tilman Stehr",
     author_email="tilman@tilman.ninja",
-    description="Reference implementation of recipemd",
+    description="Markdown recipe manager, reference implementation of RecipeMD",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/tstehr/recipemd",
+    url="https://recipemd.org",
     packages=setuptools.find_packages(),
     python_requires='>=3.7,<4',
     install_requires=[
-        'yarl==1.3.0',
+        'yarl~=1.3.0',
+        # has broken before and is still unstable, so pin exact version
         'commonmarkextensions==0.0.5',
-        # commonmark is automatically installed as dependency of commonmarkextensions
-        # 'commonmark',
-        'argcomplete==1.10.0',
+        # commonmark version needs to match the version required by commonmarkextensions
+        'commonmark>=0.8.0,<=0.8.1',
+        'argcomplete~=1.10.0',
         'boolean.py==3.6',
     ],
     entry_points={
