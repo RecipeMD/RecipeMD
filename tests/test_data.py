@@ -1,6 +1,7 @@
+import glob
+import os
 import textwrap
 from decimal import Decimal
-from pprint import pprint
 
 import pytest
 
@@ -20,31 +21,22 @@ def test_amount():
 
 
 class TestRecipeParser:
-    def test_parse_valid_minimal(self, parser):
-        recipe_source = textwrap.dedent('''\
-            # My Little Recipe
-            ---
-        ''')
-        recipe = parser.parse(recipe_source)
-        assert recipe.title == 'My Little Recipe'
-        assert recipe.description is None
-        assert len(recipe.tags) == 0
-        assert len(recipe.yields) == 0
-        assert len(recipe.ingredients) == 0
-        assert recipe.instructions is None
-
-    def test_parse_valid_minimal(self, parser):
-        recipe_source = textwrap.dedent('''\
-            # My Little Recipe
-            ---
-        ''')
-        recipe = parser.parse(recipe_source)
-        assert recipe.title == 'My Little Recipe'
-        assert recipe.description is None
-        assert len(recipe.tags) == 0
-        assert len(recipe.yields) == 0
-        assert len(recipe.ingredients) == 0
-        assert recipe.instructions is None
+    @pytest.mark.parametrize(
+        "testcase_file",
+        glob.glob(os.path.join(os.path.dirname(__file__), '..', 'testcases','*.md')),
+    )
+    def test_parse(self, parser, testcase_file):
+        if testcase_file.endswith('.invalid.md'):
+            with pytest.raises(BaseException):
+                with open(testcase_file, 'r', encoding='UTF-8') as f:
+                    parser.parse(f.read())
+        else:
+            expected_result_file = os.path.splitext(testcase_file)[0] + '.json'
+            with open(expected_result_file, 'r', encoding='UTF-8') as f:
+                expected_result = Recipe.from_json(f.read())
+            with open(testcase_file, 'r', encoding='UTF-8') as f:
+                actual_result = parser.parse(f.read())
+            assert actual_result == expected_result
 
     def test_parse_amount(self, parser):
         assert parser.parse_amount("2") == Amount(factor=Decimal('2'))
@@ -56,6 +48,7 @@ class TestRecipeParser:
         assert parser.parse_amount("3,2") == Amount(factor=Decimal('3.2'))
         assert parser.parse_amount("1 ½ cloves") == Amount(factor=Decimal('1.5'), unit='cloves')
         assert parser.parse_amount("½ pieces") == Amount(factor=Decimal('.5'), unit='pieces')
+        assert parser.parse_amount('') is None
 
 
 def test_multiply_recipe():
