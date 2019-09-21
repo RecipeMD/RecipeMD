@@ -257,7 +257,7 @@ class RecipeParser:
         link_destination = None
         link_text = None
 
-        if self.current.t == 'paragraph':
+        if self.current is not None and self.current.t == 'paragraph':
             # enter paragraph
             self._enter_node()
 
