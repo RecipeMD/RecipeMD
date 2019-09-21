@@ -1,0 +1,79 @@
+{
+  "title": "Recipe with ingredient groups",
+  "description": null,
+  "yields": [],
+  "tags": [],
+  "ingredients": [
+    {
+      "name": "ingredient 0",
+      "amount": null,
+      "link": null
+    },
+    {
+      "title": "Group 1",
+      "children": [
+        {
+          "name": "ingredient 1",
+          "amount": null,
+          "link": null
+        },
+        {
+          "name": "ingredient 2",
+          "amount": null,
+          "link": null
+        },
+        {
+          "title": "Subgroup 1.1",
+          "children": [
+            {
+              "name": "ingredient 3",
+              "amount": null,
+              "link": null
+            },
+            {
+              "name": "ingredient 4",
+              "amount": null,
+              "link": null
+            },
+            {
+              "title": "Subgroup 1.1.1 (Two level deeper headline, still one lever deeper group)",
+              "children": [
+                {
+                  "name": "ingredient 5",
+                  "amount": null,
+                  "link": null
+                }
+              ]
+            },
+            {
+              "title": "Subgroup 1.1.2 (One level deeper headline)",
+              "children": [
+                {
+                  "name": "ingredient 6",
+                  "amount": null,
+                  "link": null
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Group 2",
+      "children": [
+        {
+          "name": "ingredient 7",
+          "amount": null,
+          "link": null
+        },
+        {
+          "name": "ingredient 8",
+          "amount": null,
+          "link": null
+        }
+      ]
+    }
+  ],
+  "instructions": null
+}

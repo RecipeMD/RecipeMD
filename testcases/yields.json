@@ -1,0 +1,33 @@
+{
+  "title": "Yields",
+  "description": null,
+  "yields": [
+    {
+      "factor": "1.2",
+      "unit": "cups"
+    },
+    {
+      "factor": "1.5",
+      "unit": "Tassen"
+    },
+    {
+      "factor": "1.25",
+      "unit": "servings"
+    },
+    {
+      "factor": "5",
+      "unit": "servings"
+    },
+    {
+      "factor": null,
+      "unit": "factorless"
+    },
+    {
+      "factor": "5",
+      "unit": null
+    }
+  ],
+  "tags": [],
+  "ingredients": [],
+  "instructions": null
+}

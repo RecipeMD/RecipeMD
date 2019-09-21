@@ -1,0 +1,27 @@
+{
+  "title": "Ingredients with Links",
+  "description": null,
+  "yields": [],
+  "tags": [],
+  "ingredients": [
+    {
+      "name": "link to something",
+      "amount": null,
+      "link": "./another_recipe.md"
+    },
+    {
+      "name": "link to something else",
+      "amount": null,
+      "link": "http://example.org"
+    },
+    {
+      "name": "link to something with amount",
+      "amount": {
+        "factor": "5",
+        "unit": "ml"
+      },
+      "link": "http://example.org"
+    }
+  ],
+  "instructions": null
+}
