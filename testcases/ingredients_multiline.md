@@ -16,6 +16,9 @@
 
   is the amount of *this* ingredient
   
+- *5 grams*
+  
+  is an amount that stands alone on the first line
   
 - [this is a link](some other recipe)
 

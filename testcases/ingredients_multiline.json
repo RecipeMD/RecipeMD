@@ -23,6 +23,14 @@
       "link": null
     },
     {
+      "name": "is an amount that stands alone on the first line",
+      "amount": {
+        "factor": "5",
+        "unit": "grams"
+      },
+      "link": null
+    },
+    {
       "name": "[this is a link](some other recipe)",
       "amount": null,
       "link": null
