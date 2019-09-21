@@ -385,6 +385,15 @@ class RecipeParser:
 
 
 def multiply_recipe(recipe: Recipe, multiplier: Decimal):
+    """
+    Multiplies a recipe by the given multiplier
+
+    Creates a new recipe where the factor of yield and ingredient is changed according to the multiplier
+
+    :param recipe: A recipe
+    :param multiplier: A factor with which the recipe shall be multiplied
+    :return: New recipe multiplied according to multiplier
+    """
     recipe = replace(recipe, yields=[replace(y, factor=y.factor * multiplier) for y in recipe.yields])
     recipe = replace(recipe, ingredients=_multiply_ingredients(recipe.ingredients, multiplier))
     return recipe
