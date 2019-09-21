@@ -5,28 +5,51 @@ import unicodedata
 from dataclasses import dataclass, field, replace
 from decimal import Decimal
 from pprint import pprint
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict
 
 import commonmark
 from commonmark.node import Node
 from commonmark_extensions.plaintext import CommonMarkToCommonMarkRenderer
-from dataclasses_json import dataclass_json
+from dataclasses_json import dataclass_json, config
 
 __all__ = ['Amount', 'IngredientGroup', 'Ingredient', 'Recipe', 'RecipeParser', 'RecipeSerializer', 'multiply_recipe',
            'get_recipe_with_yield']
+
+
+def _decode_ingredient_element_list(ingrs: List[Dict]):
+    """Helper for json decoding List[Union[Ingredient, IngredientGroup]]"""
+    return [_decode_ingredient_element(el) for el in ingrs]
+
+
+def _decode_ingredient_element(ingr_el_dict: Dict):
+    """
+    Helper for json decoding Union[Ingredient, IngredientGroup]
+
+    dataclasses-json can't figure out Union[Ingredient, IngredientGroup], so we use this duck typing decoder to help
+    """
+    if "children" in ingr_el_dict:
+        return IngredientGroup.from_dict(ingr_el_dict)
+    return Ingredient.from_dict(ingr_el_dict)
 
 
 @dataclass_json
 @dataclass(frozen=True)
 class IngredientGroup:
     title: Optional[str] = None
-    children: List[Union[Ingredient, IngredientGroup]] = field(default_factory=list)
+    children: List[Union[Ingredient, IngredientGroup]] = field(
+        default_factory=list,
+        metadata=config(decoder=_decode_ingredient_element_list),
+    )
 
 
 @dataclass_json
 @dataclass(frozen=True)
 class Amount:
-    factor: Optional[Decimal] = None
+    factor: Optional[Decimal] = field(
+        default=None,
+        # decoder is workaround for https://github.com/lidatong/dataclasses-json/issues/137
+        metadata=config(decoder=lambda val: Decimal(val) if val is not None else None)
+    )
     unit: Optional[str] = None
 
     def __post_init__(self):
@@ -49,7 +72,10 @@ class Recipe:
     description: Optional[str] = None
     yields: List[Amount] = field(default_factory=list)
     tags: List[str] = field(default_factory=list)
-    ingredients: List[Union[Ingredient, IngredientGroup]] = field(default_factory=list)
+    ingredients: List[Union[Ingredient, IngredientGroup]] = field(
+        default_factory=list,
+        metadata=config(decoder=_decode_ingredient_element_list),
+    )
     instructions: Optional[str] = None
 
     @property
