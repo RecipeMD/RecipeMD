@@ -2,6 +2,7 @@
 
 import argparse
 import decimal
+import json
 import os
 import re
 import sys
@@ -30,6 +31,7 @@ def main():
     display_parser = parser.add_mutually_exclusive_group()
     display_parser.add_argument('-t', '--title', action='store_true', help='Display recipe title')
     display_parser.add_argument('-i', '--ingredients', action='store_true', help='Display recipe ingredients')
+    display_parser.add_argument('-j', '--json', action='store_true', help='Display recipe as JSON')
 
     parser.add_argument(
         '-r', '--round', type=lambda s: None if s.lower() == 'no' else int(s), metavar='n', default=2,
@@ -153,6 +155,8 @@ def _create_recipe_output(recipe, serializer, args):
         return recipe.title
     elif args.ingredients:
         return "\n".join(_ingredient_to_string(ingr, rounding=args.round) for ingr in recipe.leaf_ingredients)
+    elif args.json:
+        return recipe.to_json()
     else:
         return serializer.serialize(recipe, rounding=args.round)
 

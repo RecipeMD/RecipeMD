@@ -15,6 +15,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires='>=3.7,<4',
     install_requires=[
+        'dataclasses-json>=0.3.0,<0.4.0',
         'yarl~=1.3.0',
         # has broken before and is still unstable, so pin exact version
         'commonmarkextensions==0.0.5',

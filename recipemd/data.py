@@ -10,17 +10,20 @@ from typing import List, Optional, Union
 import commonmark
 from commonmark.node import Node
 from commonmark_extensions.plaintext import CommonMarkToCommonMarkRenderer
+from dataclasses_json import dataclass_json
 
 __all__ = ['Amount', 'IngredientGroup', 'Ingredient', 'Recipe', 'RecipeParser', 'RecipeSerializer', 'multiply_recipe',
            'get_recipe_with_yield']
 
 
+@dataclass_json
 @dataclass(frozen=True)
 class IngredientGroup:
     title: Optional[str] = None
     children: List[Union[Ingredient, IngredientGroup]] = field(default_factory=list)
 
 
+@dataclass_json
 @dataclass(frozen=True)
 class Amount:
     factor: Optional[Decimal] = None
@@ -31,6 +34,7 @@ class Amount:
             raise TypeError(f"Factor and unit may not both be None")
 
 
+@dataclass_json
 @dataclass(frozen=True)
 class Ingredient:
     name: str
@@ -38,6 +42,7 @@ class Ingredient:
     link: Optional[str] = None
 
 
+@dataclass_json
 @dataclass(frozen=True)
 class Recipe:
     title: str
