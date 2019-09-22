@@ -1,11 +1,13 @@
+"""
+Defines the RecipeMD data structures, provides parser, serializer and recipe scaling functions.
+"""
 from __future__ import annotations
 
 import re
 import unicodedata
 from dataclasses import dataclass, field, replace
 from decimal import Decimal
-from pprint import pprint
-from typing import List, Optional, Union, Dict, Iterable, Generator
+from typing import List, Optional, Union, Dict, Generator
 
 import commonmark
 from commonmark.node import Node
