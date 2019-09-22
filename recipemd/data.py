@@ -333,15 +333,12 @@ class RecipeParser:
         for regexp, factor_function, group_count in RecipeParser._value_formats:
             match = re.match(r'^\s*(-?)\s*' + regexp + r'(.*)$', amount_str)
             if match:
-                try:
-                    factor = factor_function(match)
-                    if match.group(1) == '-':
-                        factor = -1 * factor
-                    unit = match.group(group_count + 2).strip()
-                    return Amount(factor, unit or None)
-                except ValueError:
-                    pass
-
+                factor = factor_function(match)
+                if match.group(1) == '-':
+                    factor = -1 * factor
+                unit = match.group(group_count + 2).strip()
+                return Amount(factor, unit or None)
+            
         unit = amount_str.strip()
         return Amount(None, unit) if unit else None
 
