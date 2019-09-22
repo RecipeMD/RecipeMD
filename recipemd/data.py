@@ -1,32 +1,57 @@
+"""
+Defines the RecipeMD data structures, provides parser, serializer and recipe scaling functions.
+"""
 from __future__ import annotations
 
 import re
 import unicodedata
 from dataclasses import dataclass, field, replace
 from decimal import Decimal
-from pprint import pprint
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict, Generator
 
 import commonmark
 from commonmark.node import Node
 from commonmark_extensions.plaintext import CommonMarkToCommonMarkRenderer
-from dataclasses_json import dataclass_json
+from dataclasses_json import dataclass_json, config
 
 __all__ = ['Amount', 'IngredientGroup', 'Ingredient', 'Recipe', 'RecipeParser', 'RecipeSerializer', 'multiply_recipe',
            'get_recipe_with_yield']
+
+
+def _decode_ingredient_element_list(ingrs: List[Dict]):
+    """Helper for json decoding List[Union[Ingredient, IngredientGroup]]"""
+    return [_decode_ingredient_element(el) for el in ingrs]
+
+
+def _decode_ingredient_element(ingr_el_dict: Dict):
+    """
+    Helper for json decoding Union[Ingredient, IngredientGroup]
+
+    dataclasses-json can't figure out Union[Ingredient, IngredientGroup], so we use this duck typing decoder to help
+    """
+    if "children" in ingr_el_dict:
+        return IngredientGroup.from_dict(ingr_el_dict)
+    return Ingredient.from_dict(ingr_el_dict)
 
 
 @dataclass_json
 @dataclass(frozen=True)
 class IngredientGroup:
     title: Optional[str] = None
-    children: List[Union[Ingredient, IngredientGroup]] = field(default_factory=list)
+    children: List[Union[Ingredient, IngredientGroup]] = field(
+        default_factory=list,
+        metadata=config(decoder=_decode_ingredient_element_list),
+    )
 
 
 @dataclass_json
 @dataclass(frozen=True)
 class Amount:
-    factor: Optional[Decimal] = None
+    factor: Optional[Decimal] = field(
+        default=None,
+        # decoder is workaround for https://github.com/lidatong/dataclasses-json/issues/137
+        metadata=config(decoder=lambda val: Decimal(val) if val is not None else None)
+    )
     unit: Optional[str] = None
 
     def __post_init__(self):
@@ -49,11 +74,14 @@ class Recipe:
     description: Optional[str] = None
     yields: List[Amount] = field(default_factory=list)
     tags: List[str] = field(default_factory=list)
-    ingredients: List[Union[Ingredient, IngredientGroup]] = field(default_factory=list)
+    ingredients: List[Union[Ingredient, IngredientGroup]] = field(
+        default_factory=list,
+        metadata=config(decoder=_decode_ingredient_element_list),
+    )
     instructions: Optional[str] = None
 
     @property
-    def leaf_ingredients(self) -> List[Ingredient]:
+    def leaf_ingredients(self) -> Generator[Ingredient]:
         yield from self._get_leaf_ingredients(self.ingredients)
 
     def _get_leaf_ingredients(self, ingredients: List[Union[Ingredient, IngredientGroup]]):
@@ -65,7 +93,7 @@ class Recipe:
 
 
 class RecipeSerializer:
-    def serialize(self, recipe: Recipe, *, rounding: Optional[int]=None):
+    def serialize(self, recipe: Recipe, *, rounding: Optional[int] = None) -> str:
         rep = ""
         rep += f'# {recipe.title}\n\n'
         if recipe.description is not None:
@@ -81,7 +109,7 @@ class RecipeSerializer:
             rep += recipe.instructions
         return rep
 
-    def _serialize_ingredient(self, ingredient, level, *, rounding: Optional[int]=None):
+    def _serialize_ingredient(self, ingredient, level, *, rounding: Optional[int] = None):
         if isinstance(ingredient, IngredientGroup):
             return f'\n{"#" * level} {ingredient.title}\n\n'\
                    + "\n".join(self._serialize_ingredient(i, level+1, rounding=rounding) for i in ingredient.children)
@@ -97,7 +125,7 @@ class RecipeSerializer:
         return ingredient.name
 
     @staticmethod
-    def _serialize_amount(amount, *, rounding: Optional[int]=None):
+    def _serialize_amount(amount, *, rounding: Optional[int] = None):
         if amount.factor is not None and amount.unit is not None:
             return f'{RecipeSerializer._normalize_factor(amount.factor, rounding=rounding)} {amount.unit}'
         if amount.factor is not None:
@@ -128,7 +156,7 @@ class RecipeParser:
         self.parents = []
         self.current = None
 
-    def parse(self, src):
+    def parse(self, src: str) -> Recipe:
         self.src = src
         self.recipe = Recipe(title=None)
 
@@ -231,7 +259,7 @@ class RecipeParser:
         link_destination = None
         link_text = None
 
-        if self.current.t == 'paragraph':
+        if self.current is not None and self.current.t == 'paragraph':
             # enter paragraph
             self._enter_node()
 
@@ -307,15 +335,12 @@ class RecipeParser:
         for regexp, factor_function, group_count in RecipeParser._value_formats:
             match = re.match(r'^\s*(-?)\s*' + regexp + r'(.*)$', amount_str)
             if match:
-                try:
-                    factor = factor_function(match)
-                    if match.group(1) == '-':
-                        factor = -1 * factor
-                    unit = match.group(group_count + 2).strip()
-                    return Amount(factor, unit or None)
-                except ValueError:
-                    pass
-
+                factor = factor_function(match)
+                if match.group(1) == '-':
+                    factor = -1 * factor
+                unit = match.group(group_count + 2).strip()
+                return Amount(factor, unit or None)
+            
         unit = amount_str.strip()
         return Amount(None, unit) if unit else None
 
@@ -384,13 +409,23 @@ class RecipeParser:
         return "\n".join(lines)
 
 
-def multiply_recipe(recipe: Recipe, multiplier: Decimal):
+def multiply_recipe(recipe: Recipe, multiplier: Decimal) -> Recipe:
+    """
+    Multiplies a recipe by the given multiplier
+
+    Creates a new recipe where the factor of yield and ingredient is changed according to the multiplier
+    """
     recipe = replace(recipe, yields=[replace(y, factor=y.factor * multiplier) for y in recipe.yields])
     recipe = replace(recipe, ingredients=_multiply_ingredients(recipe.ingredients, multiplier))
     return recipe
 
 
-def get_recipe_with_yield(recipe: Recipe, required_yield: Amount):
+def get_recipe_with_yield(recipe: Recipe, required_yield: Amount) -> Recipe:
+    """
+    Scale the given recipe to a required yield
+
+    Raises `StopIteration` if no yield with a matching unit can be found.
+    """
     matching_recipe_yield = next((y for y in recipe.yields if y.unit == required_yield.unit), None)
     if matching_recipe_yield is None:
         # no unit in required amount is interpreted as "one recipe"
@@ -406,21 +441,9 @@ def _multiply_ingredients(ingredients: List[Union[Ingredient, IngredientGroup]],
     return [_multiply_ingredient(ingr, multiplier) for ingr in ingredients]
 
 
-def _multiply_ingredient(ingr: Union[Ingredient, IngredientGroup], multiplier: Decimal):
+def _multiply_ingredient(ingr: Union[Ingredient, IngredientGroup], multiplier: Decimal) -> Union[Ingredient, IngredientGroup]:
     if hasattr(ingr, 'amount') and ingr.amount is not None and ingr.amount.factor is not None:
         return replace(ingr, amount=replace(ingr.amount, factor=ingr.amount.factor*multiplier))
     if hasattr(ingr, 'children'):
         return replace(ingr, children=_multiply_ingredients(ingr.children, multiplier))
     return ingr
-
-
-if __name__ == "__main__":
-    # src = open('examples/schwarzbierbrot.md', 'r').read()
-    # src = open('examples/griechischer_kartoffeltopf.md', 'r').read()
-    src = open('examples/schwarzbierbrot.md', 'r').read()
-
-    rp = RecipeParser()
-    r = rp.parse(src)
-    pprint(r.ingredients)
-    #rs = RecipeSerializer()
-    #print(rs.serialize(r))

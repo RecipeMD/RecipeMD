@@ -1,0 +1,12 @@
+{
+  "title": "Tags splitting",
+  "description": "Commas are not a tag separator when between two numbers",
+  "yields": [],
+  "tags": [
+    "tag1,1",
+    "tag1,2",
+    "tag1,3"
+  ],
+  "ingredients": [],
+  "instructions": null
+}

@@ -1,0 +1,51 @@
+{
+  "title": "Recipe with ingredients",
+  "description": null,
+  "yields": [],
+  "tags": [],
+  "ingredients": [
+    {
+      "name": "water",
+      "amount": {
+        "factor": "20",
+        "unit": "ml"
+      },
+      "link": null
+    },
+    {
+      "name": "earl grey, hot",
+      "amount": {
+        "factor": "1",
+        "unit": "cup"
+      },
+      "link": null
+    },
+    {
+      "name": "coffee",
+      "amount": {
+        "factor": "1.5",
+        "unit": "cup"
+      },
+      "link": null
+    },
+    {
+      "name": "cheese",
+      "amount": {
+        "factor": "0.25",
+        "unit": "kg"
+      },
+      "link": null
+    },
+    {
+      "name": "salt",
+      "amount": null,
+      "link": null
+    },
+    {
+      "name": "ingredients may contain *markdown*",
+      "amount": null,
+      "link": null
+    }
+  ],
+  "instructions": null
+}
