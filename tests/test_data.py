@@ -90,6 +90,11 @@ class TestRecipeSerializer:
         actual_result = serializer.serialize(recipe)
         assert actual_result == expected_result
 
+    def test_serialize_amount(self, serializer):
+        assert serializer._serialize_amount(Amount(factor=Decimal('5.000'))) == '5'
+        assert serializer._serialize_amount(Amount(factor=Decimal('1')/Decimal('3')), rounding=2) == '0.33'
+        assert serializer._serialize_amount(Amount(factor=Decimal('1')/Decimal('3')), rounding=4) == '0.3333'
+
 
 def test_multiply_recipe():
     recipe = Recipe(

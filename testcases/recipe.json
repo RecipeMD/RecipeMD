@@ -75,6 +75,14 @@
           "name": "text isn't optional",
           "amount": null,
           "link": null
+        },
+        {
+          "name": "amount is valid without factor",
+          "amount": {
+            "factor": null,
+            "unit": "hey"
+          },
+          "link": null
         }
       ]
     }
