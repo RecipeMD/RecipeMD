@@ -55,13 +55,13 @@ recipemd <path/to/recipe.md> -y "10 servings"
 Get all tags of all recipes in the current folder:
 
 ```
-recipemd-tags list
+recipemd-find tags
 ```
 
 Get recipes by tag:
 
 ```
-recipemd-tags --filter "cheese or summer" recipes
+recipemd-find -e "tag:cheese or tag:summer" recipes
 ```
 
 

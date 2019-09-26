@@ -8,9 +8,8 @@
 - Add option `--export-linked` to export linked recipes in the correct scale to a folder 
 - `recipemd-find` now searches tags, ingredient names and units
 - Advanced expression syntax in recipemd-find
-    - Terms can be quoted to allow searching for terms that include whitespace
-    - Simple terms are now case insensitive by default
-    - Implement substring matching by prefixing a term with `~`
+    - Terms are now case insensitive by default
+    - Terms can be quoted to for exact match
     - Allow `tag:`, `ingr:` or `unit:` as prefix for terms to restrict term to tag, ingredient or unit
     - Search via regular expressions is possible by surrounding a term with `/`
 - Add option `-j/--json` for JSON output of recipe
