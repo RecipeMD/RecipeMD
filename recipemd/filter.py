@@ -2,15 +2,26 @@ import itertools
 import re
 import unicodedata
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from functools import reduce
-from typing import List, Iterable, Pattern, Optional
+from dataclasses import dataclass, replace
+from functools import reduce, wraps
+from pprint import pprint
+from typing import List, Iterable, Pattern, Type, Callable, Optional, TypeVar
 
-import pyparsing
-from pyparsing import infixNotation, QuotedString, CaselessKeyword, opAssoc, CharsNotIn, ParserElement, Or, Combine, \
-    ParseResults
+from pyparsing import infixNotation, QuotedString, CaselessKeyword, opAssoc, ParserElement, Combine, \
+    ParseResults, MatchFirst, Regex, Literal
 
 from recipemd.data import Recipe
+
+
+def _value_error_to_not_implemented(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except ValueError:
+            return NotImplemented
+
+    return wrapper
 
 
 @dataclass(frozen=True)
@@ -18,35 +29,79 @@ class ASTElement(ABC):
     @classmethod
     @abstractmethod
     def create_from_tokens(cls, toks):
-        pass
+        raise NotImplementedError
+
+    def _to_filter_element(self, other) -> 'FilterElement':
+        if isinstance(other, FilterElement):
+            return other
+        if isinstance(other, FilterString):
+            return AnyFilterTerm(other)
+        if isinstance(other, str):
+            return AnyFilterTerm(FuzzyFilterString(other))
+        if isinstance(other, Pattern):
+            return AnyFilterTerm(RegexFilterString(other))
+        raise ValueError()
+
+    @_value_error_to_not_implemented
+    def __or__(self, other):
+        return BooleanOrOperation(operands=[self._to_filter_element(self), self._to_filter_element(other)])
+
+    @_value_error_to_not_implemented
+    def __and__(self, other):
+        return BooleanAndOperation(operands=[self._to_filter_element(self), self._to_filter_element(other)])
+
+    @_value_error_to_not_implemented
+    def __xor__(self, other):
+        return BooleanXorOperation(operands=[self._to_filter_element(self), self._to_filter_element(other)])
+
+    @_value_error_to_not_implemented
+    def __ror__(self, other):
+        return BooleanOrOperation(operands=[self._to_filter_element(other), self._to_filter_element(self)])
+
+    @_value_error_to_not_implemented
+    def __rand__(self, other):
+        return BooleanAndOperation(operands=[self._to_filter_element(other), self._to_filter_element(self)])
+
+    @_value_error_to_not_implemented
+    def __rxor__(self, other):
+        return BooleanXorOperation(operands=[self._to_filter_element(other), self._to_filter_element(self)])
+
+    @_value_error_to_not_implemented
+    def __invert__(self):
+        return BooleanNotOperation(operands=[self._to_filter_element(self)])
 
 
 @dataclass(frozen=True)
 class FilterString(ASTElement, ABC):
     @abstractmethod
     def contained_in(self, to_search: Iterable[str]):
-        pass
+        raise NotImplementedError
 
 
 @dataclass(frozen=True)
-class SimpleFilterString(FilterString):
-    contains: bool
+class FuzzyFilterString(FilterString):
     string: str
 
     @classmethod
     def create_from_tokens(cls, toks: ParseResults):
-        return cls(string=toks["string"], contains="contains" in toks)
+        return cls(string=toks["string"])
 
     def contained_in(self, to_search: Iterable[str]):
-        to_find_caseless = self._normalize_str(self.string)
-        if self.contains:
-            return any(to_find_caseless in self._normalize_str(el) for el in to_search)
-        else:
-            return any(to_find_caseless == self._normalize_str(el) for el in to_search)
+        to_find_caseless = _normalize_str(self.string)
+        return any(to_find_caseless in _normalize_str(el) for el in to_search)
 
-    @staticmethod
-    def _normalize_str(text: str):
-        return unicodedata.normalize("NFKD", text.strip().casefold())
+
+@dataclass(frozen=True)
+class ExactFilterString(FilterString):
+    string: str
+
+    @classmethod
+    def create_from_tokens(cls, toks: ParseResults):
+        return cls(string=toks["string"])
+
+    def contained_in(self, to_search: Iterable[str]):
+        to_find_caseless = _normalize_str(self.string)
+        return any(to_find_caseless == _normalize_str(el) for el in to_search)
 
 
 @dataclass(frozen=True)
@@ -65,7 +120,7 @@ class RegexFilterString(FilterString):
 class FilterElement(ASTElement, ABC):
     @abstractmethod
     def evaluate(self, recipe: Recipe) -> bool:
-        pass
+        raise NotImplementedError
 
 
 @dataclass(frozen=True)
@@ -129,29 +184,60 @@ class BooleanNotOperation(BooleanUnaryOperation):
     def evaluate(self, recipe: Recipe) -> bool:
         return not self.operands[0].evaluate(recipe)
 
+    def __invert__(self):
+        return self.operands[0]
+
 
 @dataclass(frozen=True)
-class BooleanAndExpression(BooleanBinaryOperation):
+class BooleanAndOperation(BooleanBinaryOperation):
     def evaluate(self, recipe: Recipe) -> bool:
         return all(oper.evaluate(recipe) for oper in self.operands)
 
     @classmethod
     def create_from_implicit_tokens(cls, toks: ParseResults):
-        return cls(operands=toks[0])
+        return cls(operands=list(toks[0]))
+
+    @_value_error_to_not_implemented
+    def __and__(self, other):
+        return BooleanAndOperation(operands=[*self.operands, self._to_filter_element(other)])
+
+    @_value_error_to_not_implemented
+    def __rand__(self, other):
+        return BooleanAndOperation(operands=[self._to_filter_element(other), *self.operands])
 
 
 @dataclass(frozen=True)
-class BooleanOrExpression(BooleanBinaryOperation):
+class BooleanOrOperation(BooleanBinaryOperation):
     def evaluate(self, recipe: Recipe) -> bool:
         return any(oper.evaluate(recipe) for oper in self.operands)
 
+    @_value_error_to_not_implemented
+    def __or__(self, other):
+        return BooleanOrOperation(operands=[*self.operands, self._to_filter_element(other)])
+
+    @_value_error_to_not_implemented
+    def __ror__(self, other):
+        return BooleanOrOperation(operands=[self._to_filter_element(other), *self.operands])
+
 
 @dataclass(frozen=True)
-class BooleanXorExpression(BooleanBinaryOperation):
+class BooleanXorOperation(BooleanBinaryOperation):
     OPERATOR = "xor"
 
     def evaluate(self, recipe: Recipe) -> bool:
         return reduce(lambda left, right: left ^ right, [oper.evaluate(recipe) for oper in self.operands])
+
+    @_value_error_to_not_implemented
+    def __xor__(self, other):
+        return BooleanXorOperation(operands=[*self.operands, self._to_filter_element(other)])
+
+    @_value_error_to_not_implemented
+    def __rxor__(self, other):
+        return BooleanXorOperation(operands=[self._to_filter_element(other), *self.operands])
+
+
+def _normalize_str(text: str):
+    return unicodedata.normalize("NFKD", text.strip().casefold())
 
 
 class FilterParser:
@@ -175,18 +261,18 @@ class FilterParser:
     def _create_parser() -> ParserElement:
         # operators in the format later used by infixNotation
         operator_list = [
-            (None, 2, opAssoc.LEFT,  BooleanAndExpression.create_from_implicit_tokens),
-            (CaselessKeyword('not'), 1, opAssoc.RIGHT, BooleanNotOperation.create_from_tokens),
-            (CaselessKeyword('and'), 2, opAssoc.LEFT, BooleanAndExpression.create_from_tokens),
-            (CaselessKeyword('xor'), 2, opAssoc.LEFT, BooleanXorExpression.create_from_tokens),
-            (CaselessKeyword('or'), 2, opAssoc.LEFT, BooleanOrExpression.create_from_tokens),
+            (None, 2, opAssoc.LEFT, BooleanAndOperation.create_from_implicit_tokens),
+            (CaselessKeyword('not') | "~" | "!", 1, opAssoc.RIGHT, BooleanNotOperation.create_from_tokens),
+            (CaselessKeyword('and') | "&", 2, opAssoc.LEFT, BooleanAndOperation.create_from_tokens),
+            (CaselessKeyword('xor') | "^", 2, opAssoc.LEFT, BooleanXorOperation.create_from_tokens),
+            (CaselessKeyword('or') | "|", 2, opAssoc.LEFT, BooleanOrOperation.create_from_tokens),
         ]
 
         # terms (atoms) that will be combined with the boolean operators
         term_list = [
-            (CaselessKeyword('tag:'), TagFilterTerm.create_from_tokens),
-            (CaselessKeyword('ingr:'), IngredientFilterTerm.create_from_tokens),
-            (CaselessKeyword('unit:'), UnitFilterTerm.create_from_tokens),
+            (CaselessKeyword('tag'), TagFilterTerm.create_from_tokens),
+            (CaselessKeyword('ingr'), IngredientFilterTerm.create_from_tokens),
+            (CaselessKeyword('unit'), UnitFilterTerm.create_from_tokens),
             (None, AnyFilterTerm.create_from_tokens),
         ]
 
@@ -195,45 +281,98 @@ class FilterParser:
         term_expressions = [tm[0] for tm in term_list if tm[0] is not None]
         reserved_expressions = operator_expressions + term_expressions
 
-        # strings may be single quoted, double quoted or not at all quoted (in this case the can't contain whitespace
-        # or be a keyword)
-        single_quoted_string = QuotedString('"', escChar='\\')
-        double_quoted_string = QuotedString("'", escChar='\\')
-        unquoted_string = ~Or(reserved_expressions) + CharsNotIn(" \t\r\n()")
-        # unquoted_string must be last, so that initial quotes are handled correctly
-        base_filter_string = single_quoted_string | double_quoted_string | unquoted_string
-        base_filter_string.setParseAction(lambda toks: toks[0])
+        # quoted string indicates exact macthc
+        quoted_filter_string = (QuotedString('"', escChar='\\') | QuotedString("'", escChar='\\')).setResultsName('string')
+        # quoted_filter_string.setDebug(True)
+        quoted_filter_string.setName("quoted_filter_string")
+        quoted_filter_string.setParseAction(ExactFilterString.create_from_tokens)
 
-        # filter string may be prefixed by ~ to indicate substring match
-        simple_filter_string = pyparsing.Optional("~").setResultsName("contains") + base_filter_string.setResultsName("string")
-        simple_filter_string.setParseAction(SimpleFilterString.create_from_tokens)
+        # not quoted string is inexact match, can't contain whitespace or be an operator
+        unquoted_filter_string = ~MatchFirst(reserved_expressions) + Regex(r'[^\s\(\)]+', flags=re.U).setResultsName('string')
+        # unquoted_filter_string.setDebug(True)
+        unquoted_filter_string.setName("unquoted_filter_string")
+        unquoted_filter_string.setParseAction(FuzzyFilterString.create_from_tokens)
 
         # regular expressions aren't parsed in the grammar but delegated to python re.compile in the parser action
         regex_filter_string = QuotedString('/', escChar='\\')
+        regex_filter_string.setName("regex_filter_string")
         regex_filter_string.setParseAction(RegexFilterString.create_from_tokens)
 
-        filter_string = regex_filter_string | simple_filter_string
+        # unquoted_filter_string must be last, so that initial quotes are handled correctly
+        filter_string = regex_filter_string | quoted_filter_string | unquoted_filter_string
         filter_string.setParseAction(lambda toks: toks[0])
 
         filter_terms = []
         for prefix_expression, term_action in term_list:
             if prefix_expression is not None:
-                filter_term = Combine(prefix_expression + filter_string.setResultsName("filter_string"))
+                filter_term = Combine(prefix_expression + ':' + filter_string.setResultsName("filter_string"))
+                filter_term.setName("filter_term_"+str(prefix_expression.match))
             else:
                 filter_term = filter_string.setResultsName("filter_string")
+                filter_term.setName("filter_term_None")
+            # filter_term.setDebug(True)
             filter_term.addParseAction(term_action)
             filter_terms.append(filter_term)
-        filter_term = Or(filter_terms)
-
+        filter_term = MatchFirst(filter_terms)
         filter_expr = infixNotation(filter_term, operator_list)
 
         return filter_expr
 
 
-if __name__ == "__main__":
-    filter_parser = FilterParser()
+# DSL
+@dataclass(frozen=True)
+class _FilterTermBuilder:
+    term: Optional[Type[FilterTerm]] = None
 
-    filter_parser.filter_expression_parser.runTests('''
-        a b
-        a b c ingr:d
-    ''')
+    @property
+    def fuz(self) -> '_FilterStringBuilder':
+        return _FilterStringBuilder(term=self.term, filter_string=FuzzyFilterString)
+
+    @property
+    def re(self) -> '_FilterStringBuilder':
+        return _FilterStringBuilder(term=self.term, filter_string=lambda s: RegexFilterString(re.compile(s)))
+
+    @property
+    def ex(self) -> '_FilterStringBuilder':
+        return _FilterStringBuilder(term=self.term, filter_string=ExactFilterString)
+
+    def __call__(self, string):
+        term = self.term or AnyFilterTerm
+        return term(FuzzyFilterString(string))
+
+
+
+@dataclass(frozen=True)
+class _FilterStringBuilder:
+    term: Optional[Type[FilterTerm]]
+    filter_string: Optional[Callable[[str], FilterString]] = None
+
+    def __call__(self, string):
+        term = self.term or AnyFilterTerm
+        filter_string = self.filter_string or FuzzyFilterString
+        return term(filter_string(string))
+
+
+@dataclass(frozen=True)
+class _FilterBuilder(_FilterTermBuilder):
+    @property
+    def any(self) -> _FilterTermBuilder:
+        return _FilterTermBuilder(term=AnyFilterTerm)
+
+    @property
+    def tag(self) -> _FilterTermBuilder:
+        return _FilterTermBuilder(term=TagFilterTerm)
+
+    @property
+    def ingr(self) -> _FilterTermBuilder:
+        return _FilterTermBuilder(term=IngredientFilterTerm)
+
+    @property
+    def unit(self) -> _FilterTermBuilder:
+        return _FilterTermBuilder(term=UnitFilterTerm)
+
+    def __call__(self, string) -> AnyFilterTerm:
+        return AnyFilterTerm(FuzzyFilterString(string))
+
+
+f = _FilterBuilder()
