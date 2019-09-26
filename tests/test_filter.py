@@ -65,11 +65,29 @@ def test_parse_filter_string(filter_parser, filter_string, expected_ast):
         AnyFilterTerm(FuzzyFilterString("a"))
     ),
     (
-        "a" ^ f.fuz("b") ^ FuzzyFilterString("c"),
+        "a" & (f("b") & "c") & "d",
+        BooleanAndOperation(operands=[
+            AnyFilterTerm(FuzzyFilterString("a")), AnyFilterTerm(FuzzyFilterString("b")),
+            AnyFilterTerm(FuzzyFilterString("c")), AnyFilterTerm(FuzzyFilterString("d"))
+        ])
+
+    ),
+    (
+        "a" | (f("b") | "c") | "d",
+        BooleanOrOperation(operands=[
+            AnyFilterTerm(FuzzyFilterString("a")), AnyFilterTerm(FuzzyFilterString("b")),
+            AnyFilterTerm(FuzzyFilterString("c")), AnyFilterTerm(FuzzyFilterString("d"))
+        ])
+
+    ),
+    (
+        "a" ^ ("b" ^ f.fuz("c")) ^ FuzzyFilterString("d"),
         BooleanXorOperation(operands=[
-            AnyFilterTerm(FuzzyFilterString("a")), AnyFilterTerm(FuzzyFilterString("b")), AnyFilterTerm(FuzzyFilterString("c"))
+            AnyFilterTerm(FuzzyFilterString("a")), AnyFilterTerm(FuzzyFilterString("b")),
+            AnyFilterTerm(FuzzyFilterString("c")), AnyFilterTerm(FuzzyFilterString("d"))
         ])
     ),
+
 ])
 def test_filter_builder(builder_ast, expected_ast):
     assert builder_ast == expected_ast
