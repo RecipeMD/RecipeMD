@@ -17,7 +17,7 @@ import pyparsing
 from argcomplete import FilesCompleter
 
 from recipemd.data import RecipeParser, Recipe
-from recipemd.filter import FilterElement, FilterParser
+from recipemd.filter import _FilterElement, FilterParser
 
 __all__ = ['main']
 
@@ -178,7 +178,7 @@ def dir_path(path):
         raise argparse.ArgumentTypeError(f'"{path}" is not a valid folder')
 
 
-def create_filter_expr(filter_string) -> FilterElement:
+def create_filter_expr(filter_string) -> _FilterElement:
     try:
         return FilterParser().parse_filter_string(filter_string)
     except pyparsing.ParseBaseException as e:

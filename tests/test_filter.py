@@ -135,6 +135,8 @@ def recipe() -> Recipe:
 
     (~f("Ham"), True),
     (f("Eggs") | f("Ham"), True),
+    (f("Cheese") | f("Ham"), False),
+    (f("Eggs") & f("Salt"), True),
     (f("Eggs") & f("Ham"), False),
     (f("Eggs") ^ f("Ham"), True),
     (f("Eggs") ^ f("Salt"), False),
