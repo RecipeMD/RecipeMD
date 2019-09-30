@@ -22,12 +22,12 @@ setuptools.setup(
         # commonmark version needs to match the version required by commonmarkextensions
         'commonmark>=0.8.0,<=0.8.1',
         'argcomplete~=1.10.0',
-        'boolean.py==3.6',
+        'pyparsing~=2.4.2',
     ],
     entry_points={
         'console_scripts': [
             'recipemd=recipemd.cli.main:main',
-            'recipemd-tags=recipemd.cli.tags:main',
+            'recipemd-find=recipemd.cli.find:main',
         ],
     },
     classifiers=[
