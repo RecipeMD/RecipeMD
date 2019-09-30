@@ -1,8 +1,9 @@
 """
 Defines boolean predicates that can be evaluated against a recipe.
 
-Filters allow easy searching within the structure of a `recipemd.data.Recipe`. They can be created from strings with the
-`recipemd.filter.FilterParser` or in code with the `recipemd.filter.FilterBuilder`.
+Filters allow easy searching within the structure of a :class:`recipemd.data.Recipe`. They can be created from strings
+with the :class:`FilterParser` or in code with the :class:`FilterBuilder` which can be imported as :data:`f` from this
+module.
 
 """
 import itertools
@@ -19,7 +20,7 @@ from pyparsing import infixNotation, QuotedString, CaselessKeyword, opAssoc, Par
 from recipemd.data import Recipe
 
 __all__ = [
-    "FilterParser", "FilterBuilder", "f",
+    "FilterParser", "f", "FilterBuilder",
     "BooleanAndOperation", "BooleanOrOperation", "BooleanNotOperation", "BooleanXorOperation",
     "AnyFilterTerm", "TagFilterTerm", "IngredientFilterTerm", "UnitFilterTerm",
     "FuzzyFilterString", "ExactFilterString", "RegexFilterString",
@@ -263,7 +264,7 @@ class FilterParser:
     def __init__(self):
         self.filter_expression_parser = self._create_parser()
 
-    def parse_filter_string(self, filter_string) -> _FilterElement:
+    def parse_filter_string(self, filter_string: str) -> _FilterElement:
         """
         Parses a filter string into an evaluateable AST.
 
@@ -430,4 +431,8 @@ class FilterBuilder(_FilterTermBuilder):
         return AnyFilterTerm(FuzzyFilterString(string))
 
 
+#: A preconfigured :class:`FilterBuilder` for convenient use
 f = FilterBuilder()
+
+# hack to make sphinx_autodoc_typehints happy
+object.__setattr__(f, '__qualname__', 'f')

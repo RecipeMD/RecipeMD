@@ -1,4 +1,4 @@
-# RecipeMD: Markdown Recipe Specification
+# RecipeMD Specification
 
 This is version 2.2.0 of the RecipeMD specification.
 
@@ -147,8 +147,6 @@ An ingredient group us represented as follows:
 
 1. A [heading], whose contents are the group's title
 2. A list of ingredients
-
-[heading](https://spec.commonmark.org/0.28/#atx-headings)
 
 
 

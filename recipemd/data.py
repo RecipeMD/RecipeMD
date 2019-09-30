@@ -1,7 +1,7 @@
 """
 Defines the RecipeMD data structures, provides parser, serializer and recipe scaling functions.
 """
-from __future__ import annotations
+#from __future__ import annotations
 
 import re
 import unicodedata
@@ -14,8 +14,8 @@ from commonmark.node import Node
 from commonmark_extensions.plaintext import CommonMarkToCommonMarkRenderer
 from dataclasses_json import dataclass_json, config
 
-__all__ = ['Amount', 'IngredientGroup', 'Ingredient', 'Recipe', 'RecipeParser', 'RecipeSerializer', 'multiply_recipe',
-           'get_recipe_with_yield']
+__all__ = ['RecipeParser', 'RecipeSerializer', 'multiply_recipe', 'get_recipe_with_yield',
+           'Recipe', 'Ingredient', 'IngredientGroup', 'Amount']
 
 
 def _decode_ingredient_element_list(ingrs: List[Dict]):
@@ -38,7 +38,7 @@ def _decode_ingredient_element(ingr_el_dict: Dict):
 @dataclass(frozen=True)
 class IngredientGroup:
     title: Optional[str] = None
-    children: List[Union[Ingredient, IngredientGroup]] = field(
+    children: List[Union['Ingredient', 'IngredientGroup']] = field(
         default_factory=list,
         metadata=config(decoder=_decode_ingredient_element_list),
     )
@@ -81,7 +81,7 @@ class Recipe:
     instructions: Optional[str] = None
 
     @property
-    def leaf_ingredients(self) -> Generator[Ingredient]:
+    def leaf_ingredients(self) -> Generator['Ingredient', None, None]:
         yield from self._get_leaf_ingredients(self.ingredients)
 
     def _get_leaf_ingredients(self, ingredients: List[Union[Ingredient, IngredientGroup]]):
@@ -414,6 +414,8 @@ def multiply_recipe(recipe: Recipe, multiplier: Decimal) -> Recipe:
     Multiplies a recipe by the given multiplier
 
     Creates a new recipe where the factor of yield and ingredient is changed according to the multiplier
+
+
     """
     recipe = replace(recipe, yields=[replace(y, factor=y.factor * multiplier) for y in recipe.yields])
     recipe = replace(recipe, ingredients=_multiply_ingredients(recipe.ingredients, multiplier))
