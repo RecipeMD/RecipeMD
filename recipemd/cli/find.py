@@ -98,7 +98,6 @@ def main():
     argcomplete.autocomplete(parser)
 
     args = parser.parse_args()
-    print(args.output_multicol)
     args.func(args)
 
 
