@@ -103,6 +103,7 @@ Some RecipeMD repositories:
 
 - [AberDerBart](https://github.com/AberDerBart/recipes)
 - [dasnessie](https://github.com/dasnessie/recipes)
+- [fscholdei](https://github.com/fscholdei/recipes)
 - [sonea-pm8](https://github.com/sonea-pm8/recipes)
 - [timschubert](https://github.com/timschubert/recipes)
 - [tstehr](https://github.com/tstehr/recipes)
