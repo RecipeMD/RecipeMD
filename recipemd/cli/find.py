@@ -9,7 +9,7 @@ import re
 import shutil
 import sys
 import unicodedata
-from math import floor
+from math import floor, ceil
 from typing import Callable, Iterable
 
 import argcomplete
@@ -30,9 +30,20 @@ def main():
         help='Filter expression. Expects a boolean string, e.g. "cake and vegan or ingr:cheese"'
     )
     parser.add_argument('-s', '--no-messages', action='store_true', default=False, help='suppress error messages')
-    parser.add_argument(
-        '-1', action='store_true', dest='one_per_line', default=False,
+
+    matrix_parser = parser.add_mutually_exclusive_group()
+    matrix_parser.add_argument(
+        '-1', dest='output_multicol', action='store_const', const='no',
         help='Force output to be one entry per line. This is the default when output is not to a terminal.'
+    )
+    matrix_parser.add_argument(
+        '-C', dest='output_multicol', action='store_const', const='columns',
+        help='Force multi-column output; this is the default when output is to a terminal.'
+    )
+    matrix_parser.add_argument(
+        '-x', dest='output_multicol', action='store_const', const='rows',
+        help='The same as -C, except that the multi-column output is produced with entries sorted across, rather than '
+             'down, the columns.'
     )
 
     subparsers = parser.add_subparsers(metavar="action", required=True)
@@ -87,11 +98,12 @@ def main():
     argcomplete.autocomplete(parser)
 
     args = parser.parse_args()
+    print(args.output_multicol)
     args.func(args)
 
 
 def list_recipes(args):
-    print_result([path for recipe, path in get_filtered_recipes(args)], args.one_per_line)
+    print_result([path for recipe, path in get_filtered_recipes(args)], args.output_multicol)
 
 
 def list_tags(args):
@@ -128,7 +140,7 @@ def list_elements(args, extractor: Callable[[Recipe], Iterable[str]]):
         result = list(counter)
         result.sort(key=lambda s: s.casefold())
 
-    print_result(result, args.one_per_line)
+    print_result(result, args.output_multicol)
 
 
 def get_filtered_recipes(args):
@@ -146,25 +158,42 @@ def get_filtered_recipes(args):
     return result
 
 
-def print_result(items, one_per_line):
-    if os.isatty(sys.stdout.fileno()) and not one_per_line:
+def print_result(items, output_multicol):
+    if output_multicol is None:
+        if os.isatty(sys.stdout.fileno()):
+            output_multicol = 'columns'
+        else:
+            output_multicol = 'no'
+
+    if output_multicol == 'columns':
         print_columns(items)
+    elif output_multicol == 'rows':
+        print_columns(items, transpose=True)
     else:
         print("\n".join(items))
 
 
-def print_columns(items):
+def print_columns(items, transpose=True):
     if not items:
         return
+
     # normalize items so decomposed unicode chars don't break lines
     items = [unicodedata.normalize('NFKC', item) for item in items]
     max_item_width = max(len(item) for item in items)
     column_width = max_item_width + 2
     line_width, _ = shutil.get_terminal_size((80, 20))
-    items_per_line = floor(line_width / column_width)
-    if items_per_line == 0:
-        items_per_line = 1
-    matrix = [items[i:i+items_per_line] for i in range(0, len(items), items_per_line)]
+
+    # calculate column and line count
+    column_count = floor(line_width / column_width)
+    if column_count == 0:
+        column_count = 1
+    row_count = ceil(len(items) / column_count)
+
+    if transpose:
+        matrix = [items[i::row_count] for i in range(0, row_count)]
+    else:
+        matrix = [items[i:i+column_count] for i in range(0, len(items), column_count)]
+
     for row in matrix:
         padded_row = [val.ljust(column_width) for val in row[0:-1]]
         padded_row.append(row[-1])

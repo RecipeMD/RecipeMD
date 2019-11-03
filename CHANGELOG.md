@@ -2,11 +2,12 @@
 
 - *Breaking:* Classes in `recipemd.data` are now frozen
 - *Breaking:* Rename `recipemd-tags` to `recipemd-find` and option  `-f/--filter` to `-e/--expression`
+- *Breaking:* `recipemd-find` now searches tags, ingredient names and units
+- *Breaking:* `recipemd-find` displays result in columns instead of rows by default. Use `-x` for old behavior
 - Prevent duplicated headlines when flattening
 - Amount values can be negative to allow simple stock keeping
 - Remove linked recipe amount from title in instructions as it is confusing with multiple levels of flattened recipes
 - Add option `--export-linked` to export linked recipes in the correct scale to a folder 
-- `recipemd-find` now searches tags, ingredient names and units
 - Advanced expression syntax in recipemd-find
     - Terms are now case insensitive by default
     - Terms can be quoted to for exact match
