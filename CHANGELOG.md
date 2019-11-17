@@ -1,5 +1,7 @@
 # Changelog
 
+The `recipemd` package uses [semantic versioning](https://semver.org).
+
 ## Version Next
 
 - *Breaking:* Classes in `recipemd.data` are now frozen
