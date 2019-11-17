@@ -1,4 +1,7 @@
 # PYTHON_ARGCOMPLETE_OK
+"""
+Implements :ref:`cli_recipemd`
+"""
 
 import argparse
 import decimal
@@ -22,39 +25,6 @@ __all__ = ['main']
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Read and process recipemd recipes')
-
-    parser.add_argument(
-        'file', type=argparse.FileType('r', encoding='UTF-8'), help='A recipemd file'
-    ).completer = FilesCompleter(allowednames='*.md')
-
-    display_parser = parser.add_mutually_exclusive_group()
-    display_parser.add_argument('-t', '--title', action='store_true', help='Display recipe title')
-    display_parser.add_argument('-i', '--ingredients', action='store_true', help='Display recipe ingredients')
-    display_parser.add_argument('-j', '--json', action='store_true', help='Display recipe as JSON')
-
-    parser.add_argument(
-        '-r', '--round', type=lambda s: None if s.lower() == 'no' else int(s), metavar='n', default=2,
-        help='Round amount to n digits after decimal point. Default is "2", use "no" to disable rounding.'
-    ).completer = ChoicesCompleter(('no', *range(0, decimal.getcontext().prec + 1)))
-
-    scale_parser = parser.add_mutually_exclusive_group()
-    scale_parser.add_argument('-m', '--multiply', type=str, help='Multiply recipe by N', metavar='N')
-    scale_parser.add_argument(
-        '-y', '--yield', type=str, help='Scale the recipe for yield Y, e.g. "5 servings"',
-        metavar='Y', dest='required_yield'
-    ).completer = _yield_completer
-
-    flatten_parser = parser.add_mutually_exclusive_group()
-    flatten_parser.add_argument(
-        '-f', '--flatten', action='store_true',
-        help='Flatten ingredients and instructions of linked recipes into main recipe'
-    )
-    flatten_parser.add_argument(
-        '--export-links', type=str, metavar='DIR', nargs='?', default=False, const=True,
-        help='Export flattened linked recipes as required for the main recipe to DIR (DIR defaults to recipe file name)'
-    )
-
     # completions
     argcomplete.autocomplete(parser)
 
@@ -269,6 +239,41 @@ def _ingredient_to_string(ingr: Ingredient, *, rounding: Optional[int]=None) -> 
     if ingr.amount is not None:
         return f'{RecipeSerializer._serialize_amount(ingr.amount, rounding=rounding)} {ingr.name}'
     return ingr.name
+
+
+# parser is on module level for sphinx-autoprogram
+parser = argparse.ArgumentParser(description='Read and process recipemd recipes')
+
+parser.add_argument(
+    'file', type=argparse.FileType('r', encoding='UTF-8'), help='A recipemd file'
+).completer = FilesCompleter(allowednames='*.md')
+
+display_parser = parser.add_mutually_exclusive_group()
+display_parser.add_argument('-t', '--title', action='store_true', help='Display recipe title')
+display_parser.add_argument('-i', '--ingredients', action='store_true', help='Display recipe ingredients')
+display_parser.add_argument('-j', '--json', action='store_true', help='Display recipe as JSON')
+
+parser.add_argument(
+    '-r', '--round', type=lambda s: None if s.lower() == 'no' else int(s), metavar='n', default=2,
+    help='Round amount to n digits after decimal point. Default is "2", use "no" to disable rounding.'
+).completer = ChoicesCompleter(('no', *range(0, decimal.getcontext().prec + 1)))
+
+scale_parser = parser.add_mutually_exclusive_group()
+scale_parser.add_argument('-m', '--multiply', type=str, help='Multiply recipe by N', metavar='N')
+scale_parser.add_argument(
+    '-y', '--yield', type=str, help='Scale the recipe for yield Y, e.g. "5 servings"',
+    metavar='Y', dest='required_yield'
+).completer = _yield_completer
+
+flatten_parser = parser.add_mutually_exclusive_group()
+flatten_parser.add_argument(
+    '-f', '--flatten', action='store_true',
+    help='Flatten ingredients and instructions of linked recipes into main recipe'
+)
+flatten_parser.add_argument(
+    '--export-links', type=str, metavar='DIR', nargs='?', default=False, const=True,
+    help='Export flattened linked recipes as required for the main recipe to DIR (DIR defaults to recipe file name)'
+)
 
 
 if __name__ == "__main__":

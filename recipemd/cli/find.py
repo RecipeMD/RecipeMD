@@ -1,4 +1,7 @@
 # PYTHON_ARGCOMPLETE_OK
+"""
+Implements :ref:`cli_recipemd_find`
+"""
 
 import argparse
 import collections
@@ -23,77 +26,6 @@ __all__ = ['main']
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Find recipes, ingredients and units by filter expression')
-
-    parser.add_argument(
-        '-e', '--expression', type=create_filter_expr,
-        help='Filter expression. Expects a boolean string, e.g. "cake and vegan or ingr:cheese"'
-    )
-    parser.add_argument('-s', '--no-messages', action='store_true', default=False, help='suppress error messages')
-
-    matrix_parser = parser.add_mutually_exclusive_group()
-    matrix_parser.add_argument(
-        '-1', dest='output_multicol', action='store_const', const='no',
-        help='Force output to be one entry per line. This is the default when output is not to a terminal.'
-    )
-    matrix_parser.add_argument(
-        '-C', dest='output_multicol', action='store_const', const='columns',
-        help='Force multi-column output; this is the default when output is to a terminal.'
-    )
-    matrix_parser.add_argument(
-        '-x', dest='output_multicol', action='store_const', const='rows',
-        help='The same as -C, except that the multi-column output is produced with entries sorted across, rather than '
-             'down, the columns.'
-    )
-
-    subparsers = parser.add_subparsers(metavar="action", required=True)
-
-    # recipes
-    parser_recipes = subparsers.add_parser('recipes', help='list recipe paths')
-    parser_recipes.set_defaults(func=list_recipes)
-
-    parser_recipes.add_argument(
-        'folder', type=dir_path, nargs='?', default='.', help='path to a folder containing recipemd files. Works '
-                                                              'recursively for all *.md files.'
-        # very unlikely file extension so completer only returns folders
-    ).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
-
-    # list tags
-    parser_tags = subparsers.add_parser('tags', help="list used tags")
-    parser_tags.set_defaults(func=list_tags)
-
-    parser_tags.add_argument('-c', '--count', action='store_true', help="count number of uses per tag")
-    parser_tags.add_argument(
-        'folder', type=dir_path, nargs='?', default='.', help='path to a folder containing recipemd files. Works '
-                                                              'recursively for all *.md files.'
-        # very unlikely file extension so completer only returns folders
-    ).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
-
-    # list ingredients
-    parser_ingredients = subparsers.add_parser('ingredients', help="list used ingredients")
-    parser_ingredients.set_defaults(func=list_ingredients)
-
-    parser_ingredients.add_argument('-c', '--count', action='store_true', help="count number of uses per ingredient")
-    parser_ingredients.add_argument(
-        'folder', type=dir_path, nargs='?', default='.', help='path to a folder containing recipemd files. Works '
-                                                              'recursively for all *.md files.'
-        # very unlikely file extension so completer only returns folders
-    ).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
-
-    # list units
-    parser_units = subparsers.add_parser('units', help="list used units")
-    parser_units.set_defaults(func=list_units)
-
-    parser_units.add_argument('-c', '--count', action='store_true', help="count number of uses per unit")
-    parser_units.add_argument(
-        'folder', type=dir_path, nargs='?', default='.', help='path to a folder containing recipemd files. Works '
-                                                              'recursively for all *.md files.'
-        # very unlikely file extension so completer only returns folders
-    ).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
-
-    # TODO edit
-    # parser_edit = subparsers.add_parser('edit', help='edit tags')
-
     # completions
     argcomplete.autocomplete(parser)
 
@@ -213,6 +145,79 @@ def create_filter_expr(filter_string) -> _FilterElement:
         raise argparse.ArgumentTypeError(f'"{filter_string}" is not a valid filter: {e}')
     except re.error as e:
         raise argparse.ArgumentTypeError(f'"{filter_string}" contains the regular expression "{e.pattern}": {e}')
+
+
+# parser is on module level for sphinx-autoprogram
+parser = argparse.ArgumentParser(description='Find recipes, ingredients and units by filter expression')
+
+parser.add_argument(
+    '-e', '--expression', type=create_filter_expr,
+    help='Filter expression. Expects a boolean string, e.g. "cake and vegan or ingr:cheese"'
+)
+parser.add_argument('-s', '--no-messages', action='store_true', default=False, help='suppress error messages')
+
+matrix_parser = parser.add_mutually_exclusive_group()
+matrix_parser.add_argument(
+    '-1', dest='output_multicol', action='store_const', const='no',
+    help='Force output to be one entry per line. This is the default when output is not to a terminal.'
+)
+matrix_parser.add_argument(
+    '-C', dest='output_multicol', action='store_const', const='columns',
+    help='Force multi-column output; this is the default when output is to a terminal.'
+)
+matrix_parser.add_argument(
+    '-x', dest='output_multicol', action='store_const', const='rows',
+    help='The same as -C, except that the multi-column output is produced with entries sorted across, rather than '
+         'down, the columns.'
+)
+
+subparsers = parser.add_subparsers(metavar="action", required=True)
+
+# recipes
+parser_recipes = subparsers.add_parser('recipes', help='list recipe paths')
+parser_recipes.set_defaults(func=list_recipes)
+
+parser_recipes.add_argument(
+    'folder', type=dir_path, nargs='?', default='.', help='path to a folder containing recipemd files. Works '
+                                                          'recursively for all *.md files.'
+    # very unlikely file extension so completer only returns folders
+).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
+
+# list tags
+parser_tags = subparsers.add_parser('tags', help="list used tags")
+parser_tags.set_defaults(func=list_tags)
+
+parser_tags.add_argument('-c', '--count', action='store_true', help="count number of uses per tag")
+parser_tags.add_argument(
+    'folder', type=dir_path, nargs='?', default='.', help='path to a folder containing recipemd files. Works '
+                                                          'recursively for all *.md files.'
+    # very unlikely file extension so completer only returns folders
+).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
+
+# list ingredients
+parser_ingredients = subparsers.add_parser('ingredients', help="list used ingredients")
+parser_ingredients.set_defaults(func=list_ingredients)
+
+parser_ingredients.add_argument('-c', '--count', action='store_true', help="count number of uses per ingredient")
+parser_ingredients.add_argument(
+    'folder', type=dir_path, nargs='?', default='.', help='path to a folder containing recipemd files. Works '
+                                                          'recursively for all *.md files.'
+    # very unlikely file extension so completer only returns folders
+).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
+
+# list units
+parser_units = subparsers.add_parser('units', help="list used units")
+parser_units.set_defaults(func=list_units)
+
+parser_units.add_argument('-c', '--count', action='store_true', help="count number of uses per unit")
+parser_units.add_argument(
+    'folder', type=dir_path, nargs='?', default='.', help='path to a folder containing recipemd files. Works '
+                                                          'recursively for all *.md files.'
+    # very unlikely file extension so completer only returns folders
+).completer = FilesCompleter(allowednames="*.7CA0B927-3B02-48EA-97A9-CB557E061992")
+
+# TODO edit
+# parser_edit = subparsers.add_parser('edit', help='edit tags')
 
 
 if __name__ == "__main__":

@@ -1,0 +1,10 @@
+<div role="note" aria-label="source link">
+    {% if sourcename is defined and theme_github_user is defined %}
+    {% set src = sourcename.split('.') %}
+    <h3>Edit this page</h3>
+    <a class="github-edit" href="https://github.com/{{ theme_github_user }}/{{ theme_github_repo }}/edit/master/{{ doc_path }}/{{ pagename }}.{{ src[-2] }}">
+        <img src="{{ pathto('_static/github_logo.png', 1) }}" class="inlinelogo" />
+        Edit on GitHub
+    </a>
+    {% endif %}
+</div>
