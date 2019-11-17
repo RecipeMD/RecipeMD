@@ -405,7 +405,7 @@ class FilterBuilder(_FilterTermBuilder):
     Filters can be combined with logical operators "&" (and), "|" (or), "^" (xor), and "~" (not):
 
     >>> f('Cheese') | f('Bacon')
-    BooleanOrOperation(opreators=[AnyFilterTerm(filter_string=FuzzyFilterString(string='Cheese')),  AnyFilterTerm(filter_string=FuzzyFilterString(string='Bacon'))])
+    BooleanOrOperation(operands=[AnyFilterTerm(filter_string=FuzzyFilterString(string='Cheese')), AnyFilterTerm(filter_string=FuzzyFilterString(string='Bacon'))])
     """
     @property
     def any(self) -> _FilterTermBuilder:
