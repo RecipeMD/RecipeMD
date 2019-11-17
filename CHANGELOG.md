@@ -2,7 +2,7 @@
 
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
-## Version Next
+## Version 3.0.0 (2019-11-17)
 
 - *Breaking:* Classes in `recipemd.data` are now frozen
 - *Breaking:* Rename `recipemd-tags` to `recipemd-find` and option  `-f/--filter` to `-e/--expression`
