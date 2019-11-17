@@ -1,0 +1,7 @@
+recipemd.data module
+====================
+
+.. automodule:: recipemd.data
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+recipemd.cli.find module
+========================
+
+.. automodule:: recipemd.cli.find
+   :members:
+   :undoc-members:
+   :show-inheritance:

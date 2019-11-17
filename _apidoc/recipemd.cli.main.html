@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>recipemd.cli.main module &#8212; RecipeMD 3.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="recipemd.data module" href="recipemd.data.html" />
+    <link rel="prev" title="recipemd.cli.find module" href="recipemd.cli.find.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/recipemd-mark.svg" alt="Logo"/>
+    
+    <h1 class="logo logo-name">RecipeMD</h1>
+    
+  </a>
+</p>
+
+
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">RecipeMD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../specification.html">RecipeMD Specification</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../reference_implementation.html">Reference Implementation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html">CLI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="recipemd.html">recipemd package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="recipemd.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="recipemd.cli.html">recipemd.cli package</a><ul class="current">
+<li class="toctree-l5 current"><a class="reference internal" href="recipemd.cli.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l6"><a class="reference internal" href="recipemd.cli.find.html">recipemd.cli.find module</a></li>
+<li class="toctree-l6 current"><a class="current reference internal" href="#">recipemd.cli.main module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="recipemd.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../reference_implementation.html">Reference Implementation</a><ul>
+  <li><a href="recipemd.html">recipemd package</a><ul>
+  <li><a href="recipemd.cli.html">recipemd.cli package</a><ul>
+      <li>Previous: <a href="recipemd.cli.find.html" title="previous chapter">recipemd.cli.find module</a></li>
+      <li>Next: <a href="recipemd.data.html" title="next chapter">recipemd.data module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script><div role="note" aria-label="source link">
+    
+    
+    <h3>Edit this page</h3>
+    <a class="github-edit" href="https://github.com/tstehr/recipemd/edit/master/docs/_apidoc/recipemd.cli.main.rst">
+        <img src="../_static/github_logo.png" class="inlinelogo" />
+        Edit on GitHub
+    </a>
+    
+</div>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-recipemd.cli.main">
+<span id="recipemd-cli-main-module"></span><h1>recipemd.cli.main module<a class="headerlink" href="#module-recipemd.cli.main" title="Permalink to this headline">¶</a></h1>
+<p>Implements <a class="reference internal" href="../cli.html#cli-recipemd"><span class="std std-ref">recipemd</span></a></p>
+<dl class="function">
+<dt id="recipemd.cli.main.main">
+<code class="sig-prename descclassname">recipemd.cli.main.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/cli/main.py#L27-L58"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.cli.main.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2019, Tilman Stehr.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/_apidoc/recipemd.cli.main.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/tstehr/recipemd" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

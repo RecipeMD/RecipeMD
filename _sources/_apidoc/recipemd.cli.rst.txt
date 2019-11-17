@@ -1,0 +1,15 @@
+recipemd.cli package
+====================
+
+.. automodule:: recipemd.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   recipemd.cli.find
+   recipemd.cli.main

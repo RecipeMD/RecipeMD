@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>RecipeMD &#8212; RecipeMD 3.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="RecipeMD Specification" href="specification.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="#">
+    <img class="logo" src="_static/recipemd-mark.svg" alt="Logo"/>
+    
+    <h1 class="logo logo-name">RecipeMD</h1>
+    
+  </a>
+</p>
+
+
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">RecipeMD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="specification.html">RecipeMD Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference_implementation.html">Reference Implementation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="specification.html" title="next chapter">RecipeMD Specification</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script><div role="note" aria-label="source link">
+    
+    
+    <h3>Edit this page</h3>
+    <a class="github-edit" href="https://github.com/tstehr/recipemd/edit/master/docs/index.rst">
+        <img src="_static/github_logo.png" class="inlinelogo" />
+        Edit on GitHub
+    </a>
+    
+</div>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="recipemd">
+<h1>RecipeMD<a class="headerlink" href="#recipemd" title="Permalink to this headline">¶</a></h1>
+<p>A <a class="reference internal" href="specification.html"><span class="doc">standard format</span></a> for recipes as <a class="reference external" href="https://commonmark.org">Markdown</a> files and a
+<a class="reference internal" href="reference_implementation.html"><span class="doc">python reference implementation</span></a>. The reference implementation can be used as a
+<a class="reference internal" href="cli.html"><span class="doc">CLI program</span></a> and as a <a class="reference internal" href="_apidoc/recipemd.html"><span class="doc">python library</span></a>.</p>
+<div class="section" id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Install the tool: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">recipemd</span></code> (optionally you can also <a class="reference internal" href="install.html#install-completions"><span class="std std-ref">install shell completions</span></a>)</p></li>
+<li><p>Look at some <a class="reference external" href="https://github.com/tstehr/RecipeMD/tree/master/examples">examples</a> or start with a
+<a class="reference external" href="https://github.com/tstehr/RecipeMD/tree/master/examples/template.md">recipe template</a> to create your own recipes</p></li>
+</ol>
+</div>
+<div class="section" id="specification">
+<h2>Specification<a class="headerlink" href="#specification" title="Permalink to this headline">¶</a></h2>
+<p>We provide a  <a class="reference internal" href="specification.html"><span class="doc">specification</span></a> for RecipeMD so other tools can use the format. The specification
+also comes with a set of <a class="reference external" href="https://github.com/tstehr/RecipeMD/tree/master/testcases">testcases</a>.</p>
+</div>
+<div class="section" id="resources">
+<h2>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
+<p>You can use <a class="reference external" href="https://github.com/AberDerBart/recipemd-extract">recipemd-extract</a> to fetch and extract recipes from the web.</p>
+<p>Some RecipeMD repositories:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/AberDerBart/recipes">AberDerBart</a></p></li>
+<li><p><a class="reference external" href="https://github.com/dasnessie/recipes">dasnessie</a></p></li>
+<li><p><a class="reference external" href="https://github.com/fscholdei/recipes">fscholdei</a></p></li>
+<li><p><a class="reference external" href="https://github.com/sonea-pm8/recipes">sonea-pm8</a></p></li>
+<li><p><a class="reference external" href="https://github.com/timschubert/recipes">timschubert</a></p></li>
+<li><p><a class="reference external" href="https://github.com/tstehr/recipes">tstehr</a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2019, Tilman Stehr.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/tstehr/recipemd" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,22 @@
+recipemd package
+================
+
+.. automodule:: recipemd
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+
+   recipemd.cli
+
+Submodules
+----------
+
+.. toctree::
+
+   recipemd.data
+   recipemd.filter

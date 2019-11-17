@@ -1,0 +1,549 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>recipemd.filter module &#8212; RecipeMD 3.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="recipemd.data module" href="recipemd.data.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/recipemd-mark.svg" alt="Logo"/>
+    
+    <h1 class="logo logo-name">RecipeMD</h1>
+    
+  </a>
+</p>
+
+
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">RecipeMD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../specification.html">RecipeMD Specification</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../reference_implementation.html">Reference Implementation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli.html">CLI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="recipemd.html">recipemd package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="recipemd.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="recipemd.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="recipemd.data.html">recipemd.data module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">recipemd.filter module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../reference_implementation.html">Reference Implementation</a><ul>
+  <li><a href="recipemd.html">recipemd package</a><ul>
+      <li>Previous: <a href="recipemd.data.html" title="previous chapter">recipemd.data module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script><div role="note" aria-label="source link">
+    
+    
+    <h3>Edit this page</h3>
+    <a class="github-edit" href="https://github.com/tstehr/recipemd/edit/master/docs/_apidoc/recipemd.filter.rst">
+        <img src="../_static/github_logo.png" class="inlinelogo" />
+        Edit on GitHub
+    </a>
+    
+</div>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-recipemd.filter">
+<span id="recipemd-filter-module"></span><h1>recipemd.filter module<a class="headerlink" href="#module-recipemd.filter" title="Permalink to this headline">¶</a></h1>
+<p>Defines boolean predicates that can be evaluated against a recipe.</p>
+<p>Filters allow easy searching within the structure of a <a class="reference internal" href="recipemd.data.html#recipemd.data.Recipe" title="recipemd.data.Recipe"><code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.data.Recipe</span></code></a>. They can be created from strings
+with the <a class="reference internal" href="#recipemd.filter.FilterParser" title="recipemd.filter.FilterParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterParser</span></code></a> or in code with the <a class="reference internal" href="#recipemd.filter.FilterBuilder" title="recipemd.filter.FilterBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterBuilder</span></code></a> which can be imported as <a class="reference internal" href="#recipemd.filter.f" title="recipemd.filter.f"><code class="xref py py-data docutils literal notranslate"><span class="pre">f</span></code></a> from this
+module.</p>
+<dl class="class">
+<dt id="recipemd.filter.FilterParser">
+<em class="property">class </em><code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">FilterParser</code><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L260-L341"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.FilterParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Allows parsing filter strings into ASTs</p>
+<dl class="method">
+<dt id="recipemd.filter.FilterParser.parse_filter_string">
+<code class="sig-name descname">parse_filter_string</code><span class="sig-paren">(</span><em class="sig-param">filter_string</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L267-L280"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.FilterParser.parse_filter_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a filter string into an evaluateable AST.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span> <span class="o">=</span> <span class="n">FilterParser</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span><span class="o">.</span><span class="n">parse_filter_string</span><span class="p">(</span><span class="s1">&#39;vegan and summer&#39;</span><span class="p">)</span>
+<span class="go">BooleanAndOperation(operands=[AnyFilterTerm(filter_string=FuzzyFilterString(string=&#39;vegan&#39;)), AnyFilterTerm(filter_string=FuzzyFilterString(string=&#39;summer&#39;))])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filter_string</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – A string representing a recipe filter</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterElement</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>filter_element: A filter ast, subclass of FilterElement</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ParseBaseException</strong> – If string is not a valid filter</p></li>
+<li><p><strong>re.error</strong> – If a regular expression used in a filter term is not syntactically correct</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="recipemd.filter.f">
+<code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">string</em><span class="sig-paren">)</span><em class="property"> = FilterBuilder(term=None)</em><a class="headerlink" href="#recipemd.filter.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>A preconfigured <a class="reference internal" href="#recipemd.filter.FilterBuilder" title="recipemd.filter.FilterBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterBuilder</span></code></a> for convenient use</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>term</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">FilterTerm</span></code>]]) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="recipemd.filter.FilterBuilder">
+<em class="property">class </em><code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">FilterBuilder</code><span class="sig-paren">(</span><em class="sig-param">term=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L383-L431"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.FilterBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.filter._FilterTermBuilder</span></code></p>
+<p>Creates filter expressions in code</p>
+<p>Allows using a language similar to the expressions parsed by <cite>recipemd.filter.FilterParser</cite> directly in python code.
+This makes filters usable as an embedded domain specific language.</p>
+<p>A preconfigured Filter builder is available as <cite>f</cite> in this module:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;Cheese&#39;</span><span class="p">)</span>
+<span class="go">AnyFilterTerm(filter_string=FuzzyFilterString(string=&#39;Cheese&#39;))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">ingr</span><span class="p">(</span><span class="s1">&#39;Cheese&#39;</span><span class="p">)</span>
+<span class="go">IngredientFilterTerm(filter_string=FuzzyFilterString(string=&#39;Cheese&#39;))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">re</span><span class="p">(</span><span class="s1">&#39;Cheese|Bacon&#39;</span><span class="p">)</span>
+<span class="go">AnyFilterTerm(filter_string=RegexFilterString(regex=re.compile(&#39;Cheese|Bacon&#39;)))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">ex</span><span class="p">(</span><span class="s1">&#39;vegan&#39;</span><span class="p">)</span>
+<span class="go">TagFilterTerm(filter_string=ExactFilterString(string=&#39;vegan&#39;))</span>
+</pre></div>
+</div>
+<p>Filters can be combined with logical operators “&amp;” (and), “|” (or), “^” (xor), and “~” (not):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;Cheese&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="n">f</span><span class="p">(</span><span class="s1">&#39;Bacon&#39;</span><span class="p">)</span>
+<span class="go">BooleanOrOperation(operands=[AnyFilterTerm(filter_string=FuzzyFilterString(string=&#39;Cheese&#39;)), AnyFilterTerm(filter_string=FuzzyFilterString(string=&#39;Bacon&#39;))])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>term</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">FilterTerm</span></code>]]) – </p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="recipemd.filter.FilterBuilder.any">
+<em class="property">property </em><code class="sig-name descname">any</code><a class="headerlink" href="#recipemd.filter.FilterBuilder.any" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a filter that matches any supported fields</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterTermBuilder</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="recipemd.filter.FilterBuilder.ingr">
+<em class="property">property </em><code class="sig-name descname">ingr</code><a class="headerlink" href="#recipemd.filter.FilterBuilder.ingr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a filter that matches ingredient names</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterTermBuilder</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="recipemd.filter.FilterBuilder.tag">
+<em class="property">property </em><code class="sig-name descname">tag</code><a class="headerlink" href="#recipemd.filter.FilterBuilder.tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a filter that matches tags</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterTermBuilder</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="recipemd.filter.FilterBuilder.unit">
+<em class="property">property </em><code class="sig-name descname">unit</code><a class="headerlink" href="#recipemd.filter.FilterBuilder.unit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a filter that matches units in ingredients or in yields</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterTermBuilder</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="recipemd.filter.BooleanAndOperation">
+<em class="property">class </em><code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">BooleanAndOperation</code><span class="sig-paren">(</span><em class="sig-param">operands</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L208-L222"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.BooleanAndOperation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.filter._BooleanBinaryOperation</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>operands</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterElement</span></code>]) – </p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="recipemd.filter.BooleanAndOperation.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">recipe</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L209-L210"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.BooleanAndOperation.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate filter against given recipe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>recipe</strong> (<a class="reference internal" href="recipemd.data.html#recipemd.data.Recipe" title="recipemd.data.Recipe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Recipe</span></code></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="recipemd.filter.BooleanOrOperation">
+<em class="property">class </em><code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">BooleanOrOperation</code><span class="sig-paren">(</span><em class="sig-param">operands</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L226-L236"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.BooleanOrOperation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.filter._BooleanBinaryOperation</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>operands</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterElement</span></code>]) – </p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="recipemd.filter.BooleanOrOperation.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">recipe</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L227-L228"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.BooleanOrOperation.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate filter against given recipe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>recipe</strong> (<a class="reference internal" href="recipemd.data.html#recipemd.data.Recipe" title="recipemd.data.Recipe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Recipe</span></code></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="recipemd.filter.BooleanNotOperation">
+<em class="property">class </em><code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">BooleanNotOperation</code><span class="sig-paren">(</span><em class="sig-param">operands</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L199-L204"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.BooleanNotOperation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.filter._BooleanUnaryOperation</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>operands</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterElement</span></code>]) – </p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="recipemd.filter.BooleanNotOperation.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">recipe</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L200-L201"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.BooleanNotOperation.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate filter against given recipe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>recipe</strong> (<a class="reference internal" href="recipemd.data.html#recipemd.data.Recipe" title="recipemd.data.Recipe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Recipe</span></code></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="recipemd.filter.BooleanXorOperation">
+<em class="property">class </em><code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">BooleanXorOperation</code><span class="sig-paren">(</span><em class="sig-param">operands</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L240-L252"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.BooleanXorOperation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.filter._BooleanBinaryOperation</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>operands</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterElement</span></code>]) – </p>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="recipemd.filter.BooleanXorOperation.OPERATOR">
+<code class="sig-name descname">OPERATOR</code><em class="property"> = 'xor'</em><a class="headerlink" href="#recipemd.filter.BooleanXorOperation.OPERATOR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="recipemd.filter.BooleanXorOperation.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">recipe</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L243-L244"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.BooleanXorOperation.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate filter against given recipe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>recipe</strong> (<a class="reference internal" href="recipemd.data.html#recipemd.data.Recipe" title="recipemd.data.Recipe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Recipe</span></code></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="recipemd.filter.AnyFilterTerm">
+<em class="property">class </em><code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">AnyFilterTerm</code><span class="sig-paren">(</span><em class="sig-param">filter_string</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L173-L176"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.AnyFilterTerm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#recipemd.filter.IngredientFilterTerm" title="recipemd.filter.IngredientFilterTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.filter.IngredientFilterTerm</span></code></a>, <a class="reference internal" href="#recipemd.filter.TagFilterTerm" title="recipemd.filter.TagFilterTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.filter.TagFilterTerm</span></code></a>, <a class="reference internal" href="#recipemd.filter.UnitFilterTerm" title="recipemd.filter.UnitFilterTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.filter.UnitFilterTerm</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filter_string</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterString</span></code>) – </p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="recipemd.filter.AnyFilterTerm.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">recipe</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L174-L176"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.AnyFilterTerm.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate filter against given recipe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>recipe</strong> (<a class="reference internal" href="recipemd.data.html#recipemd.data.Recipe" title="recipemd.data.Recipe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Recipe</span></code></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="recipemd.filter.TagFilterTerm">
+<em class="property">class </em><code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">TagFilterTerm</code><span class="sig-paren">(</span><em class="sig-param">filter_string</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L152-L154"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.TagFilterTerm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.filter.FilterTerm</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filter_string</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterString</span></code>) – </p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="recipemd.filter.TagFilterTerm.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">recipe</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L153-L154"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.TagFilterTerm.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate filter against given recipe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>recipe</strong> (<a class="reference internal" href="recipemd.data.html#recipemd.data.Recipe" title="recipemd.data.Recipe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Recipe</span></code></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="recipemd.filter.IngredientFilterTerm">
+<em class="property">class </em><code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">IngredientFilterTerm</code><span class="sig-paren">(</span><em class="sig-param">filter_string</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L158-L161"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.IngredientFilterTerm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.filter.FilterTerm</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filter_string</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterString</span></code>) – </p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="recipemd.filter.IngredientFilterTerm.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">recipe</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L159-L161"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.IngredientFilterTerm.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate filter against given recipe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>recipe</strong> (<a class="reference internal" href="recipemd.data.html#recipemd.data.Recipe" title="recipemd.data.Recipe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Recipe</span></code></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="recipemd.filter.UnitFilterTerm">
+<em class="property">class </em><code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">UnitFilterTerm</code><span class="sig-paren">(</span><em class="sig-param">filter_string</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L165-L169"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.UnitFilterTerm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.filter.FilterTerm</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filter_string</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterString</span></code>) – </p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="recipemd.filter.UnitFilterTerm.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param">recipe</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L166-L169"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.UnitFilterTerm.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate filter against given recipe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>recipe</strong> (<a class="reference internal" href="recipemd.data.html#recipemd.data.Recipe" title="recipemd.data.Recipe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Recipe</span></code></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="recipemd.filter.FuzzyFilterString">
+<em class="property">class </em><code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">FuzzyFilterString</code><span class="sig-paren">(</span><em class="sig-param">string</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L97-L106"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.FuzzyFilterString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.filter._FilterString</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – </p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="recipemd.filter.FuzzyFilterString.contained_in">
+<code class="sig-name descname">contained_in</code><span class="sig-paren">(</span><em class="sig-param">to_search</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L104-L106"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.FuzzyFilterString.contained_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if any of the elements in <cite>to_search</cite> match the filter string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>to_search</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="recipemd.filter.ExactFilterString">
+<em class="property">class </em><code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">ExactFilterString</code><span class="sig-paren">(</span><em class="sig-param">string</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L110-L119"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.ExactFilterString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.filter._FilterString</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – </p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="recipemd.filter.ExactFilterString.contained_in">
+<code class="sig-name descname">contained_in</code><span class="sig-paren">(</span><em class="sig-param">to_search</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L117-L119"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.ExactFilterString.contained_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if any of the elements in <cite>to_search</cite> match the filter string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>to_search</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="recipemd.filter.RegexFilterString">
+<em class="property">class </em><code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">RegexFilterString</code><span class="sig-paren">(</span><em class="sig-param">regex</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L123-L131"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.RegexFilterString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">recipemd.filter._FilterString</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>regex</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Pattern</span></code>) – </p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="recipemd.filter.RegexFilterString.contained_in">
+<code class="sig-name descname">contained_in</code><span class="sig-paren">(</span><em class="sig-param">to_search</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/master/recipemd/filter.py#L130-L131"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.RegexFilterString.contained_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if any of the elements in <cite>to_search</cite> match the filter string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>to_search</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2019, Tilman Stehr.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/_apidoc/recipemd.filter.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/tstehr/recipemd" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

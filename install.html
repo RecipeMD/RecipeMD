@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Installation &#8212; RecipeMD 3.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CLI" href="cli.html" />
+    <link rel="prev" title="Reference Implementation" href="reference_implementation.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/recipemd-mark.svg" alt="Logo"/>
+    
+    <h1 class="logo logo-name">RecipeMD</h1>
+    
+  </a>
+</p>
+
+
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">RecipeMD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="specification.html">RecipeMD Specification</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="reference_implementation.html">Reference Implementation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#install-completions">Install completions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#bash">Bash</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#zsh">Zsh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tcsh">Tcsh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fish">Fish</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html">CLI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_apidoc/recipemd.html">recipemd package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="reference_implementation.html">Reference Implementation</a><ul>
+      <li>Previous: <a href="reference_implementation.html" title="previous chapter">Reference Implementation</a></li>
+      <li>Next: <a href="cli.html" title="next chapter">CLI</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script><div role="note" aria-label="source link">
+    
+    
+    <h3>Edit this page</h3>
+    <a class="github-edit" href="https://github.com/tstehr/recipemd/edit/master/docs/install.rst">
+        <img src="_static/github_logo.png" class="inlinelogo" />
+        Edit on GitHub
+    </a>
+    
+</div>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>You can install via <a class="reference external" href="https://pypi.org/project/pip/">pip</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">recipemd</span>
+</pre></div>
+</div>
+<div class="section" id="install-completions">
+<span id="id1"></span><h2>Install completions<a class="headerlink" href="#install-completions" title="Permalink to this headline">¶</a></h2>
+<p>Completion installation depends on your shell. Read the <a class="reference external" href="https://github.com/kislyuk/argcomplete">argcomplete documentation</a> for more detail.</p>
+<div class="section" id="bash">
+<h3>Bash<a class="headerlink" href="#bash" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">activate</span><span class="o">-</span><span class="k">global</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">argcomplete</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="zsh">
+<h3>Zsh<a class="headerlink" href="#zsh" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">autoload</span> <span class="o">-</span><span class="n">U</span> <span class="n">bashcompinit</span>
+<span class="n">bashcompinit</span>
+<span class="nb">eval</span> <span class="s2">&quot;$(register-python-argcomplete recipemd)&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="tcsh">
+<h3>Tcsh<a class="headerlink" href="#tcsh" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>eval `register-python-argcomplete --shell tcsh recipemd`
+</pre></div>
+</div>
+</div>
+<div class="section" id="fish">
+<h3>Fish<a class="headerlink" href="#fish" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">register</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">argcomplete</span> <span class="o">--</span><span class="n">shell</span> <span class="n">fish</span> <span class="n">recipemd</span> <span class="o">&gt;</span> <span class="o">~/.</span><span class="n">config</span><span class="o">/</span><span class="n">fish</span><span class="o">/</span><span class="n">completions</span><span class="o">/</span><span class="n">recipemd</span><span class="o">.</span><span class="n">fish</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2019, Tilman Stehr.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/install.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/tstehr/recipemd" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
