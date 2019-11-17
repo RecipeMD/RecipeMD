@@ -37,6 +37,7 @@ release = '3.0.0'
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.linkcode",
+    'sphinx.ext.githubpages',
     'm2r',
     'sphinxcontrib.fulltoc',
     'sphinxcontrib.autoprogram',
@@ -153,6 +154,9 @@ html_sidebars = {
 html_static_path = ['_static']
 
 html_favicon = '_static/favicon.ico'
+
+# needed to create CNAME file
+html_baseurl = 'https://recipemd.org'
 
 
 # -- Alabaster -------------------------------------------------
