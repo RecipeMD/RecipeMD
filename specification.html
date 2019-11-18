@@ -36,7 +36,7 @@
             
   <div class="section" id="recipemd-specification">
 <h1>RecipeMD Specification<a class="headerlink" href="#recipemd-specification" title="Permalink to this headline">¶</a></h1>
-<p>This is version 2.3.0 of the RecipeMD specification.</p>
+<p>This is version 2.3.1 of the RecipeMD specification.</p>
 <p>RecipeMD is a Markdown-based format for writing down recipes. It
 defines a certain structure which a document must follow to be a
 RecipeMD recipe.</p>
@@ -61,26 +61,21 @@ Some people call it guac.
 
 ---
 
-Remove flesh from avocado and roughly mash with fork. Season to taste with salt pepper and lemon juice.
+Remove flesh from avocado and roughly mash with fork. Season to taste
+with salt, pepper and lemon juice.
 </pre></div>
 </div>
 <ul>
-<li><p>the title is noted as a first level header:
-<code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">Guacamole</span></code></p></li>
-<li><p>the short description is noted as one or more paragraphs.
-<code class="docutils literal notranslate"><span class="pre">Some</span> <span class="pre">people</span> <span class="pre">call</span> <span class="pre">it</span> <span class="pre">guac.</span></code></p></li>
+<li><p>the title is noted as a first level header: <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">Guacamole</span></code></p></li>
+<li><p>the short description is noted as one or more paragraphs: <code class="docutils literal notranslate"><span class="pre">Some</span>
+<span class="pre">people</span> <span class="pre">call</span> <span class="pre">it</span> <span class="pre">guac.</span></code></p></li>
 <li><p>the tags are noted as paragraph containing only a comma seperated
-list in italics:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">*sauce,</span> <span class="pre">vegan*</span></code></p>
-</div></blockquote>
-</li>
+list in italics: <code class="docutils literal notranslate"><span class="pre">*sauce,</span> <span class="pre">vegan*</span></code></p></li>
 <li><p>the yield is noted as paragraph containing only a comma seperated
-list in bold face:
-<code class="docutils literal notranslate"><span class="pre">**4</span> <span class="pre">Servings,</span> <span class="pre">200g**</span></code></p></li>
+list in bold face: <code class="docutils literal notranslate"><span class="pre">**4</span> <span class="pre">Servings,</span> <span class="pre">200g**</span></code></p></li>
 <li><p>the ingredients are noted as list items. The headings form the
-titles of ingredient groups. The amount of each ingredient (if given)
-is noted in italic case. Amounts may be expressed as decimals
+titles of ingredient groups. The amount of each ingredient (if
+given) is noted in italics. Amounts may be expressed as decimals
 (dividers “.” and “,”) and fractions:</p>
 <div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>- *1* avocado
 - *.5 teaspoon* salt
@@ -89,7 +84,8 @@ is noted in italic case. Amounts may be expressed as decimals
 </pre></div>
 </div>
 </li>
-<li><p>anything following the second horizontal line is considered instructions</p></li>
+<li><p>anything following the second horizontal line is considered
+instructions</p></li>
 </ul>
 </div>
 <div class="section" id="recipemd-data-types">
@@ -125,7 +121,8 @@ amounts.</p></li>
 <li><p>lists, where each list item is an ingredient</p></li>
 </ol>
 </li>
-<li><p>a horizontal line – this may be omitted if there are no instructions</p></li>
+<li><p>a horizontal line – this may be omitted if there are no
+instructions</p></li>
 <li><p><em>optional</em>: the instructions, everything following the second line</p></li>
 </ol>
 </div>
@@ -187,16 +184,24 @@ ingredients making up one component of a dish. It consists of:</p>
 <li><p>A [heading], whose contents are the group’s title</p></li>
 <li><p>A list of ingredients</p></li>
 </ol>
+<p><a class="reference external" href="https://spec.commonmark.org/0.28/#atx-headings">heading</a></p>
 </div>
 </div>
 <div class="section" id="test-cases">
 <h2>Test Cases<a class="headerlink" href="#test-cases" title="Permalink to this headline">¶</a></h2>
-<p>Implementations of this specification must conform with all <a class="reference external" href="https://github.com/tstehr/RecipeMD/tree/master/testcases">test cases</a>.
-There are two kinds of testcases: valid files (<code class="docutils literal notranslate"><span class="pre">*.md</span></code> with a
-corresponding <code class="docutils literal notranslate"><span class="pre">*.json</span></code>) and invalid files (<code class="docutils literal notranslate"><span class="pre">*.invalid.md</span></code>)</p>
+<p>Implementations of this specification must conform with all
+<a class="reference external" href="https://github.com/tstehr/RecipeMD/tree/master/testcases">test cases</a>. There are two kinds of testcases: valid files (<code class="docutils literal notranslate"><span class="pre">*.md</span></code>
+with a corresponding <code class="docutils literal notranslate"><span class="pre">*.json</span></code>) and invalid files (<code class="docutils literal notranslate"><span class="pre">*.invalid.md</span></code>)</p>
 </div>
 <div class="section" id="version-history">
 <h2>Version History<a class="headerlink" href="#version-history" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="version-2-3-1-2019-11-18">
+<h3>Version 2.3.1 (2019-11-18)<a class="headerlink" href="#version-2-3-1-2019-11-18" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Fix missing link</p></li>
+<li><p>Fix wrong indenta</p></li>
+</ul>
+</div>
 <div class="section" id="version-2-3-0-2019-11-18">
 <h3>Version 2.3.0 (2019-11-18)<a class="headerlink" href="#version-2-3-0-2019-11-18" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -278,6 +283,7 @@ corresponding <code class="docutils literal notranslate"><span class="pre">*.jso
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#test-cases">Test Cases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-history">Version History</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#version-2-3-1-2019-11-18">Version 2.3.1 (2019-11-18)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-2-3-0-2019-11-18">Version 2.3.0 (2019-11-18)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-2-2-0-2019-04-22">Version 2.2.0 (2019-04-22)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id2">2.1.0 (2019-03-25)</a></li>
