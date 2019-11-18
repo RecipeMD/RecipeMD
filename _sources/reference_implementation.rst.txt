@@ -12,4 +12,4 @@ The RecipeMD reference implementation is provided as a Python package. The packa
    install
    cli
    changelog
-   _apidoc/recipemd
+   API Documentation <_apidoc/recipemd>

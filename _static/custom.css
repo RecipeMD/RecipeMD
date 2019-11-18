@@ -2,10 +2,37 @@ div.body {
     min-width: auto;
 }
 
+@media screen and (min-width: 876px) {
+    :root {
+        --sidebar-wdith: 240px;
+    }
+    div.document {
+        width: 1000px;
+    }
+    div.bodywrapper {
+        margin: 0 0 0 var(--sidebar-wdith);
+    }
+    div.sphinxsidebar {
+        width: var(--sidebar-wdith);
+    }
+}
+
+
+
+.toctree-l1 {
+    padding: .4rem 0;
+}
 
 #searchlabel {
     text-transform: capitalize;
 }
+
+@media screen and (max-width: 875px) {
+    .edit-on-github {
+        display: none;
+    }
+}
+
 
 div.sphinxsidebar a.github-edit {
     font-family: sans-serif;
