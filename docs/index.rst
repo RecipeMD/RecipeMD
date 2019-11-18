@@ -14,9 +14,9 @@ Quick Start
 -----------
 
 1. Install the tool: ``pip install recipemd`` (optionally you can also :ref:`install shell completions<install_completions>`)
-2. Look at some `examples <https://github.com/tstehr/RecipeMD/tree/master/examples>`_ or start with a
+2. Look at some `example recipes <https://github.com/tstehr/RecipeMD/tree/master/examples>`_ or start with a
    `recipe template <https://github.com/tstehr/RecipeMD/tree/master/examples/template.md>`_ to create your own recipes
-
+3. Learn how to use the CLI tool with some :ref:`example calls <cli_examples>`
 
 Specification
 -------------
@@ -43,9 +43,9 @@ Some RecipeMD repositories:
 .. toctree::
    :hidden:
 
-   self
-   specification
-   reference_implementation
+   Home <self>
+   Specification <specification>
+   Tool <reference_implementation>
 
 
 Indices and tables

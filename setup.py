@@ -12,6 +12,7 @@ docs_require = [
     'sphinxcontrib.autoprogram',
     'sphinx_autodoc_typehints',
     'sphinxcontrib.apidoc',
+    'sphinx-autobuild'
 ]
 
 release_requires = [

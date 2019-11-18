@@ -6,6 +6,8 @@ The package :mod:`recipemd` provides two CLI applications:
 * :ref:`cli_recipemd` performs actions with a single recipe in RecipeMD format.
 * :ref:`cli_recipemd_find` performs actions on a folder of RecipeMD recipes.
 
+.. _cli_examples:
+
 Usage Examples
 --------------
 
