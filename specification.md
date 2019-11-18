@@ -1,6 +1,6 @@
 # RecipeMD Specification
 
-This is version 2.2.0 of the RecipeMD specification.
+This is version 2.3.0 of the RecipeMD specification.
 
 RecipeMD is a Markdown-based format for writing down recipes. It
 defines a certain structure which a document must follow to be a
@@ -9,6 +9,7 @@ RecipeMD recipe.
 All RecipeMD files shall follow the [commonmark] specification.
 
 [commonmark]: https://commonmark.org
+
 
 
 ## Example
@@ -150,4 +151,42 @@ An ingredient group us represented as follows:
 
 
 
+## Test Cases
+
+Implementations of this specification must conform with all [test cases].
+There are two kinds of testcases: valid files (`*.md` with a 
+corresponding `*.json`) and invalid files (`*.invalid.md`)
+
+[test cases]: https://github.com/tstehr/RecipeMD/tree/master/testcases
+
+
+
+## Version History
+
+### Version 2.3.0 (2019-11-18)
+
+- Add a full version of the example
+- Add version history reconstructed from git
+- Add reference to test suite
+
+### Version 2.2.0 (2019-04-22)
+
+- Allow recipes to reference other recipes
+
+### 2.1.0 (2019-03-25)
+
+- Allow unicode vulgar fractions in ingredient amounts
+
+### 2.0.1 (2018-09-17)
+
+- Reword specification
+- Clarify edge cases
+
+### 2.0.0 (2018-09-13)
+
+- *Breaking:* Seperate yields and tags into own paragraphs
+
+### 1.0.0 (2018-08-26)
+
+- Initial version
 
