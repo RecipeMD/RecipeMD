@@ -1,5 +1,23 @@
 import setuptools
 
+tests_require = [
+    'pytest',
+    'pytest-cov',
+]
+
+docs_require = [
+    'Sphinx',
+    'm2r',
+    'sphinxcontrib.fulltoc',
+    'sphinxcontrib.autoprogram',
+    'sphinx_autodoc_typehints',
+    'sphinxcontrib.apidoc',
+]
+
+release_requires = [
+    'twine',
+]
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
@@ -24,6 +42,12 @@ setuptools.setup(
         'argcomplete~=1.10.0',
         'pyparsing~=2.4.2',
     ],
+    extras_require={
+        'tests': tests_require,
+        'docs': docs_require,
+        'release': release_requires,
+        'dev': tests_require+docs_require+release_requires
+    },
     entry_points={
         'console_scripts': [
             'recipemd=recipemd.cli.main:main',
