@@ -36,7 +36,7 @@
             
   <div class="section" id="recipemd-specification">
 <h1>RecipeMD Specification<a class="headerlink" href="#recipemd-specification" title="Permalink to this headline">¶</a></h1>
-<p>This is version 2.2.0 of the RecipeMD specification.</p>
+<p>This is version 2.3.0 of the RecipeMD specification.</p>
 <p>RecipeMD is a Markdown-based format for writing down recipes. It
 defines a certain structure which a document must follow to be a
 RecipeMD recipe.</p>
@@ -189,6 +189,54 @@ ingredients making up one component of a dish. It consists of:</p>
 </ol>
 </div>
 </div>
+<div class="section" id="test-cases">
+<h2>Test Cases<a class="headerlink" href="#test-cases" title="Permalink to this headline">¶</a></h2>
+<p>Implementations of this specification must conform with all <a class="reference external" href="https://github.com/tstehr/RecipeMD/tree/master/testcases">test cases</a>.
+There are two kinds of testcases: valid files (<code class="docutils literal notranslate"><span class="pre">*.md</span></code> with a
+corresponding <code class="docutils literal notranslate"><span class="pre">*.json</span></code>) and invalid files (<code class="docutils literal notranslate"><span class="pre">*.invalid.md</span></code>)</p>
+</div>
+<div class="section" id="version-history">
+<h2>Version History<a class="headerlink" href="#version-history" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="version-2-3-0-2019-11-18">
+<h3>Version 2.3.0 (2019-11-18)<a class="headerlink" href="#version-2-3-0-2019-11-18" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Add a full version of the example</p></li>
+<li><p>Add version history reconstructed from git</p></li>
+<li><p>Add reference to test suite</p></li>
+</ul>
+</div>
+<div class="section" id="version-2-2-0-2019-04-22">
+<h3>Version 2.2.0 (2019-04-22)<a class="headerlink" href="#version-2-2-0-2019-04-22" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Allow recipes to reference other recipes</p></li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h3>2.1.0 (2019-03-25)<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Allow unicode vulgar fractions in ingredient amounts</p></li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h3>2.0.1 (2018-09-17)<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Reword specification</p></li>
+<li><p>Clarify edge cases</p></li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h3>2.0.0 (2018-09-13)<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><em>Breaking:</em> Seperate yields and tags into own paragraphs</p></li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h3>1.0.0 (2018-08-26)<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Initial version</p></li>
+</ul>
+</div>
+</div>
 </div>
 
 
@@ -226,6 +274,16 @@ ingredients making up one component of a dish. It consists of:</p>
 <li class="toctree-l3"><a class="reference internal" href="#amount">Amount</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ingredient">Ingredient</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ingredient-group">Ingredient Group</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#test-cases">Test Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-history">Version History</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#version-2-3-0-2019-11-18">Version 2.3.0 (2019-11-18)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-2-2-0-2019-04-22">Version 2.2.0 (2019-04-22)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">2.1.0 (2019-03-25)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">2.0.1 (2018-09-17)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">2.0.0 (2018-09-13)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">1.0.0 (2018-08-26)</a></li>
 </ul>
 </li>
 </ul>
