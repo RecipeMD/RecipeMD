@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>&lt;no title&gt; &#8212; RecipeMD 3.0.0 documentation</title>
+    <title>Changelog &#8212; RecipeMD 3.0.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -34,7 +34,72 @@
 
           <div class="body" role="main">
             
-  
+  <div class="section" id="changelog">
+<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">recipemd</span></code> package uses <a class="reference external" href="https://semver.org">semantic versioning</a>.</p>
+<div class="section" id="version-3-0-0-2019-11-17">
+<h2>Version 3.0.0 (2019-11-17)<a class="headerlink" href="#version-3-0-0-2019-11-17" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><em>Breaking:</em> Classes in <code class="docutils literal notranslate"><span class="pre">recipemd.data</span></code> are now frozen</p></li>
+<li><p><em>Breaking:</em> Rename <code class="docutils literal notranslate"><span class="pre">recipemd-tags</span></code> to <code class="docutils literal notranslate"><span class="pre">recipemd-find</span></code> and option  <code class="docutils literal notranslate"><span class="pre">-f/--filter</span></code> to <code class="docutils literal notranslate"><span class="pre">-e/--expression</span></code></p></li>
+<li><p><em>Breaking:</em> <code class="docutils literal notranslate"><span class="pre">recipemd-find</span></code> now searches tags, ingredient names and units</p></li>
+<li><p><em>Breaking:</em> <code class="docutils literal notranslate"><span class="pre">recipemd-find</span></code> displays result in columns instead of rows by default. Use <code class="docutils literal notranslate"><span class="pre">-x</span></code> for old behavior</p></li>
+<li><p>Prevent duplicated headlines when flattening</p></li>
+<li><p>Amount values can be negative to allow simple stock keeping</p></li>
+<li><p>Remove linked recipe amount from title in instructions as it is confusing with multiple levels of flattened recipes</p></li>
+<li><p>Add option <code class="docutils literal notranslate"><span class="pre">--export-linked</span></code> to export linked recipes in the correct scale to a folder</p></li>
+<li><p>Advanced expression syntax in recipemd-find</p>
+<ul>
+<li><p>Terms are now case insensitive by default</p></li>
+<li><p>Terms can be quoted to for exact match</p></li>
+<li><p>Allow <code class="docutils literal notranslate"><span class="pre">tag:</span></code>, <code class="docutils literal notranslate"><span class="pre">ingr:</span></code> or <code class="docutils literal notranslate"><span class="pre">unit:</span></code> as prefix for terms to restrict term to tag, ingredient or unit</p></li>
+<li><p>Search via regular expressions is possible by surrounding a term with <code class="docutils literal notranslate"><span class="pre">/</span></code></p></li>
+</ul>
+</li>
+<li><p>Add option <code class="docutils literal notranslate"><span class="pre">-j/--json</span></code> for JSON output of recipe</p></li>
+<li><p><em>Fix:</em> Exception in flattening if link ingredient has no amount</p></li>
+</ul>
+</div>
+<div class="section" id="version-2-2-2-2019-06-29">
+<h2>Version 2.2.2 (2019-06-29)<a class="headerlink" href="#version-2-2-2-2019-06-29" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Implement <code class="docutils literal notranslate"><span class="pre">recipemd-tags</span></code> tool for finding recipes by tag</p></li>
+</ul>
+</div>
+<div class="section" id="version-2-2-1-2019-04-22">
+<h2>Version 2.2.1 (2019-04-22)<a class="headerlink" href="#version-2-2-1-2019-04-22" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Add option <code class="docutils literal notranslate"><span class="pre">-r/--round</span></code> to allow control of rounding in cli output</p></li>
+<li><p>Add shell completions to cli</p></li>
+</ul>
+</div>
+<div class="section" id="version-2-2-0-2019-04-22">
+<h2>Version 2.2.0 (2019-04-22)<a class="headerlink" href="#version-2-2-0-2019-04-22" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Allow recipes to reference other recipes</p></li>
+<li><p>Implement flattening of referenced recipes in cli</p></li>
+</ul>
+</div>
+<div class="section" id="version-2-1-0-2019-03-25">
+<h2>Version 2.1.0 (2019-03-25)<a class="headerlink" href="#version-2-1-0-2019-03-25" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Allow unicode vulgar fractions in ingredient amounts</p></li>
+</ul>
+</div>
+<div class="section" id="version-2-0-0-2018-09-13">
+<h2>Version 2.0.0 (2018-09-13)<a class="headerlink" href="#version-2-0-0-2018-09-13" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><em>Breaking:</em> Implement parsing of yields separate from tags (according to RecipeMD 2.0.0 specification)</p></li>
+</ul>
+</div>
+<div class="section" id="version-1-0-0-2018-08-27">
+<h2>Version 1.0.0 (2018-08-27)<a class="headerlink" href="#version-1-0-0-2018-08-27" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Initial version</p></li>
+</ul>
+</div>
+</div>
+
 
           </div>
           
@@ -61,10 +126,25 @@
 
 
 <h3>Navigation</h3>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="specification.html">Specification</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reference_implementation.html">Tool</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="reference_implementation.html">Tool</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html">CLI</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#version-3-0-0-2019-11-17">Version 3.0.0 (2019-11-17)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-2-2-2-2019-06-29">Version 2.2.2 (2019-06-29)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-2-2-1-2019-04-22">Version 2.2.1 (2019-04-22)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-2-2-0-2019-04-22">Version 2.2.0 (2019-04-22)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-2-1-0-2019-03-25">Version 2.1.0 (2019-03-25)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-2-0-0-2018-09-13">Version 2.0.0 (2018-09-13)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-1-0-0-2018-08-27">Version 1.0.0 (2018-08-27)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_apidoc/recipemd.html">API Documentation</a></li>
+</ul>
+</li>
 </ul>
 
 <div class="relations">
