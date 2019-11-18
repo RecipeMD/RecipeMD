@@ -157,6 +157,8 @@ class RecipeParser:
         self.current = None
 
     def parse(self, src: str) -> Recipe:
+        return None
+
         self.src = src
         self.recipe = Recipe(title=None)
 
