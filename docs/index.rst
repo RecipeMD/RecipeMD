@@ -36,7 +36,7 @@ Some RecipeMD repositories:
 * `dasnessie <https://github.com/dasnessie/recipes>`_
 * `fscholdei <https://github.com/fscholdei/recipes>`_
 * `sonea-pm8 <https://github.com/sonea-pm8/recipes>`_
-* `timschubert <https://github.com/timschubert/recipes>`_
+* `dadada <https://github.com/timschubert/recipes>`_
 * `tstehr <https://github.com/tstehr/recipes>`_
 
 
