@@ -45,27 +45,27 @@
 <p>Completion installation depends on your shell. Read the <a class="reference external" href="https://github.com/kislyuk/argcomplete">argcomplete documentation</a> for more detail.</p>
 <div class="section" id="bash">
 <h3>Bash<a class="headerlink" href="#bash" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">activate</span><span class="o">-</span><span class="k">global</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">argcomplete</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>activate-global-python-argcomplete
 </pre></div>
 </div>
 </div>
 <div class="section" id="zsh">
 <h3>Zsh<a class="headerlink" href="#zsh" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">autoload</span> <span class="o">-</span><span class="n">U</span> <span class="n">bashcompinit</span>
-<span class="n">bashcompinit</span>
-<span class="nb">eval</span> <span class="s2">&quot;$(register-python-argcomplete recipemd)&quot;</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>autoload -U bashcompinit
+bashcompinit
+<span class="nb">eval</span> <span class="s2">&quot;</span><span class="k">$(</span>register-python-argcomplete recipemd<span class="k">)</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="tcsh">
 <h3>Tcsh<a class="headerlink" href="#tcsh" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>eval `register-python-argcomplete --shell tcsh recipemd`
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">eval</span> <span class="sb">`</span>register-python-argcomplete --shell tcsh recipemd<span class="sb">`</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="fish">
 <h3>Fish<a class="headerlink" href="#fish" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">register</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">argcomplete</span> <span class="o">--</span><span class="n">shell</span> <span class="n">fish</span> <span class="n">recipemd</span> <span class="o">&gt;</span> <span class="o">~/.</span><span class="n">config</span><span class="o">/</span><span class="n">fish</span><span class="o">/</span><span class="n">completions</span><span class="o">/</span><span class="n">recipemd</span><span class="o">.</span><span class="n">fish</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>register-python-argcomplete --shell fish recipemd &gt; ~/.config/fish/completions/recipemd.fish
 </pre></div>
 </div>
 </div>
@@ -101,7 +101,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="specification.html">Specification</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="reference_implementation.html">Tool</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="reference_implementation.html">Python Implementation</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#install-completions">Install completions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#bash">Bash</a></li>
@@ -117,6 +117,7 @@
 <li class="toctree-l2"><a class="reference internal" href="_apidoc/recipemd.html">API Documentation</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="recommended_tools.html">Recommended Tools</a></li>
 </ul>
 
 <div class="relations">
