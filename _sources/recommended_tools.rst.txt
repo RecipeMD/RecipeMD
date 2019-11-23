@@ -20,7 +20,7 @@ Convert a folder of recipes to pdfs:
 
     ls *.md | xargs -P10 -I{} bash -c 'pandoc --pdf-engine=xelatex  -V geometry:margin=2cm -V geometry:a4paper {} -o $(basename {} md)pdf'
 
-Note that you can specify the `latex template <https://pandoc.org/MANUAL.html#templates>` used by pandoc to adopt the output to your taste.
+Note that you can specify the `latex template <https://pandoc.org/MANUAL.html#templates>`_ used by pandoc to adopt the output to your taste.
 
 GitLab Markdown Viewer
 ----------------------

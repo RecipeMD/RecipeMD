@@ -47,7 +47,7 @@
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ls *.md <span class="p">|</span> xargs -P10 -I<span class="o">{}</span> bash -c <span class="s1">&#39;pandoc --pdf-engine=xelatex  -V geometry:margin=2cm -V geometry:a4paper {} -o $(basename {} md)pdf&#39;</span>
 </pre></div>
 </div>
-<p>Note that you can specify the <cite>latex template &lt;https://pandoc.org/MANUAL.html#templates&gt;</cite> used by pandoc to adopt the output to your taste.</p>
+<p>Note that you can specify the <a class="reference external" href="https://pandoc.org/MANUAL.html#templates">latex template</a> used by pandoc to adopt the output to your taste.</p>
 </div>
 <div class="section" id="gitlab-markdown-viewer">
 <h2>GitLab Markdown Viewer<a class="headerlink" href="#gitlab-markdown-viewer" title="Permalink to this headline">¶</a></h2>
