@@ -27,10 +27,9 @@ also comes with a set of `testcases <https://github.com/tstehr/RecipeMD/tree/mas
 Resources
 ---------
 
-You can use `recipemd-extract <https://github.com/AberDerBart/recipemd-extract>`_ to fetch and extract recipes from the web.
+You can use `recipemd-extract <https://github.com/AberDerBart/recipemd-extract>`_ to fetch and extract recipes from the web. We also maintain a :doc:`list of recommended tools <recommended_tools>` that work nicely with RecipeMD recipes.
 
 Some RecipeMD repositories:
-
 
 * `AberDerBart <https://github.com/AberDerBart/recipes>`_
 * `dasnessie <https://github.com/dasnessie/recipes>`_
@@ -45,7 +44,8 @@ Some RecipeMD repositories:
 
    Home <self>
    Specification <specification>
-   Tool <reference_implementation>
+   Python Implementation <reference_implementation>
+   Recommended Tools <recommended_tools>
 
 
 Indices and tables

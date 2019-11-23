@@ -18,14 +18,14 @@ Completion installation depends on your shell. Read the `argcomplete documentati
 Bash
 ~~~~
 
-.. code-block::
+.. code-block:: shell
 
    activate-global-python-argcomplete
 
 Zsh
 ~~~
 
-.. code-block::
+.. code-block:: shell
 
    autoload -U bashcompinit
    bashcompinit
@@ -34,13 +34,13 @@ Zsh
 Tcsh
 ~~~~
 
-.. code-block::
+.. code-block:: shell
 
    eval `register-python-argcomplete --shell tcsh recipemd`
 
 Fish
 ~~~~
 
-.. code-block::
+.. code-block:: none
 
    register-python-argcomplete --shell fish recipemd > ~/.config/fish/completions/recipemd.fish
