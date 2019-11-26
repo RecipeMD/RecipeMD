@@ -19,6 +19,7 @@ import argcomplete
 import pyparsing
 from argcomplete import FilesCompleter
 
+import recipemd
 from recipemd.data import RecipeParser, Recipe
 from recipemd.filter import _FilterElement, FilterParser
 
@@ -149,6 +150,8 @@ def create_filter_expr(filter_string) -> _FilterElement:
 
 # parser is on module level for sphinx-autoprogram
 parser = argparse.ArgumentParser(description='Find recipes, ingredients and units by filter expression')
+
+parser.add_argument('-v', '--version', action='version', version=f"%(prog)s ({recipemd.__version__})")
 
 parser.add_argument(
     '-e', '--expression', type=create_filter_expr,

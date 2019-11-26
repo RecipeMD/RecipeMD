@@ -18,6 +18,7 @@ import argcomplete
 from argcomplete.completers import ChoicesCompleter, FilesCompleter
 from yarl import URL
 
+import recipemd
 from recipemd.data import RecipeParser, RecipeSerializer, multiply_recipe, Ingredient, get_recipe_with_yield, \
     IngredientGroup, Recipe, Amount
 
@@ -247,6 +248,8 @@ parser = argparse.ArgumentParser(description='Read and process recipemd recipes'
 parser.add_argument(
     'file', type=argparse.FileType('r', encoding='UTF-8'), help='A recipemd file'
 ).completer = FilesCompleter(allowednames='*.md')
+
+parser.add_argument('-v', '--version', action='version', version=f"%(prog)s ({recipemd.__version__})")
 
 display_parser = parser.add_mutually_exclusive_group()
 display_parser.add_argument('-t', '--title', action='store_true', help='Display recipe title')

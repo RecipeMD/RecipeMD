@@ -26,7 +26,7 @@ copyright = '2019, Tilman Stehr'
 author = 'Tilman Stehr'
 
 # The full version, including alpha/beta/rc tags
-release = '3.0.0'
+release = recipemd.__version__
 
 
 # -- General configuration ---------------------------------------------------

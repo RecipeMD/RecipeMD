@@ -1,4 +1,5 @@
 import setuptools
+from recipemd import __version__
 
 tests_require = [
     'pytest',
@@ -24,7 +25,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="recipemd",
-    version="3.0.0",
+    version=__version__,
     author="Tilman Stehr",
     author_email="tilman@tilman.ninja",
     description="Markdown recipe manager, reference implementation of RecipeMD",
