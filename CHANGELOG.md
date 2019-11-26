@@ -2,6 +2,10 @@
 
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
+## Version 3.0.1 (2019-11-27)
+
+- Add `-v/--version` argument to `recipemd` and `recipemd-find` to display current version
+
 ## Version 3.0.0 (2019-11-17)
 
 - *Breaking:* Classes in `recipemd.data` are now frozen
