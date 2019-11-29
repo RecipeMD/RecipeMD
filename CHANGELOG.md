@@ -2,6 +2,10 @@
 
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
+## Version Next (TBD)
+
+- Improve error message when trying to flatten a linked recipe and no matching yield can be found.
+
 ## Version 3.0.1 (2019-11-27)
 
 - Add `-v/--version` argument to `recipemd` and `recipemd-find` to display current version

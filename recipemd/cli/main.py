@@ -85,8 +85,7 @@ def _process_scaling(r, args):
         try:
             r = get_recipe_with_yield(r, required_yield)
         except StopIteration:
-            print(f'Recipe "{r.title}" does not specify a yield in the unit "{required_yield.unit}". The '
-                  f'following units can be used: ' + ", ".join(f'"{y.unit}"' for y in r.yields), file=sys.stderr)
+            print(_make_missing_yield_warning(r, required_yield), file=sys.stderr)
             exit(1)
     elif args.multiply is not None:
         multiply = RecipeParser.parse_amount(args.multiply)
@@ -98,6 +97,13 @@ def _process_scaling(r, args):
             exit(1)
         r = multiply_recipe(r, multiply.factor)
     return r
+
+
+def _make_missing_yield_warning(recipe: Recipe, required_yield: Amount):
+    warning = f'Recipe "{recipe.title}" does not specify a yield in the unit "{required_yield.unit}".'
+    if recipe.yields:
+        warning += ' The following units can be used: ' + ", ".join(f'"{y.unit}"' for y in recipe.yields if y.unit)
+    return warning
 
 
 def _export_links(r, args, base_url, parser, serializer):
@@ -203,7 +209,10 @@ def _get_linked_recipe(ingredient: Ingredient, *, base_url: URL, parser: RecipeP
         link_recipe = _get_flattened_recipe(link_recipe, base_url=url, parser=parser)
 
     if ingredient.amount:
-        link_recipe = get_recipe_with_yield(link_recipe, ingredient.amount)
+        try:
+            link_recipe = get_recipe_with_yield(link_recipe, ingredient.amount)
+        except StopIteration:
+            print(_make_missing_yield_warning(link_recipe, ingredient.amount), file=sys.stderr)
 
     return link_recipe
 
