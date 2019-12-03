@@ -3,7 +3,9 @@ name: Build GitHub Pages
 on:
   push:
     branches:
-    - master
+      - gh-pages-source
+    tags:
+      - v*
 
 jobs:
   build-deploy:
