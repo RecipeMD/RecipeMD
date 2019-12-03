@@ -32,10 +32,11 @@ You can use `recipemd-extract <https://github.com/AberDerBart/recipemd-extract>`
 Some RecipeMD repositories:
 
 * `AberDerBart <https://github.com/AberDerBart/recipes>`_
+* `dadada <https://github.com/dadada/recipes>`_
 * `dasnessie <https://github.com/dasnessie/recipes>`_
 * `fscholdei <https://github.com/fscholdei/recipes>`_
+* `p3tr0sh <https://github.com/p3tr0sh/recipe>`_
 * `sonea-pm8 <https://github.com/sonea-pm8/recipes>`_
-* `dadada <https://github.com/timschubert/recipes>`_
 * `tstehr <https://github.com/tstehr/recipes>`_
 
 
