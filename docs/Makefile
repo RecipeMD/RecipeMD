@@ -8,6 +8,10 @@ SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
 
+# Get branch that we are running from for sphix.ext.linkcode (if not already set by github)
+GITHUB_REF ?= $(shell git rev-parse --symbolic-full-name HEAD)
+export GITHUB_REF
+
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)

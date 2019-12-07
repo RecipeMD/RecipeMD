@@ -8,6 +8,7 @@ import inspect
 import os
 import sys
 from os.path import relpath, dirname
+from pprint import pprint
 
 import recipemd
 
@@ -128,7 +129,13 @@ def linkcode_resolve(domain, info):
         return None
     fn = relpath(fn, start=module_folder)
 
-    return "https://github.com/tstehr/RecipeMD/blob/master/recipemd/%s%s" % (fn, linespec)
+    # get branch (set by github when running in action, else by the makefile)
+    try:
+        branch = os.environ['GITHUB_REF'].split('/')[-1]
+    except:
+        branch = "master"
+
+    return f"https://github.com/tstehr/RecipeMD/blob/{branch}/recipemd/{fn}{linespec}"
 
 
 # -- Options for HTML output -------------------------------------------------
