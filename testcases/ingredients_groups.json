@@ -8,10 +8,12 @@
       "name": "ingredient 0",
       "amount": null,
       "link": null
-    },
+    }
+  ],
+  "ingredient_groups": [
     {
       "title": "Group 1",
-      "children": [
+      "ingredients": [
         {
           "name": "ingredient 1",
           "amount": null,
@@ -21,10 +23,12 @@
           "name": "ingredient 2",
           "amount": null,
           "link": null
-        },
+        }
+      ],
+      "ingredient_groups": [
         {
           "title": "Subgroup 1.1",
-          "children": [
+          "ingredients": [
             {
               "name": "ingredient 3",
               "amount": null,
@@ -34,10 +38,12 @@
               "name": "ingredient 4",
               "amount": null,
               "link": null
-            },
+            }
+          ],
+          "ingredient_groups": [
             {
               "title": "Subgroup 1.1.1 (Two level deeper headline, still one lever deeper group)",
-              "children": [
+              "ingredients": [
                 {
                   "name": "ingredient 5",
                   "amount": null,
@@ -47,7 +53,7 @@
             },
             {
               "title": "Subgroup 1.1.2 (One level deeper headline)",
-              "children": [
+              "ingredients": [
                 {
                   "name": "ingredient 6",
                   "amount": null,
@@ -61,7 +67,7 @@
     },
     {
       "title": "Group 2",
-      "children": [
+      "ingredients": [
         {
           "name": "ingredient 7",
           "amount": null,

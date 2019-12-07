@@ -36,10 +36,12 @@
         "unit": "ml"
       },
       "link": null
-    },
+    }
+  ],
+  "ingredient_groups": [
     {
       "title": "Group 1",
-      "children": [
+      "ingredients": [
         {
           "name": "link ingredient",
           "amount": {
@@ -52,10 +54,12 @@
           "name": "unit is optional",
           "amount": null,
           "link": null
-        },
+        }
+      ],
+      "ingredient_groups": [
         {
           "title": "Subgroup 1.1",
-          "children": [
+          "ingredients": [
             {
               "name": "ingredient",
               "amount": {
@@ -70,7 +74,7 @@
     },
     {
       "title": "Group 2",
-      "children": [
+      "ingredients": [
         {
           "name": "text isn't optional",
           "amount": null,

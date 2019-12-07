@@ -3,6 +3,7 @@ import os
 import textwrap
 from dataclasses import replace
 from decimal import Decimal
+from pprint import pprint
 
 import pytest
 
@@ -27,26 +28,38 @@ def test_amount():
     assert excinfo.value.args[0] == "Factor and unit may not both be None"
 
 
-def test_recipe_get_leaf_ingredients():
+def test_ingredient_list_get_leaf_ingredients():
     recipe = Recipe(
         title="Test",
         ingredients=[
             Ingredient(amount=Amount(factor=Decimal('5')), name='Eggs'),
             Ingredient(amount=Amount(factor=Decimal('200'), unit='g'), name='Butter'),
-            IngredientGroup(title='Group', children=[
-                Ingredient(amount=Amount(factor=Decimal('2'), unit='cloves'), name='Garlic'),
-                IngredientGroup(title='Subgroup', children=[
-                    Ingredient(name='Onions'),
-                ]),
-            ]),
             Ingredient(name='Salt')
         ],
+        ingredient_groups=[
+            IngredientGroup(
+                title='Group',
+                ingredients=[
+                    Ingredient(amount=Amount(factor=Decimal('2'), unit='cloves'), name='Garlic'),
+                ],
+                ingredient_groups=[
+                    IngredientGroup(title='Subgroup', ingredients=[
+                        Ingredient(name='Onions'),
+                    ]),
+                ]
+            ),
+        ]
     )
+
+    pprint(recipe)
 
     leaf_ingredients = list(recipe.leaf_ingredients)
     assert len(leaf_ingredients) == 5
     assert leaf_ingredients[0].name == 'Eggs'
-    assert leaf_ingredients[4].name == 'Salt'
+    assert leaf_ingredients[1].name == 'Butter'
+    assert leaf_ingredients[2].name == 'Salt'
+    assert leaf_ingredients[3].name == 'Garlic'
+    assert leaf_ingredients[4].name == 'Onions'
 
 
 class TestRecipeParser:
@@ -103,11 +116,16 @@ def test_multiply_recipe():
         ingredients=[
             Ingredient(amount=Amount(factor=Decimal('5')), name='Eggs'),
             Ingredient(amount=Amount(factor=Decimal('200'), unit='g'), name='Butter'),
-            IngredientGroup(title='Group', children=[
-                Ingredient(amount=Amount(factor=Decimal('2'), unit='cloves'), name='Garlic')
-            ]),
             Ingredient(name='Salt')
         ],
+        ingredient_groups=[
+            IngredientGroup(
+                title='Group',
+                ingredients=[
+                    Ingredient(amount=Amount(factor=Decimal('2'), unit='cloves'), name='Garlic'),
+                ]
+            ),
+        ]
     )
 
     result = multiply_recipe(recipe, Decimal(2))
@@ -115,8 +133,8 @@ def test_multiply_recipe():
     assert result.yields[0].factor == Decimal('10')
     assert result.ingredients[0].amount.factor == Decimal('10')
     assert result.ingredients[1].amount.factor == Decimal('400')
-    assert result.ingredients[2].children[0].amount.factor == Decimal('4')
-    assert result.ingredients[3].amount is None
+    assert result.ingredients[2].amount is None
+    assert result.ingredient_groups[0].ingredients[0].amount.factor == Decimal('4')
 
 
 def test_get_recipe_with_yield():

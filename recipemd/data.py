@@ -7,7 +7,7 @@ import re
 import unicodedata
 from dataclasses import dataclass, field, replace
 from decimal import Decimal
-from typing import List, Optional, Union, Dict, Generator
+from typing import List, Optional, Union, Dict, Generator, TypeVar
 
 import commonmark
 from commonmark.node import Node
@@ -16,6 +16,9 @@ from dataclasses_json import dataclass_json, config
 
 __all__ = ['RecipeParser', 'RecipeSerializer', 'multiply_recipe', 'get_recipe_with_yield',
            'Recipe', 'Ingredient', 'IngredientGroup', 'Amount']
+
+
+T = TypeVar('T')
 
 
 def _decode_ingredient_element_list(ingrs: List[Dict]):
@@ -36,12 +39,26 @@ def _decode_ingredient_element(ingr_el_dict: Dict):
 
 @dataclass_json
 @dataclass(frozen=True)
-class IngredientGroup:
+class IngredientList:
+    ingredients: List['Ingredient'] = field(default_factory=list)
+    ingredient_groups: List['IngredientGroup'] = field(default_factory=list)
+
+    @property
+    def leaf_ingredients(self) -> Generator['Ingredient', None, None]:
+        yield from self.ingredients
+        for ingredient_group in self.ingredient_groups:
+            yield from ingredient_group.leaf_ingredients
+
+    @property
+    def all_ingredients(self) -> Generator[Union['Ingredient', 'IngredientGroup'], None, None]:
+        yield from self.ingredients
+        yield from self.ingredient_groups
+
+
+@dataclass_json
+@dataclass(frozen=True)
+class IngredientGroup(IngredientList):
     title: Optional[str] = None
-    children: List[Union['Ingredient', 'IngredientGroup']] = field(
-        default_factory=list,
-        metadata=config(decoder=_decode_ingredient_element_list),
-    )
 
 
 @dataclass_json
@@ -69,27 +86,12 @@ class Ingredient:
 
 @dataclass_json
 @dataclass(frozen=True)
-class Recipe:
-    title: str
+class Recipe(IngredientList):
+    title: Optional[str] = None
     description: Optional[str] = None
     yields: List[Amount] = field(default_factory=list)
     tags: List[str] = field(default_factory=list)
-    ingredients: List[Union[Ingredient, IngredientGroup]] = field(
-        default_factory=list,
-        metadata=config(decoder=_decode_ingredient_element_list),
-    )
     instructions: Optional[str] = None
-
-    @property
-    def leaf_ingredients(self) -> Generator['Ingredient', None, None]:
-        yield from self._get_leaf_ingredients(self.ingredients)
-
-    def _get_leaf_ingredients(self, ingredients: List[Union[Ingredient, IngredientGroup]]):
-        for ingr in ingredients:
-            if isinstance(ingr, IngredientGroup):
-                yield from self._get_leaf_ingredients(ingr.children)
-            else:
-                yield ingr
 
 
 class RecipeSerializer:
@@ -103,7 +105,7 @@ class RecipeSerializer:
         if len(recipe.yields) > 0:
             rep += f'**{", ".join(self._serialize_amount(a, rounding=rounding) for a in recipe.yields)}**\n\n'
         rep += f'---\n\n'
-        rep += ("\n".join(self._serialize_ingredient(g, 2, rounding=rounding) for g in recipe.ingredients)).strip()
+        rep += ("\n".join(self._serialize_ingredient(g, 2, rounding=rounding) for g in recipe.all_ingredients)).strip()
         if recipe.instructions is not None:
             rep += f'\n\n---\n\n'
             rep += recipe.instructions
@@ -112,7 +114,7 @@ class RecipeSerializer:
     def _serialize_ingredient(self, ingredient, level, *, rounding: Optional[int] = None):
         if isinstance(ingredient, IngredientGroup):
             return f'\n{"#" * level} {ingredient.title}\n\n'\
-                   + "\n".join(self._serialize_ingredient(i, level+1, rounding=rounding) for i in ingredient.children)
+                   + "\n".join(self._serialize_ingredient(i, level+1, rounding=rounding) for i in ingredient.all_ingredients)
         else:
             if ingredient.amount is not None:
                 return f'- *{self._serialize_amount(ingredient.amount, rounding=rounding)}* {self._serialize_ingredient_text(ingredient)}'
@@ -220,11 +222,11 @@ class RecipeParser:
     def _parse_ingredients(self):
         while self.current is not None and (self.current.t == 'heading' or self.current.t == 'list'):
             if self.current.t == 'heading':
-                self._parse_ingredient_groups(self.recipe.ingredients, parent_level=-1)
+                self._parse_ingredient_groups(self.recipe.ingredient_groups, parent_level=-1)
             elif self.current is not None and self.current.t == 'list':
                 self._parse_ingredient_list_node(self.recipe.ingredients)
 
-    def _parse_ingredient_groups(self, ingredients, parent_level):
+    def _parse_ingredient_groups(self, ingredient_groups: List['IngredientGroup'], parent_level):
         while self.current is not None and self.current.t == 'heading':
             level = self.current.level
             if level <= parent_level:
@@ -234,13 +236,13 @@ class RecipeParser:
             self._next_node()
 
             if self.current is not None and self.current.t == 'list':
-                self._parse_ingredient_list_node(group.children)
+                self._parse_ingredient_list_node(group.ingredients)
 
-            ingredients.append(group)
+            ingredient_groups.append(group)
 
-            self._parse_ingredient_groups(group.children, parent_level=level)
+            self._parse_ingredient_groups(group.ingredient_groups, parent_level=level)
 
-    def _parse_ingredient_list_node(self, ingredients):
+    def _parse_ingredient_list_node(self, ingredients: List['Ingredient']):
         self._enter_node()
         while self.current is not None:
             ingredients.append(self._parse_ingredient())
@@ -414,11 +416,9 @@ def multiply_recipe(recipe: Recipe, multiplier: Decimal) -> Recipe:
     Multiplies a recipe by the given multiplier
 
     Creates a new recipe where the factor of yield and ingredient is changed according to the multiplier
-
-
     """
     recipe = replace(recipe, yields=[replace(y, factor=y.factor * multiplier) for y in recipe.yields])
-    recipe = replace(recipe, ingredients=_multiply_ingredients(recipe.ingredients, multiplier))
+    recipe = _multiply_ingredient_list(recipe, multiplier)
     return recipe
 
 
@@ -439,13 +439,14 @@ def get_recipe_with_yield(recipe: Recipe, required_yield: Amount) -> Recipe:
     return recipe
 
 
-def _multiply_ingredients(ingredients: List[Union[Ingredient, IngredientGroup]], multiplier: Decimal):
-    return [_multiply_ingredient(ingr, multiplier) for ingr in ingredients]
+def _multiply_ingredient_list(ingredient_list: T, multiplier: Decimal) -> T:
+    ingredients: List[Ingredient] = [_multiply_ingredient(i, multiplier) for i in ingredient_list.leaf_ingredients]
+    ingredient_groups: List[IngredientGroup] = [_multiply_ingredient_list(ig, multiplier)
+                                                for ig in ingredient_list.ingredient_groups]
+    return replace(ingredient_list, ingredients=ingredients, ingredient_groups=ingredient_groups)
 
 
-def _multiply_ingredient(ingr: Union[Ingredient, IngredientGroup], multiplier: Decimal) -> Union[Ingredient, IngredientGroup]:
-    if hasattr(ingr, 'amount') and ingr.amount is not None and ingr.amount.factor is not None:
-        return replace(ingr, amount=replace(ingr.amount, factor=ingr.amount.factor*multiplier))
-    if hasattr(ingr, 'children'):
-        return replace(ingr, children=_multiply_ingredients(ingr.children, multiplier))
-    return ingr
+def _multiply_ingredient(ingr: Ingredient, multiplier: Decimal) -> Ingredient:
+    if ingr.amount is None:
+        return ingr
+    return replace(ingr, amount=replace(ingr.amount, factor=ingr.amount.factor*multiplier))

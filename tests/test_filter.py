@@ -107,14 +107,29 @@ def recipe() -> Recipe:
         ingredients=[
             Ingredient(amount=Amount(factor=Decimal('5')), name='Eggs'),
             Ingredient(amount=Amount(factor=Decimal('200'), unit='g'), name='Butter'),
-            IngredientGroup(title='Group', children=[
-                Ingredient(amount=Amount(factor=Decimal('2'), unit='cloves'), name='Garlic'),
-                IngredientGroup(title='Subgroup', children=[
-                    Ingredient(name='Onions'),
-                ]),
-            ]),
             Ingredient(name='Salt')
         ],
+        ingredient_groups=[
+            IngredientGroup(
+                title='Group',
+                ingredients=[
+                    Ingredient(amount=Amount(factor=Decimal('2'), unit='cloves'), name='Garlic'),
+                ],
+                ingredient_groups=[
+                    IngredientGroup(
+                        title='Group',
+                        ingredients=[
+                            Ingredient(amount=Amount(factor=Decimal('2'), unit='cloves'), name='Garlic'),
+                        ],
+                        ingredient_groups=[
+                            IngredientGroup(title='Subgroup', ingredients=[
+                                Ingredient(name='Onions'),
+                            ]),
+                        ]
+                    ),
+                ],
+            ),
+        ]
     )
 
 

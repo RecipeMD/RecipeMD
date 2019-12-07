@@ -147,7 +147,7 @@ def _get_flattened_recipe(recipe: Recipe, *, base_url: URL, parser: RecipeParser
         return recipe
 
     # ingredients
-    recipe = replace(recipe, ingredients=_create_flattened_substituted_ingredients(recipe.ingredients, ingr_to_recipe))
+    recipe = replace(recipe, ingredients=_create_flattened_substituted_ingredients(recipe.all_ingredients, ingr_to_recipe))
 
     # instructions
     instruction_sections = []
@@ -224,11 +224,11 @@ def _create_flattened_substituted_ingredients(ingredients: List[Union[Ingredient
     result_groups = []
     for ingr in ingredients:
         if isinstance(ingr, IngredientGroup):
-            new_group = replace(ingr, children=_create_flattened_substituted_ingredients(ingr.children, ingr_to_recipe))
+            new_group = replace(ingr, children=_create_flattened_substituted_ingredients(ingr.all_ingredients, ingr_to_recipe))
             result_groups.append(new_group)
         elif ingr in ingr_to_recipe and ingr_to_recipe[ingr] is not None:
             link_recipe = ingr_to_recipe[ingr]
-            new_group = IngredientGroup(title=_link_ingredient_title(ingr, link_recipe), children=link_recipe.ingredients)
+            new_group = IngredientGroup(title=_link_ingredient_title(ingr, link_recipe), children=link_recipe.all_ingredients)
             result_groups.append(new_group)
         else:
             result_ingredients.append(ingr)
