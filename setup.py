@@ -64,4 +64,8 @@ setuptools.setup(
         "Topic :: Utilities",
         "Operating System :: OS Independent",
     ],
+    project_urls={
+        'Documentation': 'https://recipemd.org/reference_implementation.html',
+        'Source': 'https://github.com/tstehr/recipemd',
+    },
 )
