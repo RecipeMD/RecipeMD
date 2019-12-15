@@ -21,22 +21,6 @@ __all__ = ['RecipeParser', 'RecipeSerializer', 'multiply_recipe', 'get_recipe_wi
 T = TypeVar('T')
 
 
-def _decode_ingredient_element_list(ingrs: List[Dict]):
-    """Helper for json decoding List[Union[Ingredient, IngredientGroup]]"""
-    return [_decode_ingredient_element(el) for el in ingrs]
-
-
-def _decode_ingredient_element(ingr_el_dict: Dict):
-    """
-    Helper for json decoding Union[Ingredient, IngredientGroup]
-
-    dataclasses-json can't figure out Union[Ingredient, IngredientGroup], so we use this duck typing decoder to help
-    """
-    if "children" in ingr_el_dict:
-        return IngredientGroup.from_dict(ingr_el_dict)
-    return Ingredient.from_dict(ingr_el_dict)
-
-
 @dataclass_json
 @dataclass(frozen=True)
 class IngredientList:
