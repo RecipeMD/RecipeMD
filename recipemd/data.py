@@ -129,7 +129,7 @@ class RecipeSerializer:
 
 
 class RecipeParser:
-    _list_split = re.compile("(?<!\d),|,(?!\d)")
+    _list_split = re.compile(r"(?<!\d),|,(?!\d)")
 
     src: Optional[str]
     recipe: Optional[Recipe]
