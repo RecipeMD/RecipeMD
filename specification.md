@@ -1,6 +1,6 @@
 # RecipeMD Specification
 
-This is version 2.3.1 of the RecipeMD specification.
+This is version 2.3.2 of the RecipeMD specification.
 
 RecipeMD is a Markdown-based format for writing down recipes. It 
 defines a certain structure which a document must follow to be a 
@@ -163,7 +163,23 @@ with a corresponding `*.json`) and invalid files (`*.invalid.md`)
 
 
 
+## Authors Licensing
+
+This specification was written and is maintained by Jonas Grosse-Holz 
+and Tilman Stehr. The project's website is [recipemd.org].
+
+The specification is licensed under the terms of the GNU Lesser 
+General Public License as published by the Free Software Foundation, 
+either version 3 of the License, or any later version.
+
+[recipemd.org]: https://recipemd.org
+
+
 ## Version History
+
+### Version 2.3.2 (2019-12-18)
+
+- Add author and license information
 
 ### Version 2.3.1 (2019-11-18)
 
