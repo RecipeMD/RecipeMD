@@ -63,6 +63,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Topic :: Utilities",
         "Operating System :: OS Independent",
+        "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
     ],
     project_urls={
         'Documentation': 'https://recipemd.org/reference_implementation.html',
