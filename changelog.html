@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Changelog &#8212; RecipeMD 3.0.1 documentation</title>
+    <title>Changelog &#8212; RecipeMD 4.0.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -37,10 +37,13 @@
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">recipemd</span></code> package uses <a class="reference external" href="https://semver.org">semantic versioning</a>.</p>
-<div class="section" id="version-next-tbd">
-<h2>Version Next (TBD)<a class="headerlink" href="#version-next-tbd" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="version-4-0-0-2019-12-18">
+<h2>Version 4.0.0 (2019-12-18)<a class="headerlink" href="#version-4-0-0-2019-12-18" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
+<li><p><em>Breaking</em>: Create separate lists of ingredients and ingredients groups in <code class="docutils literal notranslate"><span class="pre">Recipe</span></code> and <code class="docutils literal notranslate"><span class="pre">IngredientGroup</span></code>. This
+ensures that ingredients groups always follow after ingredients (see <a class="reference external" href="https://github.com/tstehr/RecipeMD/issues/6">https://github.com/tstehr/RecipeMD/issues/6</a>)</p></li>
 <li><p>Improve error message when trying to flatten a linked recipe and no matching yield can be found.</p></li>
+<li><p>License under LGPL</p></li>
 </ul>
 </div>
 <div class="section" id="version-3-0-1-2019-11-27">
@@ -145,7 +148,7 @@
 <li class="toctree-l2"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html">CLI</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#version-next-tbd">Version Next (TBD)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-4-0-0-2019-12-18">Version 4.0.0 (2019-12-18)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-3-0-1-2019-11-27">Version 3.0.1 (2019-11-27)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-3-0-0-2019-11-17">Version 3.0.0 (2019-11-17)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-2-2-2-2019-06-29">Version 2.2.2 (2019-06-29)</a></li>
@@ -197,7 +200,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019, Tilman Stehr.
+      &copy;2019, Tilman Stehr and contributors.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.0</a>
