@@ -2,6 +2,10 @@
 
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
+## Version 4.0.1 (2019-12-18)
+
+- Fix incorrect trove classifiers
+
 ## Version 4.0.0 (2019-12-18)
 
 - *Breaking*: Create separate lists of ingredients and ingredients groups in `Recipe` and `IngredientGroup`. This 
