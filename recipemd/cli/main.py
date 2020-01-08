@@ -5,14 +5,13 @@ Implements :ref:`cli_recipemd`
 
 import argparse
 import decimal
-import json
 import os
 import re
 import sys
 import urllib.parse
 import urllib.request
 from dataclasses import replace
-from typing import List, Union, Dict, Optional
+from typing import Dict, Optional
 
 import argcomplete
 from argcomplete.completers import ChoicesCompleter, FilesCompleter
@@ -20,7 +19,7 @@ from yarl import URL
 
 import recipemd
 from recipemd.data import RecipeParser, RecipeSerializer, multiply_recipe, Ingredient, get_recipe_with_yield, \
-    IngredientGroup, Recipe, Amount
+    IngredientGroup, Recipe, Amount, IngredientList
 
 __all__ = ['main']
 
@@ -147,7 +146,7 @@ def _get_flattened_recipe(recipe: Recipe, *, base_url: URL, parser: RecipeParser
         return recipe
 
     # ingredients
-    recipe = replace(recipe, ingredients=_create_flattened_substituted_ingredients(recipe.all_ingredients, ingr_to_recipe))
+    recipe = _create_flattened_substituted_ingredients(recipe, ingr_to_recipe)
 
     # instructions
     instruction_sections = []
@@ -179,7 +178,7 @@ def _get_flattened_recipe(recipe: Recipe, *, base_url: URL, parser: RecipeParser
 
 
 def _get_linked_recipes(recipe: Recipe, *, base_url: URL, parser: RecipeParser, flatten: bool = True):
-    """Gets all ingredients that have a link and a dict of the ingredient id() to recipe instance"""
+    """Gets all ingredients that have a link and a dict of the ingredient to recipe instance"""
     link_ingredients = [i for i in recipe.leaf_ingredients if i.link is not None]
     ingr_to_recipe = dict()
     for ingredient in link_ingredients:
@@ -217,24 +216,37 @@ def _get_linked_recipe(ingredient: Ingredient, *, base_url: URL, parser: RecipeP
     return link_recipe
 
 
-def _create_flattened_substituted_ingredients(ingredients: List[Union[Ingredient, IngredientGroup]],
-                                              ingr_to_recipe: Dict[Ingredient, Recipe]) \
-        -> List[Union[Ingredient, IngredientGroup]]:
+def _create_flattened_substituted_ingredients(ingredient_list: IngredientList,
+                                              ingr_to_recipe: Dict[Ingredient, Recipe]) -> IngredientList:
     result_ingredients = []
     result_groups = []
-    for ingr in ingredients:
-        if isinstance(ingr, IngredientGroup):
-            new_group = replace(ingr, children=_create_flattened_substituted_ingredients(ingr.all_ingredients, ingr_to_recipe))
-            result_groups.append(new_group)
-        elif ingr in ingr_to_recipe and ingr_to_recipe[ingr] is not None:
+
+    for ingr in ingredient_list.ingredients:
+        if ingr in ingr_to_recipe and ingr_to_recipe[ingr] is not None:
             link_recipe = ingr_to_recipe[ingr]
-            new_group = IngredientGroup(title=_link_ingredient_title(ingr, link_recipe), children=link_recipe.all_ingredients)
+            new_group = IngredientGroup(
+                title=_link_ingredient_title(ingr, link_recipe),
+                ingredients=link_recipe.ingredients,
+                ingredient_groups=link_recipe.ingredient_groups,
+            )
             result_groups.append(new_group)
         else:
             result_ingredients.append(ingr)
 
-    # groups must come after ingredients, see https://github.com/tstehr/RecipeMD/issues/6
-    return result_ingredients + result_groups
+    for ingr in ingredient_list.ingredient_groups:
+        flattened_ingr = _create_flattened_substituted_ingredients(ingr, ingr_to_recipe)
+        new_group = replace(
+            obj=ingr,
+            ingredients=flattened_ingr.ingredients,
+            ingredient_groups=flattened_ingr.ingredient_groups,
+        )
+        result_groups.append(new_group)
+
+    return replace(
+        obj=ingredient_list,
+        ingredients=result_ingredients,
+        ingredient_groups=result_groups,
+    )
 
 
 def _link_ingredient_title(ingr: Ingredient, link_recipe: Recipe) -> str:
@@ -245,7 +257,7 @@ def _link_ingredient_title(ingr: Ingredient, link_recipe: Recipe) -> str:
     return title
 
 
-def _ingredient_to_string(ingr: Ingredient, *, rounding: Optional[int]=None) -> str:
+def _ingredient_to_string(ingr: Ingredient, *, rounding: Optional[int] = None) -> str:
     if ingr.amount is not None:
         return f'{RecipeSerializer._serialize_amount(ingr.amount, rounding=rounding)} {ingr.name}'
     return ingr.name

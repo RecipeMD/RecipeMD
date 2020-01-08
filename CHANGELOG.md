@@ -2,6 +2,10 @@
 
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
+## Version 4.0.2 (2020-01-08)
+
+- Fix flattening
+
 ## Version 4.0.1 (2019-12-18)
 
 - Fix incorrect trove classifiers
