@@ -424,7 +424,7 @@ def get_recipe_with_yield(recipe: Recipe, required_yield: Amount) -> Recipe:
 
 
 def _multiply_ingredient_list(ingredient_list: T, multiplier: Decimal) -> T:
-    ingredients: List[Ingredient] = [_multiply_ingredient(i, multiplier) for i in ingredient_list.leaf_ingredients]
+    ingredients: List[Ingredient] = [_multiply_ingredient(i, multiplier) for i in ingredient_list.ingredients]
     ingredient_groups: List[IngredientGroup] = [_multiply_ingredient_list(ig, multiplier)
                                                 for ig in ingredient_list.ingredient_groups]
     return replace(ingredient_list, ingredients=ingredients, ingredient_groups=ingredient_groups)

@@ -2,13 +2,18 @@
 
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
+## Version 4.0.3 (2020-01-21)
+
+- *Fix:* Duplicating ingredients in groups as top level ingredients when multiplying recipe
+- *Fix:* Inconsistent changelog formatting
+
 ## Version 4.0.2 (2020-01-08)
 
-- Fix flattening
+- *Fix:* Flattening failing with exception
 
 ## Version 4.0.1 (2019-12-18)
 
-- Fix incorrect trove classifiers
+- *Fix:* Incorrect trove classifiers
 
 ## Version 4.0.0 (2019-12-18)
 
