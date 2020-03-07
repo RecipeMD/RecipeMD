@@ -17,6 +17,12 @@ div.body {
     }
 }
 
+/* Overwrite alabaster.css:523, see #22 */
+@media screen and (max-width: 870px) {
+    ul {
+        margin-left: 30px;
+    }
+}
 
 
 .toctree-l1 {
