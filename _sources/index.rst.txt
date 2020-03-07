@@ -32,6 +32,7 @@ You can use `recipemd-extract <https://github.com/AberDerBart/recipemd-extract>`
 Some RecipeMD repositories:
 
 * `AberDerBart <https://github.com/AberDerBart/recipes>`_
+* `Chamaeleon- <https://github.com/Chamaeleon-/recipes>`_
 * `dadada <https://github.com/dadada/recipes>`_
 * `dasnessie <https://github.com/dasnessie/recipes>`_
 * `fscholdei <https://github.com/fscholdei/recipes>`_
