@@ -433,4 +433,7 @@ def _multiply_ingredient_list(ingredient_list: T, multiplier: Decimal) -> T:
 def _multiply_ingredient(ingr: Ingredient, multiplier: Decimal) -> Ingredient:
     if ingr.amount is None:
         return ingr
-    return replace(ingr, amount=replace(ingr.amount, factor=ingr.amount.factor*multiplier))
+    return replace(ingr, amount=replace(
+        ingr.amount,
+        factor=ingr.amount.factor*multiplier if ingr.amount.factor is not None else None
+    ))
