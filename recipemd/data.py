@@ -105,13 +105,13 @@ class RecipeSerializer:
             return f'- {self._serialize_ingredient_text(ingredient)}'
 
     @staticmethod
-    def _serialize_ingredient_text(ingredient):
+    def _serialize_ingredient_text(ingredient: Ingredient):
         if ingredient.link:
             return f'[{ingredient.name}]({ingredient.link})'
         return ingredient.name
 
     @staticmethod
-    def _serialize_amount(amount, *, rounding: Optional[int] = None):
+    def _serialize_amount(amount: Amount, *, rounding: Optional[int] = None):
         if amount.factor is not None and amount.unit is not None:
             return f'{RecipeSerializer._normalize_factor(amount.factor, rounding=rounding)} {amount.unit}'
         if amount.factor is not None:
