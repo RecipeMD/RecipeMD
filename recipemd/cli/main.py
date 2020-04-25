@@ -11,7 +11,7 @@ import sys
 import urllib.parse
 import urllib.request
 from dataclasses import replace
-from typing import Dict, Optional
+from typing import Dict, Optional, Set
 
 import argcomplete
 from argcomplete.completers import ChoicesCompleter, FilesCompleter
@@ -43,16 +43,16 @@ def main():
     r = _process_scaling(r, args)
 
     # base url for late use
-    base_url = URL(f'file://{os.path.abspath(args.file.name)}')
+    recipe_url = URL(f'file://{os.path.abspath(args.file.name)}')
 
     # export linked recipes
     if args.export_links:
-        _export_links(r, args, base_url, rp, rs)
+        _export_links(r, args, recipe_url, rp, rs)
         return
 
     # flatten recipe
     if args.flatten:
-        r = _get_flattened_recipe(r, base_url=base_url, parser=rp)
+        r = _get_flattened_recipe(r, recipe_url=recipe_url, parser=rp)
 
     # create output depending on arguments
     print(_create_recipe_output(r, rs, args))
@@ -105,20 +105,20 @@ def _make_missing_yield_warning(recipe: Recipe, required_yield: Amount):
     return warning
 
 
-def _export_links(r, args, base_url, parser, serializer):
+def _export_links(r, args, recipe_url, parser, serializer):
     if type(args.export_links) == bool:
         folder = args.file.name.rsplit('.', 1)[0]
     else:
         folder = args.export_links
     os.makedirs(folder, exist_ok=True)
     print(f'Writing to {folder}', file=sys.stderr)
-    link_ingredients, ingr_to_recipe = _get_linked_recipes(r, base_url=base_url, parser=parser, flatten=True)
+    link_ingredients, ingr_to_recipe = _get_linked_recipes(r, recipe_url=recipe_url, parser=parser, flatten=True)
     for ingredient in link_ingredients:
         try:
             recipe = ingr_to_recipe[ingredient]
         except KeyError:
             continue
-        url = base_url.join(URL(ingredient.link))
+        url = recipe_url.join(URL(ingredient.link))
         filename = os.path.join(folder, url.parts[-1])
         with open(filename, 'w') as f:
             print(f'Created {filename} for "{recipe.title}"', file=sys.stderr)
@@ -137,9 +137,11 @@ def _create_recipe_output(recipe, serializer, args):
         return serializer.serialize(recipe, rounding=args.round)
 
 
-def _get_flattened_recipe(recipe: Recipe, *, base_url: URL, parser: RecipeParser) -> Recipe:
+def _get_flattened_recipe(recipe: Recipe, *, recipe_url: URL, parser: RecipeParser, exclude_urls: Set[URL] = frozenset()) -> Recipe:
     """Creates a new recipe with linked recipes recursively flattened"""
-    link_ingredients, ingr_to_recipe = _get_linked_recipes(recipe, base_url=base_url, parser=parser)
+
+    exclude_urls |= {recipe_url}
+    link_ingredients, ingr_to_recipe = _get_linked_recipes(recipe, recipe_url=recipe_url, parser=parser, exclude_urls=exclude_urls)
 
     # recipes that contain no links need not be processed
     if not ingr_to_recipe:
@@ -177,21 +179,28 @@ def _get_flattened_recipe(recipe: Recipe, *, base_url: URL, parser: RecipeParser
     return recipe
 
 
-def _get_linked_recipes(recipe: Recipe, *, base_url: URL, parser: RecipeParser, flatten: bool = True):
+def _get_linked_recipes(recipe: Recipe, *, recipe_url: URL, parser: RecipeParser, flatten: bool = True, exclude_urls: Set[URL] = frozenset()):
     """Gets all ingredients that have a link and a dict of the ingredient to recipe instance"""
     link_ingredients = [i for i in recipe.leaf_ingredients if i.link is not None]
     ingr_to_recipe = dict()
     for ingredient in link_ingredients:
         try:
-            ingr_to_recipe[ingredient] = _get_linked_recipe(ingredient, base_url=base_url, parser=parser,
-                                                            flatten=flatten)
+            ingr_to_recipe[ingredient] = _get_linked_recipe(ingredient, recipe_url=recipe_url, parser=parser,
+                                                            flatten=flatten, exclude_urls=exclude_urls)
         except Exception as e:
-            print(f'{e}: {e.__cause__}', file=sys.stderr)
+            if e.__cause__:
+                print(f'{e}: {e.__cause__}', file=sys.stderr)
+            else:
+                print(f'{e}', file=sys.stderr)
     return link_ingredients, ingr_to_recipe
 
 
-def _get_linked_recipe(ingredient: Ingredient, *, base_url: URL, parser: RecipeParser, flatten: bool = True) -> Recipe:
-    url = base_url.join(URL(ingredient.link))
+def _get_linked_recipe(ingredient: Ingredient, *, recipe_url: URL, parser: RecipeParser, flatten: bool = True, exclude_urls: Set[URL] = frozenset()) -> Recipe:
+    url = recipe_url.join(URL(ingredient.link))
+
+    if url in exclude_urls:
+        raise RuntimeError(f'''Skipping ingredient "{ingredient.name}" to prevent infinite recursion''')
+
     try:
         with urllib.request.urlopen(str(url)) as req:
             encoding = req.info().get_content_charset() or 'UTF-8'
@@ -205,7 +214,7 @@ def _get_linked_recipe(ingredient: Ingredient, *, base_url: URL, parser: RecipeP
         raise RuntimeError(f'''Couldn't parse linked recipe for ingredient "{ingredient.name}"''') from e
 
     if flatten:
-        link_recipe = _get_flattened_recipe(link_recipe, base_url=url, parser=parser)
+        link_recipe = _get_flattened_recipe(link_recipe, recipe_url=url, parser=parser, exclude_urls=exclude_urls)
 
     if ingredient.amount:
         try:
