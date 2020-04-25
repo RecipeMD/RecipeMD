@@ -2,22 +2,22 @@ import setuptools
 from recipemd import __version__
 
 tests_require = [
-    'pytest',
-    'pytest-cov',
+    'pytest==5.3.1',
+    'pytest-cov==2.8.1',
 ]
 
 docs_require = [
-    'Sphinx',
-    'm2r',
-    'sphinxcontrib.fulltoc',
-    'sphinxcontrib.autoprogram',
-    'sphinx_autodoc_typehints',
-    'sphinxcontrib.apidoc',
-    'sphinx-autobuild'
+    'Sphinx==2.2.2',
+    'm2r==0.2.1',
+    'sphinxcontrib.fulltoc==1.2.0',
+    'sphinxcontrib.autoprogram==0.1.5',
+    'sphinx_autodoc_typehints==1.10.3',
+    'sphinxcontrib.apidoc==0.3.0',
+    'sphinx-autobuild==0.7.1'
 ]
 
 release_requires = [
-    'twine',
+    'twine==3.1.1',
 ]
 
 with open("README.md", "r") as fh:
