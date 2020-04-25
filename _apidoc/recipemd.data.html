@@ -7,11 +7,11 @@
     <title>recipemd.data module &#8212; RecipeMD 4.0.3 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="canonical" href="https://recipemd.org/_apidoc/recipemd.data.html" />
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -41,16 +41,6 @@
 <dt id="recipemd.data.RecipeParser">
 <em class="property">class </em><code class="sig-prename descclassname">recipemd.data.</code><code class="sig-name descname">RecipeParser</code><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/data.py#L131-L395"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.data.RecipeParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="attribute">
-<dt id="recipemd.data.RecipeParser.current">
-<code class="sig-name descname">current</code><em class="property">: Node</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.RecipeParser.current" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="recipemd.data.RecipeParser.parents">
-<code class="sig-name descname">parents</code><em class="property">: List[Node]</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.RecipeParser.parents" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="recipemd.data.RecipeParser.parse">
 <code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param">src</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/data.py#L145-L175"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.data.RecipeParser.parse" title="Permalink to this definition">¶</a></dt>
@@ -76,16 +66,6 @@
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="attribute">
-<dt id="recipemd.data.RecipeParser.recipe">
-<code class="sig-name descname">recipe</code><em class="property">: Optional[Recipe]</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.RecipeParser.recipe" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="recipemd.data.RecipeParser.src">
-<code class="sig-name descname">src</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.RecipeParser.src" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -166,7 +146,7 @@
 </dl>
 <dl class="attribute">
 <dt id="recipemd.data.Recipe.description">
-<code class="sig-name descname">description</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Recipe.description" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">description</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Recipe.description" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -187,17 +167,12 @@
 
 <dl class="attribute">
 <dt id="recipemd.data.Recipe.instructions">
-<code class="sig-name descname">instructions</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Recipe.instructions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="recipemd.data.Recipe.tags">
-<code class="sig-name descname">tags</code><em class="property">: List[str]</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Recipe.tags" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">instructions</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Recipe.instructions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="recipemd.data.Recipe.title">
-<code class="sig-name descname">title</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Recipe.title" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">title</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Recipe.title" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -222,11 +197,6 @@
 </dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="recipemd.data.Recipe.yields">
-<code class="sig-name descname">yields</code><em class="property">: List[Amount]</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Recipe.yields" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -244,7 +214,7 @@
 </dl>
 <dl class="attribute">
 <dt id="recipemd.data.Ingredient.amount">
-<code class="sig-name descname">amount</code><em class="property">: Optional[recipemd.data.Amount]</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Ingredient.amount" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">amount</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Ingredient.amount" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -265,12 +235,7 @@
 
 <dl class="attribute">
 <dt id="recipemd.data.Ingredient.link">
-<code class="sig-name descname">link</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Ingredient.link" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="recipemd.data.Ingredient.name">
-<code class="sig-name descname">name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Ingredient.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">link</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Ingredient.link" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -328,7 +293,7 @@
 
 <dl class="attribute">
 <dt id="recipemd.data.IngredientGroup.title">
-<code class="sig-name descname">title</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.IngredientGroup.title" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">title</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.IngredientGroup.title" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -369,7 +334,7 @@
 </dl>
 <dl class="attribute">
 <dt id="recipemd.data.Amount.factor">
-<code class="sig-name descname">factor</code><em class="property">: Optional[decimal.Decimal]</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Amount.factor" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">factor</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Amount.factor" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -412,7 +377,7 @@
 
 <dl class="attribute">
 <dt id="recipemd.data.Amount.unit">
-<code class="sig-name descname">unit</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Amount.unit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">unit</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.data.Amount.unit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -488,7 +453,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script><div role="note" aria-label="source link" class="edit-on-github">
+<script type="text/javascript">$('#searchbox').show(0);</script><div role="note" aria-label="source link" class="edit-on-github">
     
     
     <h3>Edit this page</h3>
@@ -506,7 +471,7 @@
       &copy;2019, Tilman Stehr and contributors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

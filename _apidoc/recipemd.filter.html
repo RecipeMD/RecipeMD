@@ -7,11 +7,11 @@
     <title>recipemd.filter module &#8212; RecipeMD 4.0.3 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="canonical" href="https://recipemd.org/_apidoc/recipemd.filter.html" />
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -45,16 +45,11 @@ module.</p>
 <em class="property">class </em><code class="sig-prename descclassname">recipemd.filter.</code><code class="sig-name descname">FilterParser</code><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L260-L341"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.FilterParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Allows parsing filter strings into ASTs</p>
-<dl class="attribute">
-<dt id="recipemd.filter.FilterParser.filter_expression_parser">
-<code class="sig-name descname">filter_expression_parser</code><em class="property">: ParserElement</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.filter.FilterParser.filter_expression_parser" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="recipemd.filter.FilterParser.parse_filter_string">
 <code class="sig-name descname">parse_filter_string</code><span class="sig-paren">(</span><em class="sig-param">filter_string</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L267-L280"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#recipemd.filter.FilterParser.parse_filter_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses a filter string into an evaluateable AST.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span> <span class="o">=</span> <span class="n">FilterParser</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span> <span class="o">=</span> <span class="n">FilterParser</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span><span class="o">.</span><span class="n">parse_filter_string</span><span class="p">(</span><span class="s1">&#39;vegan and summer&#39;</span><span class="p">)</span>
 <span class="go">BooleanAndOperation(operands=[AnyFilterTerm(filter_string=FuzzyFilterString(string=&#39;vegan&#39;)), AnyFilterTerm(filter_string=FuzzyFilterString(string=&#39;summer&#39;))])</span>
 </pre></div>
@@ -99,24 +94,24 @@ module.</p>
 <p>Allows using a language similar to the expressions parsed by <cite>recipemd.filter.FilterParser</cite> directly in python code.
 This makes filters usable as an embedded domain specific language.</p>
 <p>A preconfigured Filter builder is available as <cite>f</cite> in this module:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;Cheese&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;Cheese&#39;</span><span class="p">)</span>
 <span class="go">AnyFilterTerm(filter_string=FuzzyFilterString(string=&#39;Cheese&#39;))</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">ingr</span><span class="p">(</span><span class="s1">&#39;Cheese&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">ingr</span><span class="p">(</span><span class="s1">&#39;Cheese&#39;</span><span class="p">)</span>
 <span class="go">IngredientFilterTerm(filter_string=FuzzyFilterString(string=&#39;Cheese&#39;))</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">re</span><span class="p">(</span><span class="s1">&#39;Cheese|Bacon&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">re</span><span class="p">(</span><span class="s1">&#39;Cheese|Bacon&#39;</span><span class="p">)</span>
 <span class="go">AnyFilterTerm(filter_string=RegexFilterString(regex=re.compile(&#39;Cheese|Bacon&#39;)))</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">ex</span><span class="p">(</span><span class="s1">&#39;vegan&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">ex</span><span class="p">(</span><span class="s1">&#39;vegan&#39;</span><span class="p">)</span>
 <span class="go">TagFilterTerm(filter_string=ExactFilterString(string=&#39;vegan&#39;))</span>
 </pre></div>
 </div>
 <p>Filters can be combined with logical operators “&amp;” (and), “|” (or), “^” (xor), and “~” (not):</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;Cheese&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="n">f</span><span class="p">(</span><span class="s1">&#39;Bacon&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;Cheese&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="n">f</span><span class="p">(</span><span class="s1">&#39;Bacon&#39;</span><span class="p">)</span>
 <span class="go">BooleanOrOperation(operands=[AnyFilterTerm(filter_string=FuzzyFilterString(string=&#39;Cheese&#39;)), AnyFilterTerm(filter_string=FuzzyFilterString(string=&#39;Bacon&#39;))])</span>
 </pre></div>
 </div>
@@ -194,11 +189,6 @@ This makes filters usable as an embedded domain specific language.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="recipemd.filter.BooleanAndOperation.operands">
-<code class="sig-name descname">operands</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.filter.BooleanAndOperation.operands" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -224,11 +214,6 @@ This makes filters usable as an embedded domain specific language.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="recipemd.filter.BooleanOrOperation.operands">
-<code class="sig-name descname">operands</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.filter.BooleanOrOperation.operands" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -253,11 +238,6 @@ This makes filters usable as an embedded domain specific language.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="attribute">
-<dt id="recipemd.filter.BooleanNotOperation.operands">
-<code class="sig-name descname">operands</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.filter.BooleanNotOperation.operands" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -289,11 +269,6 @@ This makes filters usable as an embedded domain specific language.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="recipemd.filter.BooleanXorOperation.operands">
-<code class="sig-name descname">operands</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.filter.BooleanXorOperation.operands" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -318,11 +293,6 @@ This makes filters usable as an embedded domain specific language.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="attribute">
-<dt id="recipemd.filter.AnyFilterTerm.filter_string">
-<code class="sig-name descname">filter_string</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.filter.AnyFilterTerm.filter_string" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -349,11 +319,6 @@ This makes filters usable as an embedded domain specific language.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="recipemd.filter.TagFilterTerm.filter_string">
-<code class="sig-name descname">filter_string</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.filter.TagFilterTerm.filter_string" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -378,11 +343,6 @@ This makes filters usable as an embedded domain specific language.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="attribute">
-<dt id="recipemd.filter.IngredientFilterTerm.filter_string">
-<code class="sig-name descname">filter_string</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.filter.IngredientFilterTerm.filter_string" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -409,11 +369,6 @@ This makes filters usable as an embedded domain specific language.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="recipemd.filter.UnitFilterTerm.filter_string">
-<code class="sig-name descname">filter_string</code><em class="property"> = None</em><a class="headerlink" href="#recipemd.filter.UnitFilterTerm.filter_string" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -438,11 +393,6 @@ This makes filters usable as an embedded domain specific language.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="attribute">
-<dt id="recipemd.filter.FuzzyFilterString.string">
-<code class="sig-name descname">string</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.filter.FuzzyFilterString.string" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -469,11 +419,6 @@ This makes filters usable as an embedded domain specific language.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="recipemd.filter.ExactFilterString.string">
-<code class="sig-name descname">string</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.filter.ExactFilterString.string" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -498,11 +443,6 @@ This makes filters usable as an embedded domain specific language.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="attribute">
-<dt id="recipemd.filter.RegexFilterString.regex">
-<code class="sig-name descname">regex</code><em class="property">: Pattern</em><em class="property"> = None</em><a class="headerlink" href="#recipemd.filter.RegexFilterString.regex" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -577,7 +517,7 @@ This makes filters usable as an embedded domain specific language.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script><div role="note" aria-label="source link" class="edit-on-github">
+<script type="text/javascript">$('#searchbox').show(0);</script><div role="note" aria-label="source link" class="edit-on-github">
     
     
     <h3>Edit this page</h3>
@@ -595,7 +535,7 @@ This makes filters usable as an embedded domain specific language.</p>
       &copy;2019, Tilman Stehr and contributors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
