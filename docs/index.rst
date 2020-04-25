@@ -24,6 +24,11 @@ Specification
 We provide a  :doc:`specification <specification>` for RecipeMD so other tools can use the format. The specification
 also comes with a set of `testcases <https://github.com/tstehr/RecipeMD/tree/master/testcases>`_.
 
+Contributing
+------------
+
+You can take part in RecipeMD's development in our `GitHub repository <https://github.com/tstehr/RecipeMD>`_.
+
 Resources
 ---------
 

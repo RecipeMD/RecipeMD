@@ -33,12 +33,9 @@ div.body {
     text-transform: capitalize;
 }
 
-@media screen and (max-width: 875px) {
-    .edit-on-github {
-        display: none;
-    }
+div.sphinxsidebar h3 {
+    padding-top: .5rem;
 }
-
 
 div.sphinxsidebar a.github-edit {
     font-family: sans-serif;
