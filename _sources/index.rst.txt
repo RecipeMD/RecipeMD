@@ -22,7 +22,7 @@ Specification
 -------------
 
 We provide a  :doc:`specification <specification>` for RecipeMD so other tools can use the format. The specification
-also comes with a set of `testcases <https://github.com/tstehr/RecipeMD/tree/master/testcases>`_.
+also comes with a set of `test cases <https://github.com/tstehr/RecipeMD/tree/master/testcases>`_.
 
 Contributing
 ------------
@@ -32,18 +32,20 @@ You can take part in RecipeMD's development in our `GitHub repository <https://g
 Resources
 ---------
 
-You can use `recipemd-extract <https://github.com/AberDerBart/recipemd-extract>`_ to fetch and extract recipes from the web. We also maintain a :doc:`list of recommended tools <recommended_tools>` that work nicely with RecipeMD recipes.
+You can use `recipemd-extract <https://github.com/AberDerBart/recipemd-extract>`_ to fetch and extract recipes from the web. We
+also maintain a :doc:`list of recommended tools <recommended_tools>` that work nicely with RecipeMD recipes.
 
 Some RecipeMD repositories:
 
 * `AberDerBart <https://github.com/AberDerBart/recipes>`_
 * `Chamaeleon- <https://github.com/Chamaeleon-/recipes>`_
+* `core-dd <https://github.com/core-dd/recipes>`_
 * `dadada <https://github.com/dadada/recipes>`_
 * `dasnessie <https://github.com/dasnessie/recipes>`_
 * `Evylon <https://github.com/Evylon/recipes>`_
 * `fscholdei <https://github.com/fscholdei/recipes>`_
 * `mist <https://github.com/mist/recipes>`_
-* `p3tr0sh <https://github.com/p3tr0sh/recipe>`_
+* `p3tr0sh <https://github.com/p3tr0sh/recipes>`_
 * `puzzlewolf <https://github.com/puzzlewolf/recipes>`_
 * `tstehr <https://github.com/tstehr/recipes>`_
 
