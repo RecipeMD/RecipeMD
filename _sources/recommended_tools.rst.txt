@@ -3,6 +3,17 @@ Recommended Tools
 
 On this pages we summarize some tools that work nicely with RecipeMD recipes.
 
+recipemd-extract
+----------------------
+
+With `recipemd-extract <https://github.com/AberDerBart/recipemd-extract>`_, you can easily download recipes from `large number of popular websites <https://github.com/AberDerBart/recipemd-extract#supported-websites>`_ as RecipeMD.
+
+After installation you can download into the current folder via: 
+
+.. code-block:: shell
+
+    recipmd-extract '<url-of-recipe>'
+
 Pandoc
 ------
 
