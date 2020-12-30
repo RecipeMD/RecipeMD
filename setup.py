@@ -36,12 +36,12 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires='>=3.7,<4',
     install_requires=[
-        'dataclasses-json>=0.3.0,<0.4.0',
+        'dataclasses-json>=0.5.2,<0.6.0',
         'yarl~=1.3.0',
-        # has broken before and is still unstable, so pin exact version
-        'commonmarkextensions==0.0.5',
-        # commonmark version needs to match the version required by commonmarkextensions
-        'commonmark>=0.8.0,<=0.8.1',
+        # commonmarkextension has to be vendorized due to #28. This can be removed once GovReady/CommonMark-py-Extensions#5  or we
+        # remove or dependency on commonmarkextensions altogether
+        # 'commonmarkextensions==0.0.5',
+        'commonmark>=0.9.1,<1.0.0',
         'argcomplete~=1.10.0',
         'pyparsing~=2.4.2',
     ],
