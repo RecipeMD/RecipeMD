@@ -8,4 +8,6 @@ exclude_lines =
     raise NotImplementedError
     if 0:
     if __name__ == .__main__.:
-omit = recipemd/cli/*
+omit = 
+    recipemd/cli/*
+    recipemd/_vendor/*
