@@ -11,7 +11,7 @@ from typing import List, Optional, Union, Dict, Generator, TypeVar
 
 import commonmark
 from commonmark.node import Node
-from commonmark_extensions.plaintext import CommonMarkToCommonMarkRenderer
+from recipemd._vendor.commonmark_extensions.plaintext import CommonMarkToCommonMarkRenderer
 from dataclasses_json import dataclass_json, config
 
 __all__ = ['RecipeParser', 'RecipeSerializer', 'multiply_recipe', 'get_recipe_with_yield',
