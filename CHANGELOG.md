@@ -2,18 +2,29 @@
 
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
+
+## Version 4.0.3 (2020-01-21)
+
+- *Fix:* Scaling of amounts with `None` factors
+- *Fix:* Possible infinite recursion when flattening recipes
+- *Fix:* Make `recipemd` compatible with Python 3.9 
+
+
 ## Version 4.0.3 (2020-01-21)
 
 - *Fix:* Duplicating ingredients in groups as top level ingredients when multiplying recipe
 - *Fix:* Inconsistent changelog formatting
 
+
 ## Version 4.0.2 (2020-01-08)
 
 - *Fix:* Flattening failing with exception
 
+
 ## Version 4.0.1 (2019-12-18)
 
 - *Fix:* Incorrect trove classifiers
+
 
 ## Version 4.0.0 (2019-12-18)
 
@@ -22,9 +33,11 @@ The `recipemd` package uses [semantic versioning](https://semver.org).
 - Improve error message when trying to flatten a linked recipe and no matching yield can be found.
 - License under LGPL
 
+
 ## Version 3.0.1 (2019-11-27)
 
 - Add `-v/--version` argument to `recipemd` and `recipemd-find` to display current version
+
 
 ## Version 3.0.0 (2019-11-17)
 
