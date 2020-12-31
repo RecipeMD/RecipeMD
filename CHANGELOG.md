@@ -3,7 +3,12 @@
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
 
-## Version 4.0.3 (2020-01-21)
+## Version 4.0.5 (2020-12-31)
+
+- *Fix:* Fix missing package due to bundling error
+- *Fix:* Incorrect heading in changelog
+
+## Version 4.0.4 (2020-12-30)
 
 - *Fix:* Scaling of amounts with `None` factors
 - *Fix:* Possible infinite recursion when flattening recipes
