@@ -79,11 +79,11 @@ A recipe is represented in markdown as follows:
 1. Title as a first level heading
 2. Short description as zero or more paragraphs
 3. Yield and Tags (arbitrary order):
-    - Tags as a paragraph which is completely in italics. Tags are a
-      comma separated list of strings.
-    - Yields as a paragraph which is completely in bold. Yields are a
-      comma separated list of amounts. Note the rules about commas in
-      amounts.
+    - Tags as a single paragraph which is completely in italics. Tags 
+      are a comma separated list of strings.
+    - Yields as a single paragraph which is completely in bold. Yields 
+      are a comma separated list of amounts. Note the rules about 
+      commas in amounts.
 5. a horizontal line
 6. the ingredients, consisting of
     1. *optional*: headings to group ingredients
@@ -156,7 +156,7 @@ An ingredient group us represented as follows:
 ## Test Cases
 
 Implementations of this specification must conform with all 
-[test cases]. There are two kinds of testcases: valid files (`*.md` 
+[test cases]. There are two kinds of test cases: valid files (`*.md` 
 with a corresponding `*.json`) and invalid files (`*.invalid.md`)
 
 [test cases]: https://github.com/tstehr/RecipeMD/tree/master/testcases
@@ -176,6 +176,14 @@ either version 3 of the License, or any later version.
 
 
 ## Version History
+
+
+### Version 2.3.3 (2021-01-02)
+
+- Clarify that yields and tags may appear at most once.
+- Add test cases:
+  - Multiple yields or tags
+  - Tag/yield order
 
 ### Version 2.3.2 (2019-12-18)
 

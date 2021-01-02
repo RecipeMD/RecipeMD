@@ -1,0 +1,40 @@
+{
+  "title": "Tags then Yields",
+  "description": null,"yields": [
+    {
+      "factor": "1.2",
+      "unit": "cups"
+    },
+    {
+      "factor": "1.5",
+      "unit": "Tassen"
+    },
+    {
+      "factor": "1.25",
+      "unit": "servings"
+    },
+    {
+      "factor": "5",
+      "unit": "servings"
+    },
+    {
+      "factor": null,
+      "unit": "factorless"
+    },
+    {
+      "factor": "5",
+      "unit": null
+    }
+  ],
+  "tags": [
+    "tag1",
+    "tag2",
+    "tag3",
+    "tag4",
+    "tag with special! char",
+    "tag5"
+  ],
+  "ingredients": [],
+  "ingredient_groups": [],
+  "instructions": null
+}
