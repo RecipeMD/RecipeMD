@@ -192,11 +192,15 @@ class RecipeParser:
     def _parse_tags_and_yields(self):
         while self.current is not None and (self._is_tags(self.current) or self._is_yields(self.current)):
             if self._is_tags(self.current):
+                if self.recipe.tags:
+                    raise RuntimeError(f"Invalid, tags may not be specified multiple times")
                 self._enter_node()
                 tags_text = self._get_current_node_children_source()
                 self._exit_node()
                 self.recipe = replace(self.recipe, tags=[t.strip() for t in self._list_split.split(tags_text)])
             else:
+                if self.recipe.yields:
+                    raise RuntimeError(f"Invalid, tags may not be specified multiple times")
                 self._enter_node()
                 yields_text = self._get_current_node_children_source()
                 self._exit_node()

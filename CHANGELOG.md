@@ -3,10 +3,16 @@
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
 
+## Upcoming Version 4.0.6 (UNRELEASED)
+
+- *Fix:* Show error on duplicated yields/tag instead of silently ignoring the earlier occurrence.
+
+
 ## Version 4.0.5 (2020-12-31)
 
 - *Fix:* Fix missing package due to bundling error
 - *Fix:* Incorrect heading in changelog
+
 
 ## Version 4.0.4 (2020-12-30)
 
