@@ -44,6 +44,7 @@ Some RecipeMD repositories:
 * `dasnessie <https://github.com/dasnessie/recipes>`_
 * `Evylon <https://github.com/Evylon/recipes>`_
 * `fscholdei <https://github.com/fscholdei/recipes>`_
+* `haeckse <https://github.com/haeckse/recipes>`_
 * `Invisible4ever <https://github.com/Invisible4ever/Recipes>`_
 * `mist <https://github.com/mist/recipes>`_
 * `p3tr0sh <https://github.com/p3tr0sh/recipes>`_
