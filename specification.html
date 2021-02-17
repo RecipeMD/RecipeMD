@@ -44,20 +44,20 @@ RecipeMD recipe.</p>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>This example presents the basic format of a RecipeMD recipe</p>
-<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span># Guacamole
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="gh"># Guacamole</span>
 
 Some people call it guac.
 
-*sauce, vegan*
+<span class="ge">*sauce, vegan*</span>
 
-**4 Servings, 200g**
+<span class="gs">**4 Servings, 200g**</span>
 
 ---
 
-- *1* avocado
-- *.5 teaspoon* salt
-- *1 1/2 pinches* red pepper flakes
-- lemon juice
+<span class="k">-</span> <span class="ge">*1*</span> avocado
+<span class="k">-</span> <span class="ge">*.5 teaspoon*</span> salt
+<span class="k">-</span> <span class="ge">*1 1/2 pinches*</span> red pepper flakes
+<span class="k">-</span> lemon juice
 
 ---
 
@@ -77,10 +77,10 @@ list in bold face: <code class="docutils literal notranslate"><span class="pre">
 titles of ingredient groups. The amount of each ingredient (if
 given) is noted in italics. Amounts may be expressed as decimals
 (dividers “.” and “,”) and fractions:</p>
-<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>- *1* avocado
-- *.5 teaspoon* salt
-- *1 1/2 pinches* red pepper flakes
-- lemon juice
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="k">-</span> <span class="ge">*1*</span> avocado
+<span class="k">-</span> <span class="ge">*.5 teaspoon*</span> salt
+<span class="k">-</span> <span class="ge">*1 1/2 pinches*</span> red pepper flakes
+<span class="k">-</span> lemon juice
 </pre></div>
 </div>
 </li>
@@ -107,11 +107,11 @@ instructions</p></li>
 <li><p>Short description as zero or more paragraphs</p></li>
 <li><p>Yield and Tags (arbitrary order):</p>
 <ul class="simple">
-<li><p>Tags as a paragraph which is completely in italics. Tags are a
-comma separated list of strings.</p></li>
-<li><p>Yields as a paragraph which is completely in bold. Yields are a
-comma separated list of amounts. Note the rules about commas in
-amounts.</p></li>
+<li><p>Tags as a single paragraph which is completely in italics. Tags
+are a comma separated list of strings.</p></li>
+<li><p>Yields as a single paragraph which is completely in bold. Yields
+are a comma separated list of amounts. Note the rules about
+commas in amounts.</p></li>
 </ul>
 </li>
 <li><p>a horizontal line</p></li>
@@ -189,7 +189,7 @@ ingredients making up one component of a dish. It consists of:</p>
 <div class="section" id="test-cases">
 <h2>Test Cases<a class="headerlink" href="#test-cases" title="Permalink to this headline">¶</a></h2>
 <p>Implementations of this specification must conform with all
-<a class="reference external" href="https://github.com/tstehr/RecipeMD/tree/master/testcases">test cases</a>. There are two kinds of testcases: valid files (<code class="docutils literal notranslate"><span class="pre">*.md</span></code>
+<a class="reference external" href="https://github.com/tstehr/RecipeMD/tree/master/testcases">test cases</a>. There are two kinds of test cases: valid files (<code class="docutils literal notranslate"><span class="pre">*.md</span></code>
 with a corresponding <code class="docutils literal notranslate"><span class="pre">*.json</span></code>) and invalid files (<code class="docutils literal notranslate"><span class="pre">*.invalid.md</span></code>)</p>
 </div>
 <div class="section" id="authors-licensing">
@@ -202,6 +202,18 @@ either version 3 of the License, or any later version.</p>
 </div>
 <div class="section" id="version-history">
 <h2>Version History<a class="headerlink" href="#version-history" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="version-2-3-3-2021-01-02">
+<h3>Version 2.3.3 (2021-01-02)<a class="headerlink" href="#version-2-3-3-2021-01-02" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Clarify that yields and tags may appear at most once.</p></li>
+<li><p>Add test cases:</p>
+<ul>
+<li><p>Multiple yields or tags</p></li>
+<li><p>Tag/yield order</p></li>
+</ul>
+</li>
+</ul>
+</div>
 <div class="section" id="version-2-3-2-2019-12-18">
 <h3>Version 2.3.2 (2019-12-18)<a class="headerlink" href="#version-2-3-2-2019-12-18" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -297,6 +309,7 @@ either version 3 of the License, or any later version.</p>
 <li class="toctree-l2"><a class="reference internal" href="#test-cases">Test Cases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#authors-licensing">Authors Licensing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-history">Version History</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#version-2-3-3-2021-01-02">Version 2.3.3 (2021-01-02)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-2-3-2-2019-12-18">Version 2.3.2 (2019-12-18)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-2-3-1-2019-11-18">Version 2.3.1 (2019-11-18)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-2-3-0-2019-11-18">Version 2.3.0 (2019-11-18)</a></li>
