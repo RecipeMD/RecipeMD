@@ -85,24 +85,36 @@ class RecipeSerializer:
         if recipe.description is not None:
             rep += f'{recipe.description}\n\n'
         if len(recipe.tags) > 0:
-            rep += f'*{", ".join(recipe.tags)}*\n\n'
+            rep += f'*{self._serialize_tags(recipe.tags)}*\n\n'
         if len(recipe.yields) > 0:
-            rep += f'**{", ".join(self._serialize_amount(a, rounding=rounding) for a in recipe.yields)}**\n\n'
+            rep += f'**{self._serialize_yields(recipe.yields, rounding=rounding)}**\n\n'
         rep += f'---\n\n'
-        rep += ("\n".join(self._serialize_ingredient(g, 2, rounding=rounding) for g in recipe.all_ingredients)).strip()
+        rep += self._serialize_ingredient_list(recipe, rounding=rounding)
         if recipe.instructions is not None:
             rep += f'\n\n---\n\n'
             rep += recipe.instructions
         return rep
 
-    def _serialize_ingredient(self, ingredient, level, *, rounding: Optional[int] = None):
-        if isinstance(ingredient, IngredientGroup):
-            return f'\n{"#" * level} {ingredient.title}\n\n'\
-                   + "\n".join(self._serialize_ingredient(i, level+1, rounding=rounding) for i in ingredient.all_ingredients)
-        else:
-            if ingredient.amount is not None:
-                return f'- *{self._serialize_amount(ingredient.amount, rounding=rounding)}* {self._serialize_ingredient_text(ingredient)}'
-            return f'- {self._serialize_ingredient_text(ingredient)}'
+    def _serialize_tags(self, tags: List[str]):
+        return ", ".join(tags)
+
+    def _serialize_yields(self, yields: List[Amount], *, rounding: Optional[int] = None):
+        return ", ".join(self._serialize_amount(a, rounding=rounding) for a in yields)
+
+    def _serialize_ingredient_list(self, ingredient_list: IngredientList, *, level: int = 2,
+                               rounding: Optional[int] = None):
+        ingredients = [self._serialize_ingredient(i, rounding=rounding) for i in ingredient_list.ingredients]
+        ingredient_groups = [self._serialize_ingredient_group(i, level, rounding=rounding) for i in ingredient_list.ingredient_groups]
+        return ("\n".join([*ingredients, *ingredient_groups])).strip()
+
+    def _serialize_ingredient(self, ingredient: Ingredient, *, rounding: Optional[int] = None):
+        if ingredient.amount is not None:
+            return f'- *{self._serialize_amount(ingredient.amount, rounding=rounding)}* {self._serialize_ingredient_text(ingredient)}'
+        return f'- {self._serialize_ingredient_text(ingredient)}'
+
+    def _serialize_ingredient_group(self, ingredient_group: IngredientGroup, level: int, *, rounding: Optional[int] = None):
+        return f'\n{"#" * level} {ingredient_group.title}\n\n'\
+                + self._serialize_ingredient_list(ingredient_group, level=level+1, rounding=rounding)
 
     @staticmethod
     def _serialize_ingredient_text(ingredient: Ingredient):
@@ -120,7 +132,7 @@ class RecipeSerializer:
             return f'{amount.unit}'
 
     @staticmethod
-    def _normalize_factor(factor: Decimal, *, rounding: Optional[int]=None):
+    def _normalize_factor(factor: Decimal, *, rounding: Optional[int] = None):
         if rounding is not None:
             factor = round(factor, rounding)
         # remove trailing zeros (https://docs.python.org/3/library/decimal.html#decimal-faq)
