@@ -15,7 +15,7 @@ from recipemd._vendor.commonmark_extensions.plaintext import CommonMarkToCommonM
 from dataclasses_json import dataclass_json, config
 
 __all__ = ['RecipeParser', 'RecipeSerializer', 'multiply_recipe', 'get_recipe_with_yield',
-           'Recipe', 'Ingredient', 'IngredientGroup', 'Amount']
+           'Recipe', 'Ingredient', 'IngredientGroup', 'Amount', 'IngredientList']
 
 
 T = TypeVar('T')
@@ -129,6 +129,12 @@ class RecipeSerializer:
 
 
 class RecipeParser:
+    """
+    Parses strings to a :class:`Recipe` or :class:`Amount`.
+
+    The markdown format is described in the :ref:`RecipeMD Specification`. 
+    """
+
     _list_split = re.compile(r"(?<!\d),|,(?!\d)")
 
     src: Optional[str]
@@ -143,6 +149,31 @@ class RecipeParser:
         self.current = None
 
     def parse(self, src: str) -> Recipe:
+        """
+        Parses a markdown string into a :class:`Recipe`.
+
+        >>> recipe_parser = RecipeParser()
+        <BLANKLINE>
+        >>> recipe = recipe_parser.parse('''
+        ...   # Guacamole
+        ...   ---
+        ...   - *1* avocado
+        ...   - *.5 teaspoon* salt
+        ...   - *1 1/2 pinches* red pepper flakes
+        ...   - lemon juice
+        ...   ---
+        ...   Remove flesh from avocado and roughly mash with fork. Season to taste with salt pepper and lemon juice.
+        ... ''')
+        <BLANKLINE>
+        >>> recipe.title
+        'Guacamole'
+        <BLANKLINE>
+        >>> recipe.ingredients[0].name
+        'avocado'
+    
+
+        :raises RuntimeException: If src is not a valid RecipeMD recipe.
+        """
         self.src = src
         self.recipe = Recipe(title=None)
 
@@ -321,6 +352,23 @@ class RecipeParser:
 
     @staticmethod
     def parse_amount(amount_str: str) -> Amount:
+        """
+        Parses an amount string to an :class:`Amount`.
+
+        >>> RecipeParser.parse_amount('3.5 l')
+        Amount(factor=Decimal('3.5'), unit='l')
+
+        Will recognize different :ref:`number formats<Amount>`:  
+
+        >>> RecipeParser.parse_amount('3 1/2 l')
+        Amount(factor=Decimal('3.5'), unit='l')
+        <BLANKLINE>
+        >>> RecipeParser.parse_amount('3 ½ l')
+        Amount(factor=Decimal('3.5'), unit='l')
+        <BLANKLINE>
+        >>> RecipeParser.parse_amount('3,5 l')
+        Amount(factor=Decimal('3.5'), unit='l')
+        """
         # iterate over different value format
         for regexp, factor_function, group_count in RecipeParser._value_formats:
             match = re.match(r'^\s*(-?)\s*' + regexp + r'(.*)$', amount_str)
@@ -401,9 +449,23 @@ class RecipeParser:
 
 def multiply_recipe(recipe: Recipe, multiplier: Decimal) -> Recipe:
     """
-    Multiplies a recipe by the given multiplier
+    Multiplies a recipe by the given multiplier.
 
-    Creates a new recipe where the factor of yield and ingredient is changed according to the multiplier
+    Creates a new recipe where the factor of yield and ingredient is changed according to the multiplier.
+
+    >>> recipe = Recipe(
+    ...   ingredients=[
+    ...     Ingredient(name='Eggs', amount=Amount(factor=Decimal('5'), unit=None), link=None),
+    ...     Ingredient(name='Butter', amount=Amount(factor=Decimal('200'), unit='g'), link=None),
+    ...    ]    
+    ... )
+    >>> multiplied_recipe = multiply_recipe(recipe, 3)
+    <BLANKLINE>
+    >>> multiplied_recipe.ingredients[0]
+    Ingredient(name='Eggs', amount=Amount(factor=Decimal('15'), unit=None), link=None)
+    <BLANKLINE>
+    >>> multiplied_recipe.ingredients[1]
+    Ingredient(name='Butter', amount=Amount(factor=Decimal('600'), unit='g'), link=None)
     """
     recipe = replace(recipe, yields=[replace(y, factor=y.factor * multiplier) for y in recipe.yields])
     recipe = _multiply_ingredient_list(recipe, multiplier)
@@ -412,9 +474,12 @@ def multiply_recipe(recipe: Recipe, multiplier: Decimal) -> Recipe:
 
 def get_recipe_with_yield(recipe: Recipe, required_yield: Amount) -> Recipe:
     """
-    Scale the given recipe to a required yield
+    Scale the given recipe to a required yield.
 
-    Raises `StopIteration` if no yield with a matching unit can be found.
+    Creates a new recipe, which has the yield given by `required_yield`. A recipe can only be scaled if a yield with a matching 
+    unit is present.
+
+    :raises StopIteration: If no yield with a matching unit can be found.
     """
     matching_recipe_yield = next((y for y in recipe.yields if y.unit == required_yield.unit), None)
     if matching_recipe_yield is None:

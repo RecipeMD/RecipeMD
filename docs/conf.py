@@ -39,6 +39,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.linkcode",
     'sphinx.ext.githubpages',
+    'sphinx.ext.autosectionlabel',
     'm2r',
     'sphinxcontrib.fulltoc',
     'sphinxcontrib.autoprogram',
