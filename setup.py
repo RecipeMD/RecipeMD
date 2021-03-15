@@ -42,7 +42,7 @@ setuptools.setup(
         # remove or dependency on commonmarkextensions altogether
         # 'commonmarkextensions==0.0.5',
         'commonmark>=0.9.1,<1.0.0',
-        'argcomplete~=1.10.0',
+        'argcomplete>=1.10.0,<2.0.0',
         'pyparsing~=2.4.2',
     ],
     extras_require={
