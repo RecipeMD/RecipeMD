@@ -37,7 +37,7 @@ setuptools.setup(
     python_requires='>=3.7,<4',
     install_requires=[
         'dataclasses-json>=0.5.2,<0.6.0',
-        'yarl~=1.3.0',
+        'yarl>=1.3.0,<2.0.0',
         # commonmarkextension has to be vendorized due to #28. This can be removed once GovReady/CommonMark-py-Extensions#5  or we
         # remove or dependency on commonmarkextensions altogether
         # 'commonmarkextensions==0.0.5',
