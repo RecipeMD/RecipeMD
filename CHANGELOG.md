@@ -6,6 +6,7 @@ The `recipemd` package uses [semantic versioning](https://semver.org).
 ## Upcoming Version 4.0.6 (UNRELEASED)
 
 - *Fix:* Show error on duplicated yields/tag instead of silently ignoring the earlier occurrence.
+- *Fix:* Prevent error when scaling a recipe with a factor-less yield. 
 
 
 ## Version 4.0.5 (2020-12-31)

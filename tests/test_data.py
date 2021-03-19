@@ -112,7 +112,7 @@ class TestRecipeSerializer:
 def test_multiply_recipe():
     recipe = Recipe(
         title="Test",
-        yields=[Amount(factor=Decimal('5'), unit="servings")],
+        yields=[Amount(factor=Decimal('5'), unit="servings"), Amount(unit="unitless yield")],
         ingredients=[
             Ingredient(amount=Amount(factor=Decimal('5')), name='Eggs'),
             Ingredient(amount=Amount(factor=Decimal('200'), unit='g'), name='Butter'),

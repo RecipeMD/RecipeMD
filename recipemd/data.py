@@ -467,7 +467,7 @@ def multiply_recipe(recipe: Recipe, multiplier: Decimal) -> Recipe:
     >>> multiplied_recipe.ingredients[1]
     Ingredient(name='Butter', amount=Amount(factor=Decimal('600'), unit='g'), link=None)
     """
-    recipe = replace(recipe, yields=[replace(y, factor=y.factor * multiplier) for y in recipe.yields])
+    recipe = replace(recipe, yields=[replace(y, factor=y.factor * multiplier) for y in recipe.yields if y.factor is not None])
     recipe = _multiply_ingredient_list(recipe, multiplier)
     return recipe
 
@@ -480,7 +480,10 @@ def get_recipe_with_yield(recipe: Recipe, required_yield: Amount) -> Recipe:
     unit is present.
 
     :raises StopIteration: If no yield with a matching unit can be found.
+    :raises RuntimeError: If required_yield does not have a factor.
     """
+    if required_yield.factor is None:
+        raise RuntimeError("Required yield must contain a factor")
     matching_recipe_yield = next((y for y in recipe.yields if y.unit == required_yield.unit), None)
     if matching_recipe_yield is None:
         # no unit in required amount is interpreted as "one recipe"
