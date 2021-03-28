@@ -56,3 +56,8 @@ div.sphinxsidebar a.github-edit img {
     max-height: 1.2em;
     vertical-align: sub;
 }
+
+/* Space out top-level documentation*/
+div.section > dl {
+    margin-top: 4rem;
+}
