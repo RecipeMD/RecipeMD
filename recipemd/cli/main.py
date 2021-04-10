@@ -43,7 +43,7 @@ def main():
     r = _process_scaling(r, args)
 
     # base url for late use
-    recipe_url = URL(f'file://{os.path.abspath(args.file.name)}')
+    recipe_url = urllib.parse.urlparse(f'file://{os.path.abspath(args.file.name)}')
 
     # export linked recipes
     if args.export_links:
