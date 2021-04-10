@@ -10,6 +10,7 @@ import re
 import sys
 import urllib.parse
 import urllib.request
+from pathlib import Path
 from dataclasses import replace
 from typing import Dict, Optional, Set
 
@@ -43,7 +44,7 @@ def main():
     r = _process_scaling(r, args)
 
     # base url for late use
-    recipe_url = URL(f'file://{os.path.abspath(args.file.name)}')
+    recipe_url = URL(Path(args.file.name).absolute().as_uri())
 
     # export linked recipes
     if args.export_links:
