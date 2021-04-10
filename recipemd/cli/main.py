@@ -120,7 +120,7 @@ def _export_links(r, args, recipe_url, parser, serializer):
             continue
         url = recipe_url.join(URL(ingredient.link))
         filename = os.path.join(folder, url.parts[-1])
-        with open(filename, 'w') as f:
+        with open(filename, 'w', encoding="utf-8") as f:
             print(f'Created {filename} for "{recipe.title}"', file=sys.stderr)
             f.write(_create_recipe_output(recipe, serializer, args))
 
