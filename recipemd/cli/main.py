@@ -242,14 +242,14 @@ def _create_flattened_substituted_ingredients(ingredient_list: IngredientList,
     for ingr in ingredient_list.ingredient_groups:
         flattened_ingr = _create_flattened_substituted_ingredients(ingr, ingr_to_recipe)
         new_group = replace(
-            obj=ingr,
+            ingr,
             ingredients=flattened_ingr.ingredients,
             ingredient_groups=flattened_ingr.ingredient_groups,
         )
         result_groups.append(new_group)
 
     return replace(
-        obj=ingredient_list,
+        ingredient_list,
         ingredients=result_ingredients,
         ingredient_groups=result_groups,
     )
