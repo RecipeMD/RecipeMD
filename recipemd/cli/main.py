@@ -188,10 +188,7 @@ def _get_linked_recipes(recipe: Recipe, *, recipe_url: URL, parser: RecipeParser
             ingr_to_recipe[ingredient] = _get_linked_recipe(ingredient, recipe_url=recipe_url, parser=parser,
                                                             flatten=flatten, exclude_urls=exclude_urls)
         except Exception as e:
-            if e.__cause__:
-                print(f'{e}: {e.__cause__}', file=sys.stderr)
-            else:
-                print(f'{e}', file=sys.stderr)
+            print(f'{e}', file=sys.stderr)
     return link_ingredients, ingr_to_recipe
 
 
