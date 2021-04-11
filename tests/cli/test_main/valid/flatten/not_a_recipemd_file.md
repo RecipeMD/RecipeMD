@@ -1,0 +1,1 @@
+This is *valid markdown*, but **not** valid RecipeMD.
