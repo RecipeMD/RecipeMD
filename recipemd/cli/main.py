@@ -14,12 +14,12 @@ from dataclasses import replace
 from typing import Dict, Optional, Set
 
 import argcomplete
-from argcomplete.completers import ChoicesCompleter, FilesCompleter
-from yarl import URL
-
 import recipemd
-from recipemd.data import RecipeParser, RecipeSerializer, multiply_recipe, Ingredient, get_recipe_with_yield, \
-    IngredientGroup, Recipe, Amount, IngredientList
+from argcomplete.completers import ChoicesCompleter, FilesCompleter
+from recipemd.data import (Amount, Ingredient, IngredientGroup, IngredientList,
+                           Recipe, RecipeParser, RecipeSerializer,
+                           get_recipe_with_yield, multiply_recipe)
+from yarl import URL
 
 __all__ = ['main']
 
@@ -80,20 +80,20 @@ def _process_scaling(r, args):
         required_yield = RecipeParser.parse_amount(args.required_yield)
         if required_yield is None or required_yield.factor is None:
             print(f'Given yield is not valid', file=sys.stderr)
-            exit(1)
+            raise Exit()
         try:
             r = get_recipe_with_yield(r, required_yield)
         except StopIteration:
             print(_make_missing_yield_warning(r, required_yield), file=sys.stderr)
-            exit(1)
+            raise Exit()
     elif args.multiply is not None:
         multiply = RecipeParser.parse_amount(args.multiply)
         if multiply is None or multiply.factor is None:
             print(f'Given multiplier is not valid', file=sys.stderr)
-            exit(1)
+            raise Exit()
         if multiply.unit is not None:
             print(f'A recipe can only be multiplied with a unitless amount', file=sys.stderr)
-            exit(1)
+            raise Exit()
         r = multiply_recipe(r, multiply.factor)
     return r
 
@@ -269,6 +269,10 @@ def _ingredient_to_string(ingr: Ingredient, *, rounding: Optional[int] = None) -
     return ingr.name
 
 
+class Exit(Exception):
+    pass
+
+
 # parser is on module level for sphinx-autoprogram
 parser = argparse.ArgumentParser(description='Read and process recipemd recipes')
 
@@ -307,4 +311,7 @@ flatten_parser.add_argument(
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exit:
+        exit(1)
