@@ -71,6 +71,8 @@ def test_export_links():
     assert_equal_to_file_content(actual_stdout, expected_stdout_file)  # type: ignore
 
     expected_stderr_file = os.path.join(test_dir, 'stderr')
+    if os.path.sep != '/':
+        actual_stderr = actual_stderr.replace(os.path.sep, '/')  # type: ignore
     assert_equal_to_file_content(actual_stderr, expected_stderr_file)  # type: ignore
 
     expected_output_dir = os.path.join(test_dir, 'expected')
