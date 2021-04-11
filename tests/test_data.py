@@ -164,3 +164,12 @@ def test_get_recipe_with_yield():
     # try with unit not in recipe yields
     with pytest.raises(StopIteration):
         get_recipe_with_yield(recipe, Amount(factor=Decimal('500'), unit='ml'))
+
+    # try with factorless required yield
+    with pytest.raises(RuntimeError):
+        get_recipe_with_yield(recipe, Amount(unit='ml'))
+
+    # try with factorless yield in recipe
+    recipe_with_factorless_yield = replace(recipe, yields=[Amount(unit='Foos')])
+    with pytest.raises(RuntimeError):
+        get_recipe_with_yield(recipe_with_factorless_yield, Amount(factor=Decimal('500'), unit='Foos'))

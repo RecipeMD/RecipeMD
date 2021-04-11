@@ -480,7 +480,7 @@ def get_recipe_with_yield(recipe: Recipe, required_yield: Amount) -> Recipe:
     unit is present.
 
     :raises StopIteration: If no yield with a matching unit can be found.
-    :raises RuntimeError: If required_yield does not have a factor.
+    :raises RuntimeError: If required_yield or the matching yield in the recipe do not have a factor.
     """
     if required_yield.factor is None:
         raise RuntimeError("Required yield must contain a factor")
@@ -491,6 +491,8 @@ def get_recipe_with_yield(recipe: Recipe, required_yield: Amount) -> Recipe:
             matching_recipe_yield = Amount(Decimal(1))
         else:
             raise StopIteration
+    if matching_recipe_yield.factor is None:
+        raise RuntimeError(f"Recipe yield with matching unit must contain a factor")
     recipe = multiply_recipe(recipe, required_yield.factor / matching_recipe_yield.factor)
     return recipe
 
