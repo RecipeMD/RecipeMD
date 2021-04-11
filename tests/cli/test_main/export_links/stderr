@@ -1,0 +1,12 @@
+Writing to tests/cli/test_main/export_links/actual
+Couldn't find linked recipe for ingredient "non-existent link target"
+Couldn't parse linked recipe for ingredient "invalid link target"
+Recipe "Sub-Recipe" does not specify a yield in the unit "grams". The following units can be used: "servings"
+Couldn't find linked recipe for ingredient "non-existent link target"
+Couldn't parse linked recipe for ingredient "invalid link target"
+Recipe "Sub-Recipe" does not specify a yield in the unit "grams". The following units can be used: "servings"
+Skipping ingredient "recursion" to prevent infinite recursion
+Created tests/cli/test_main/export_links/actual/input_subrecipe.md for "Sub-Recipe"
+Created tests/cli/test_main/export_links/actual/input_subrecipe.md for "Sub-Recipe"
+Created tests/cli/test_main/export_links/actual/input_recursion.md for "Recursive Sub-Recipe"
+Created tests/cli/test_main/export_links/actual/input_subrecipe.md for "Sub-Recipe"

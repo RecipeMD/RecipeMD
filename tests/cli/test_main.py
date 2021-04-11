@@ -1,4 +1,6 @@
+import filecmp
 import os
+import shutil
 import sys
 from contextlib import ExitStack
 from io import StringIO
@@ -47,6 +49,37 @@ def test_valid_args(type: str, dir: str, arguments: List[str]):
     assert_equal_to_file_content(actual_stderr, expected_stderr_file)  # type: ignore
 
 
+def test_export_links():
+    test_dir = os.path.join(os.path.dirname(__file__), 'test_main', 'export_links')
+    input_file = os.path.join(test_dir, 'input.md')
+
+    actual_output_dir = os.path.join(test_dir, 'actual')
+    shutil.rmtree(actual_output_dir, ignore_errors=True)
+
+    with ExitStack() as stack:
+        actual_output_dir_relative = os.path.relpath(actual_output_dir, os.getcwd())
+        stack.enter_context(mock.patch('sys.argv', ['', '--export-links', actual_output_dir_relative, input_file]))
+        stack.enter_context(mock.patch('sys.stdout', new_callable=StringIO))
+        stack.enter_context(mock.patch('sys.stderr', new_callable=StringIO))
+
+        main()
+
+        actual_stdout = sys.stdout.getvalue()  # type: ignore
+        actual_stderr = sys.stderr.getvalue()  # type: ignore
+
+    expected_stdout_file = os.path.join(test_dir, 'stdout')
+    assert_equal_to_file_content(actual_stdout, expected_stdout_file)  # type: ignore
+
+    expected_stderr_file = os.path.join(test_dir, 'stderr')
+    assert_equal_to_file_content(actual_stderr, expected_stderr_file)  # type: ignore
+
+    expected_output_dir = os.path.join(test_dir, 'expected')
+    files_to_compare = set(os.listdir(expected_output_dir) + os.listdir(actual_output_dir))
+    (_, mismatch, errors) = filecmp.cmpfiles(expected_output_dir, actual_output_dir, files_to_compare, shallow=False)
+    assert len(mismatch) == 0
+    assert len(errors) == 0
+
+    shutil.rmtree(actual_output_dir, ignore_errors=True)
 
 
 def assert_equal_to_file_content(actual_str, expected_file):
