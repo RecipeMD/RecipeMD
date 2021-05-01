@@ -2,8 +2,15 @@
 
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
+## Version 4.0.7 (2021-05-01)
 
-## Upcoming Version 4.0.6
+- *Fix:* Make `--flatten` compatible with Python 3.9
+- *Fix:* Use UTF-8 encoding when loading linked files
+- *Fix:* Fix path being parsed as port under windows
+- Add integrations tests for the `recipemd` CLI
+
+
+## Version 4.0.6 (2021-03-28)
 
 - *Fix:* Show error on duplicated yields/tag instead of silently ignoring the earlier occurrence.
 - *Fix:* Prevent error when scaling a recipe with a factor-less yield. 
