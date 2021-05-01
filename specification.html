@@ -3,8 +3,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
-    <title>RecipeMD Specification &#8212; RecipeMD 4.0.6 documentation</title>
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>RecipeMD Specification &#8212; RecipeMD 4.0.7 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -34,14 +35,14 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="recipemd-specification">
+  <section id="recipemd-specification">
 <h1>RecipeMD Specification<a class="headerlink" href="#recipemd-specification" title="Permalink to this headline">¶</a></h1>
 <p>This is version 2.3.2 of the RecipeMD specification.</p>
 <p>RecipeMD is a Markdown-based format for writing down recipes. It
 defines a certain structure which a document must follow to be a
 RecipeMD recipe.</p>
 <p>All RecipeMD files shall follow the <a class="reference external" href="https://commonmark.org">commonmark</a> specification.</p>
-<div class="section" id="example">
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>This example presents the basic format of a RecipeMD recipe</p>
 <div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="gh"># Guacamole</span>
@@ -87,10 +88,10 @@ given) is noted in italics. Amounts may be expressed as decimals
 <li><p>anything following the second horizontal line is considered
 instructions</p></li>
 </ul>
-</div>
-<div class="section" id="recipemd-data-types">
+</section>
+<section id="recipemd-data-types">
 <h2>RecipeMD Data types<a class="headerlink" href="#recipemd-data-types" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="recipe">
+<section id="recipe">
 <h3>Recipe<a class="headerlink" href="#recipe" title="Permalink to this headline">¶</a></h3>
 <p>A <em>valid</em> recipe consists of:</p>
 <ul class="simple">
@@ -125,8 +126,8 @@ commas in amounts.</p></li>
 instructions</p></li>
 <li><p><em>optional</em>: the instructions, everything following the second line</p></li>
 </ol>
-</div>
-<div class="section" id="amount">
+</section>
+<section id="amount">
 <h3>Amount<a class="headerlink" href="#amount" title="Permalink to this headline">¶</a></h3>
 <p>An amount consists of</p>
 <ul class="simple">
@@ -148,8 +149,8 @@ instructions</p></li>
 <p>Note that when an amount is inside of a comma separated list, a comma
 is treated as a decimal divider if the characters directly before and
 after are numerical and as a list divider otherwise.</p>
-</div>
-<div class="section" id="ingredient">
+</section>
+<section id="ingredient">
 <h3>Ingredient<a class="headerlink" href="#ingredient" title="Permalink to this headline">¶</a></h3>
 <p>An ingredient consists of</p>
 <ul class="simple">
@@ -170,8 +171,8 @@ specifies a resource that contains a recipe for the ingredient</p></li>
 </ol>
 </li>
 </ol>
-</div>
-<div class="section" id="ingredient-group">
+</section>
+<section id="ingredient-group">
 <h3>Ingredient Group<a class="headerlink" href="#ingredient-group" title="Permalink to this headline">¶</a></h3>
 <p>An ingredient group is a group of related ingredients, e.g. the
 ingredients making up one component of a dish. It consists of:</p>
@@ -184,25 +185,25 @@ ingredients making up one component of a dish. It consists of:</p>
 <li><p>A <a class="reference external" href="https://spec.commonmark.org/0.28/#atx-headings">heading</a>, whose contents are the group’s title</p></li>
 <li><p>A list of ingredients</p></li>
 </ol>
-</div>
-</div>
-<div class="section" id="test-cases">
+</section>
+</section>
+<section id="test-cases">
 <h2>Test Cases<a class="headerlink" href="#test-cases" title="Permalink to this headline">¶</a></h2>
 <p>Implementations of this specification must conform with all
 <a class="reference external" href="https://github.com/tstehr/RecipeMD/tree/master/testcases">test cases</a>. There are two kinds of test cases: valid files (<code class="docutils literal notranslate"><span class="pre">*.md</span></code>
 with a corresponding <code class="docutils literal notranslate"><span class="pre">*.json</span></code>) and invalid files (<code class="docutils literal notranslate"><span class="pre">*.invalid.md</span></code>)</p>
-</div>
-<div class="section" id="authors-licensing">
+</section>
+<section id="authors-licensing">
 <h2>Authors Licensing<a class="headerlink" href="#authors-licensing" title="Permalink to this headline">¶</a></h2>
 <p>This specification was written and is maintained by Jonas Grosse-Holz
 and Tilman Stehr. The project’s website is <a class="reference external" href="https://recipemd.org">recipemd.org</a>.</p>
 <p>The specification is licensed under the terms of the GNU Lesser
 General Public License as published by the Free Software Foundation,
 either version 3 of the License, or any later version.</p>
-</div>
-<div class="section" id="version-history">
+</section>
+<section id="version-history">
 <h2>Version History<a class="headerlink" href="#version-history" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="version-2-3-3-2021-01-02">
+<section id="version-2-3-3-2021-01-02">
 <h3>Version 2.3.3 (2021-01-02)<a class="headerlink" href="#version-2-3-3-2021-01-02" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Clarify that yields and tags may appear at most once.</p></li>
@@ -213,61 +214,61 @@ either version 3 of the License, or any later version.</p>
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="version-2-3-2-2019-12-18">
+</section>
+<section id="version-2-3-2-2019-12-18">
 <h3>Version 2.3.2 (2019-12-18)<a class="headerlink" href="#version-2-3-2-2019-12-18" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Add author and license information</p></li>
 </ul>
-</div>
-<div class="section" id="version-2-3-1-2019-11-18">
+</section>
+<section id="version-2-3-1-2019-11-18">
 <h3>Version 2.3.1 (2019-11-18)<a class="headerlink" href="#version-2-3-1-2019-11-18" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Fix missing link</p></li>
 <li><p>Fix wrong indentation and word wrapping</p></li>
 </ul>
-</div>
-<div class="section" id="version-2-3-0-2019-11-18">
+</section>
+<section id="version-2-3-0-2019-11-18">
 <h3>Version 2.3.0 (2019-11-18)<a class="headerlink" href="#version-2-3-0-2019-11-18" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Add a full version of the example</p></li>
 <li><p>Add version history reconstructed from git</p></li>
 <li><p>Add reference to test suite</p></li>
 </ul>
-</div>
-<div class="section" id="version-2-2-0-2019-04-22">
+</section>
+<section id="version-2-2-0-2019-04-22">
 <h3>Version 2.2.0 (2019-04-22)<a class="headerlink" href="#version-2-2-0-2019-04-22" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Allow recipes to reference other recipes</p></li>
 </ul>
-</div>
-<div class="section" id="id2">
+</section>
+<section id="id2">
 <h3>2.1.0 (2019-03-25)<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Allow unicode vulgar fractions in ingredient amounts</p></li>
 </ul>
-</div>
-<div class="section" id="id3">
+</section>
+<section id="id3">
 <h3>2.0.1 (2018-09-17)<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Reword specification</p></li>
 <li><p>Clarify edge cases</p></li>
 </ul>
-</div>
-<div class="section" id="id4">
+</section>
+<section id="id4">
 <h3>2.0.0 (2018-09-13)<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><em>Breaking:</em> Seperate yields and tags into own paragraphs</p></li>
 </ul>
-</div>
-<div class="section" id="id5">
+</section>
+<section id="id5">
 <h3>1.0.0 (2018-08-26)<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Initial version</p></li>
 </ul>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>

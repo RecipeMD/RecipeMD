@@ -3,8 +3,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
-    <title>CLI &#8212; RecipeMD 4.0.6 documentation</title>
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>CLI &#8212; RecipeMD 4.0.7 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -34,14 +35,14 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="cli">
+  <section id="cli">
 <h1>CLI<a class="headerlink" href="#cli" title="Permalink to this headline">¶</a></h1>
 <p>The package <a class="reference internal" href="_apidoc/recipemd.html#module-recipemd" title="recipemd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">recipemd</span></code></a> provides two CLI applications:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#cli-recipemd"><span class="std std-ref">recipemd</span></a> performs actions with a single recipe in RecipeMD format.</p></li>
 <li><p><a class="reference internal" href="#cli-recipemd-find"><span class="std std-ref">recipemd-find</span></a> performs actions on a folder of RecipeMD recipes.</p></li>
 </ul>
-<div class="section" id="usage-examples">
+<section id="usage-examples">
 <span id="cli-examples"></span><h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Permalink to this headline">¶</a></h2>
 <p>Display and validate a recipe:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd &lt;path/to/recipe.md&gt;
@@ -71,10 +72,10 @@
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd-find -e <span class="s2">&quot;tag:cheese or tag:summer&quot;</span> recipes
 </pre></div>
 </div>
-</div>
-<div class="section" id="command-reference">
+</section>
+<section id="command-reference">
 <h2>Command reference<a class="headerlink" href="#command-reference" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="recipemd">
+<section id="recipemd">
 <span id="cli-recipemd"></span><h3>recipemd<a class="headerlink" href="#recipemd" title="Permalink to this headline">¶</a></h3>
 <p>Read and process recipemd recipes</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: recipemd [-h] [-v] [-t | -i | -j] [-r n] [-m N | -y Y]</span>
@@ -148,8 +149,8 @@
 <dd><p>Export flattened linked recipes as required for the main recipe to DIR (DIR defaults to recipe file name)</p>
 </dd></dl>
 
-</div>
-<div class="section" id="recipemd-find">
+</section>
+<section id="recipemd-find">
 <span id="cli-recipemd-find"></span><h3>recipemd-find<a class="headerlink" href="#recipemd-find" title="Permalink to this headline">¶</a></h3>
 <p>Find recipes, ingredients and units by filter expression</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: recipemd-find [-h] [-v] [-e EXPRESSION] [-s] [-1 | -C | -x] action ...</span>
@@ -197,7 +198,7 @@
 <dd><p>The same as -C, except that the multi-column output is produced with entries sorted across, rather than down, the columns.</p>
 </dd></dl>
 
-<div class="section" id="recipemd-find-ingredients">
+<section id="recipemd-find-ingredients">
 <h4>recipemd-find ingredients<a class="headerlink" href="#recipemd-find-ingredients" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: recipemd-find ingredients [-h] [-c] [folder]</span>
 </pre></div>
@@ -220,8 +221,8 @@
 <dd><p>count number of uses per ingredient</p>
 </dd></dl>
 
-</div>
-<div class="section" id="recipemd-find-recipes">
+</section>
+<section id="recipemd-find-recipes">
 <h4>recipemd-find recipes<a class="headerlink" href="#recipemd-find-recipes" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: recipemd-find recipes [-h] [folder]</span>
 </pre></div>
@@ -238,8 +239,8 @@
 <dd><p>show this help message and exit</p>
 </dd></dl>
 
-</div>
-<div class="section" id="recipemd-find-tags">
+</section>
+<section id="recipemd-find-tags">
 <h4>recipemd-find tags<a class="headerlink" href="#recipemd-find-tags" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: recipemd-find tags [-h] [-c] [folder]</span>
 </pre></div>
@@ -262,8 +263,8 @@
 <dd><p>count number of uses per tag</p>
 </dd></dl>
 
-</div>
-<div class="section" id="recipemd-find-units">
+</section>
+<section id="recipemd-find-units">
 <h4>recipemd-find units<a class="headerlink" href="#recipemd-find-units" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: recipemd-find units [-h] [-c] [folder]</span>
 </pre></div>
@@ -286,10 +287,10 @@
 <dd><p>count number of uses per unit</p>
 </dd></dl>
 
-</div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
+</section>
 
 
           </div>

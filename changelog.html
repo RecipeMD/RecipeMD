@@ -3,8 +3,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
-    <title>Changelog &#8212; RecipeMD 4.0.6 documentation</title>
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Changelog &#8212; RecipeMD 4.0.7 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -34,53 +35,62 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="changelog">
+  <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">recipemd</span></code> package uses <a class="reference external" href="https://semver.org">semantic versioning</a>.</p>
-<div class="section" id="upcoming-version-4-0-6">
-<h2>Upcoming Version 4.0.6<a class="headerlink" href="#upcoming-version-4-0-6" title="Permalink to this headline">¶</a></h2>
+<section id="version-4-0-7-2021-05-01">
+<h2>Version 4.0.7 (2021-05-01)<a class="headerlink" href="#version-4-0-7-2021-05-01" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><em>Fix:</em> Make <code class="docutils literal notranslate"><span class="pre">--flatten</span></code> compatible with Python 3.9</p></li>
+<li><p><em>Fix:</em> Use UTF-8 encoding when loading linked files</p></li>
+<li><p><em>Fix:</em> Fix path being parsed as port under windows</p></li>
+<li><p>Add integrations tests for the <code class="docutils literal notranslate"><span class="pre">recipemd</span></code> CLI</p></li>
+</ul>
+</section>
+<section id="version-4-0-6-2021-03-28">
+<h2>Version 4.0.6 (2021-03-28)<a class="headerlink" href="#version-4-0-6-2021-03-28" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><em>Fix:</em> Show error on duplicated yields/tag instead of silently ignoring the earlier occurrence.</p></li>
 <li><p><em>Fix:</em> Prevent error when scaling a recipe with a factor-less yield.</p></li>
 <li><p>Relax version requirement for yarl and argcomplete</p></li>
 <li><p>Include test cases in source distributions</p></li>
 </ul>
-</div>
-<div class="section" id="version-4-0-5-2020-12-31">
+</section>
+<section id="version-4-0-5-2020-12-31">
 <h2>Version 4.0.5 (2020-12-31)<a class="headerlink" href="#version-4-0-5-2020-12-31" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><em>Fix:</em> Fix missing package due to bundling error</p></li>
 <li><p><em>Fix:</em> Incorrect heading in changelog</p></li>
 </ul>
-</div>
-<div class="section" id="version-4-0-4-2020-12-30">
+</section>
+<section id="version-4-0-4-2020-12-30">
 <h2>Version 4.0.4 (2020-12-30)<a class="headerlink" href="#version-4-0-4-2020-12-30" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><em>Fix:</em> Scaling of amounts with <code class="docutils literal notranslate"><span class="pre">None</span></code> factors</p></li>
 <li><p><em>Fix:</em> Possible infinite recursion when flattening recipes</p></li>
 <li><p><em>Fix:</em> Make <code class="docutils literal notranslate"><span class="pre">recipemd</span></code> compatible with Python 3.9</p></li>
 </ul>
-</div>
-<div class="section" id="version-4-0-3-2020-01-21">
+</section>
+<section id="version-4-0-3-2020-01-21">
 <h2>Version 4.0.3 (2020-01-21)<a class="headerlink" href="#version-4-0-3-2020-01-21" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><em>Fix:</em> Duplicating ingredients in groups as top level ingredients when multiplying recipe</p></li>
 <li><p><em>Fix:</em> Inconsistent changelog formatting</p></li>
 </ul>
-</div>
-<div class="section" id="version-4-0-2-2020-01-08">
+</section>
+<section id="version-4-0-2-2020-01-08">
 <h2>Version 4.0.2 (2020-01-08)<a class="headerlink" href="#version-4-0-2-2020-01-08" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><em>Fix:</em> Flattening failing with exception</p></li>
 </ul>
-</div>
-<div class="section" id="version-4-0-1-2019-12-18">
+</section>
+<section id="version-4-0-1-2019-12-18">
 <h2>Version 4.0.1 (2019-12-18)<a class="headerlink" href="#version-4-0-1-2019-12-18" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><em>Fix:</em> Incorrect trove classifiers</p></li>
 </ul>
-</div>
-<div class="section" id="version-4-0-0-2019-12-18">
+</section>
+<section id="version-4-0-0-2019-12-18">
 <h2>Version 4.0.0 (2019-12-18)<a class="headerlink" href="#version-4-0-0-2019-12-18" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><em>Breaking</em>: Create separate lists of ingredients and ingredients groups in <code class="docutils literal notranslate"><span class="pre">Recipe</span></code> and <code class="docutils literal notranslate"><span class="pre">IngredientGroup</span></code>. This
@@ -88,14 +98,14 @@ ensures that ingredients groups always follow after ingredients (see <a class="r
 <li><p>Improve error message when trying to flatten a linked recipe and no matching yield can be found.</p></li>
 <li><p>License under LGPL</p></li>
 </ul>
-</div>
-<div class="section" id="version-3-0-1-2019-11-27">
+</section>
+<section id="version-3-0-1-2019-11-27">
 <h2>Version 3.0.1 (2019-11-27)<a class="headerlink" href="#version-3-0-1-2019-11-27" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add <code class="docutils literal notranslate"><span class="pre">-v/--version</span></code> argument to <code class="docutils literal notranslate"><span class="pre">recipemd</span></code> and <code class="docutils literal notranslate"><span class="pre">recipemd-find</span></code> to display current version</p></li>
 </ul>
-</div>
-<div class="section" id="version-3-0-0-2019-11-17">
+</section>
+<section id="version-3-0-0-2019-11-17">
 <h2>Version 3.0.0 (2019-11-17)<a class="headerlink" href="#version-3-0-0-2019-11-17" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><em>Breaking:</em> Classes in <code class="docutils literal notranslate"><span class="pre">recipemd.data</span></code> are now frozen</p></li>
@@ -117,46 +127,46 @@ ensures that ingredients groups always follow after ingredients (see <a class="r
 <li><p>Add option <code class="docutils literal notranslate"><span class="pre">-j/--json</span></code> for JSON output of recipe</p></li>
 <li><p><em>Fix:</em> Exception in flattening if link ingredient has no amount</p></li>
 </ul>
-</div>
-<div class="section" id="version-2-2-2-2019-06-29">
+</section>
+<section id="version-2-2-2-2019-06-29">
 <h2>Version 2.2.2 (2019-06-29)<a class="headerlink" href="#version-2-2-2-2019-06-29" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Implement <code class="docutils literal notranslate"><span class="pre">recipemd-tags</span></code> tool for finding recipes by tag</p></li>
 </ul>
-</div>
-<div class="section" id="version-2-2-1-2019-04-22">
+</section>
+<section id="version-2-2-1-2019-04-22">
 <h2>Version 2.2.1 (2019-04-22)<a class="headerlink" href="#version-2-2-1-2019-04-22" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add option <code class="docutils literal notranslate"><span class="pre">-r/--round</span></code> to allow control of rounding in cli output</p></li>
 <li><p>Add shell completions to cli</p></li>
 </ul>
-</div>
-<div class="section" id="version-2-2-0-2019-04-22">
+</section>
+<section id="version-2-2-0-2019-04-22">
 <h2>Version 2.2.0 (2019-04-22)<a class="headerlink" href="#version-2-2-0-2019-04-22" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Allow recipes to reference other recipes</p></li>
 <li><p>Implement flattening of referenced recipes in cli</p></li>
 </ul>
-</div>
-<div class="section" id="version-2-1-0-2019-03-25">
+</section>
+<section id="version-2-1-0-2019-03-25">
 <h2>Version 2.1.0 (2019-03-25)<a class="headerlink" href="#version-2-1-0-2019-03-25" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Allow unicode vulgar fractions in ingredient amounts</p></li>
 </ul>
-</div>
-<div class="section" id="version-2-0-0-2018-09-13">
+</section>
+<section id="version-2-0-0-2018-09-13">
 <h2>Version 2.0.0 (2018-09-13)<a class="headerlink" href="#version-2-0-0-2018-09-13" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><em>Breaking:</em> Implement parsing of yields separate from tags (according to RecipeMD 2.0.0 specification)</p></li>
 </ul>
-</div>
-<div class="section" id="version-1-0-0-2018-08-27">
+</section>
+<section id="version-1-0-0-2018-08-27">
 <h2>Version 1.0.0 (2018-08-27)<a class="headerlink" href="#version-1-0-0-2018-08-27" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Initial version</p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -191,7 +201,8 @@ ensures that ingredients groups always follow after ingredients (see <a class="r
 <li class="toctree-l2"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html">CLI</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#upcoming-version-4-0-6">Upcoming Version 4.0.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-4-0-7-2021-05-01">Version 4.0.7 (2021-05-01)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-4-0-6-2021-03-28">Version 4.0.6 (2021-03-28)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-4-0-5-2020-12-31">Version 4.0.5 (2020-12-31)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-4-0-4-2020-12-30">Version 4.0.4 (2020-12-30)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-4-0-3-2020-01-21">Version 4.0.3 (2020-01-21)</a></li>
