@@ -178,6 +178,11 @@ either version 3 of the License, or any later version.
 ## Version History
 
 
+### Upcoming: Version 2.3.4 (Unreleased)
+
+- Fixes to test cases:
+  - Add missing ingredient groups in JSON files
+
 ### Version 2.3.3 (2021-01-02)
 
 - Clarify that yields and tags may appear at most once.

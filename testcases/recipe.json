@@ -68,7 +68,8 @@
               },
               "link": null
             }
-          ]
+          ],
+          "ingredient_groups": []
         }
       ]
     },
@@ -88,7 +89,8 @@
           },
           "link": null
         }
-      ]
+      ],
+      "ingredient_groups": []
     }
   ],
   "instructions": "Instructions are very instructive."
