@@ -1,0 +1,15 @@
+{
+  "ingredients": [
+    {
+      "name": "foo",
+      "amount": null,
+      "link": null
+    }
+  ],
+  "ingredient_groups": [],
+  "title": "Bug",
+  "description": "   `````\n   abc\n   d\n   `````",
+  "yields": [],
+  "tags": [],
+  "instructions": "   ```\n   abc\n   d\n```"
+}

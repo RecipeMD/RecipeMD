@@ -2,6 +2,12 @@
 
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
+## Upcoming: Version 4.0.8 (Unreleased)
+
+- *Fix:* Work around bug in [`commonmark.py`](https://github.com/readthedocs/commonmark.py) which led to incorrect 
+  parsing of fenced code blocks
+
+
 ## Version 4.0.7 (2021-05-01)
 
 - *Fix:* Make `--flatten` compatible with Python 3.9

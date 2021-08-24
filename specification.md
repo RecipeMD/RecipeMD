@@ -183,6 +183,7 @@ either version 3 of the License, or any later version.
 - Fixes to test cases:
   - Add missing ingredient groups in JSON files
   - Clean up formatting
+  - Fix missing indentation spaces for multiline ingredients
 
 ### Version 2.3.3 (2021-01-02)
 

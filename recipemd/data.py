@@ -412,13 +412,13 @@ class RecipeParser:
             self._next_node()
 
         if end is not None:
-            return self._get_sourcepos_source((start, end))
+            return self._get_sourcepos_source_lines((start, end))
 
         return None
 
     def _get_node_source(self, ast_node):
         if ast_node.sourcepos is not None:
-            return self._get_sourcepos_source(ast_node.sourcepos)
+            return self._get_sourcepos_source_lines(ast_node.sourcepos)
         if ast_node.literal is not None:
             return ast_node.literal
         return CommonMarkToCommonMarkRenderer().render(ast_node)
@@ -433,16 +433,11 @@ class RecipeParser:
             self._exit_node()
         return source
 
-    def _get_sourcepos_source(self, sourcepos):
+    def _get_sourcepos_source_lines(self, sourcepos):
         start_line = sourcepos[0][0] - 1
         end_line = sourcepos[1][0]
 
-        first_line_start_offset = sourcepos[0][1] - 1
-        last_line_end_offset = sourcepos[1][1]
-
         lines = self.src.splitlines()[start_line:end_line]
-        lines[0] = lines[0][first_line_start_offset:]
-        lines[-1] = lines[-1][:last_line_end_offset]
 
         return "\n".join(lines)
 

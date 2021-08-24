@@ -5,7 +5,7 @@
   "tags": [],
   "ingredients": [
     {
-      "name": "This is a long ingredient\n\nit spans multiple paragraphs\n  \n  this may be unusual but is valid",
+      "name": "This is a long ingredient\n\n  it spans multiple paragraphs\n  \n  this may be unusual but is valid",
       "amount": null,
       "link": null
     },
@@ -15,7 +15,7 @@
       "link": null
     },
     {
-      "name": "is an amount that\n\nis the amount of *this* ingredient",
+      "name": "is an amount that\n\n  is the amount of *this* ingredient",
       "amount": {
         "factor": "5",
         "unit": "ml"
@@ -36,7 +36,7 @@
       "link": null
     },
     {
-      "name": "[this is not a link](some other recipe)\n\nsince links must wrap the whole ingredient text",
+      "name": "[this is not a link](some other recipe)\n\n  since links must wrap the whole ingredient text",
       "amount": null,
       "link": null
     }
