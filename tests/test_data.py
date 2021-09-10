@@ -22,13 +22,6 @@ def serializer():
     return RecipeSerializer()
 
 
-def test_amount():
-    with pytest.raises(TypeError) as excinfo:
-        Amount()
-
-    assert excinfo.value.args[0] == "Factor and unit may not both be None"
-
-
 def test_ingredient_list_get_leaf_ingredients():
     recipe = Recipe(
         title="Test",
@@ -119,7 +112,7 @@ class TestRecipeSerializer:
 def test_multiply_recipe():
     recipe = Recipe(
         title="Test",
-        yields=[Amount(factor=Decimal('5'), unit="servings"), Amount(unit="unitless yield")],
+        yields=[Amount(factor=Decimal('5'), unit="servings")],
         ingredients=[
             Ingredient(amount=Amount(factor=Decimal('5')), name='Eggs'),
             Ingredient(amount=Amount(factor=Decimal('200'), unit='g'), name='Butter'),
@@ -171,12 +164,3 @@ def test_get_recipe_with_yield():
     # try with unit not in recipe yields
     with pytest.raises(StopIteration):
         get_recipe_with_yield(recipe, Amount(factor=Decimal('500'), unit='ml'))
-
-    # try with factorless required yield
-    with pytest.raises(RuntimeError):
-        get_recipe_with_yield(recipe, Amount(unit='ml'))
-
-    # try with factorless yield in recipe
-    recipe_with_factorless_yield = replace(recipe, yields=[Amount(unit='Foos')])
-    with pytest.raises(RuntimeError):
-        get_recipe_with_yield(recipe_with_factorless_yield, Amount(factor=Decimal('500'), unit='Foos'))
