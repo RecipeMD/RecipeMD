@@ -27,7 +27,6 @@
 ## Group 2
 
 - text isn't optional
-- *hey* amount is valid without factor
 
 ---
 
