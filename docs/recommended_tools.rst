@@ -38,6 +38,21 @@ GitLab Markdown Viewer
 
 `GitLab Markdown Viewer <https://addons.mozilla.org/en-US/firefox/addon/gitlab-markdown-viewer/>`_ is an add-on for Firefox that allows it to render Markdown recipe. This allows you to use Firefox to navigate your recipe collection.
 
+Pre-commit recipe format validator
+----------------------------------
+
+`recipemd-validator <https://github.com/gindex/recipemd-validator>`_ is a git hook that validates recipes and works out-of-the-box with `pre-commit <https://pre-commit.com/>`_.
+
+To configure add to your .pre-commit-config.yaml:
+
+.. code-block:: yaml
+
+    - repo: git://github.com/gindex/recipemd-validator
+        rev: v0.0.1
+        hooks:
+            - id: validate-recipemd
+
+
 Other Tools
 -----------
 
