@@ -47,10 +47,11 @@ To configure add to your .pre-commit-config.yaml:
 
 .. code-block:: yaml
 
+    repos:
     - repo: git://github.com/gindex/recipemd-validator
-        rev: v0.0.1
-        hooks:
-            - id: validate-recipemd
+    rev: v0.0.1
+    hooks:
+        - id: validate-recipemd
 
 
 Other Tools
