@@ -45,6 +45,18 @@
 </pre></div>
 </div>
 </section>
+<section id="recipemd-validator">
+<h2>recipemd-validator<a class="headerlink" href="#recipemd-validator" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/gindex/recipemd-validator">recipemd-validator</a> is a <a class="reference external" href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks">git hook</a> that validates recipes and works out-of-the-box with <a class="reference external" href="https://pre-commit.com/">pre-commit</a>.</p>
+<p>To configure add to your <code class="code docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">repos</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">git://github.com/gindex/recipemd-validator</span>
+<span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v0.0.1</span>
+<span class="nt">hooks</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">validate-recipemd</span>
+</pre></div>
+</div>
+</section>
 <section id="pandoc">
 <h2>Pandoc<a class="headerlink" href="#pandoc" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://pandoc.org">Pandoc</a> is a tool that can be used to convert files between difference markup formats, for example from Markdown to lots of other formats.</p>
@@ -100,6 +112,7 @@
 <li class="toctree-l1"><a class="reference internal" href="reference_implementation.html">Python Implementation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Recommended Tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#recipemd-extract">recipemd-extract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#recipemd-validator">recipemd-validator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pandoc">Pandoc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#gitlab-markdown-viewer">GitLab Markdown Viewer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#other-tools">Other Tools</a></li>
