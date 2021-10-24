@@ -14,6 +14,21 @@ After installation you can download into the current folder via:
 
     recipmd-extract '<url-of-recipe>'
 
+recipemd-validator
+----------------------------------
+
+`recipemd-validator <https://github.com/gindex/recipemd-validator>`_ is a `git hook <https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks>`_ that validates recipes and works out-of-the-box with `pre-commit <https://pre-commit.com/>`_.
+
+To configure add to your :code:`.pre-commit-config.yaml`:
+
+.. code-block:: yaml
+
+    repos:
+    - repo: git://github.com/gindex/recipemd-validator
+    rev: v0.0.1
+    hooks:
+        - id: validate-recipemd
+
 Pandoc
 ------
 
