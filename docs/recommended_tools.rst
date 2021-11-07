@@ -25,8 +25,8 @@ To configure add to your :code:`.pre-commit-config.yaml`:
 
     repos:
     - repo: git://github.com/gindex/recipemd-validator
-    rev: v0.0.1
-    hooks:
+      rev: v0.0.1
+      hooks:
         - id: validate-recipemd
 
 Pandoc
