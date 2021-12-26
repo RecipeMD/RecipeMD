@@ -22,6 +22,7 @@ docs_require = [
 
 release_requires = [
     'twine==3.1.1',
+    'wheel'
 ]
 
 with open("README.md", "r") as fh:

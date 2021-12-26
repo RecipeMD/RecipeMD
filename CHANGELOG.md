@@ -2,7 +2,7 @@
 
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
-## Upcoming: Version 4.0.8 (Unreleased)
+## Version 4.0.8 (2021-12-26)
 
 - *Fix:* Work around bug in [`commonmark.py`](https://github.com/readthedocs/commonmark.py) which led to incorrect 
   parsing of fenced code blocks
