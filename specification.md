@@ -178,7 +178,7 @@ either version 3 of the License, or any later version.
 ## Version History
 
 
-### Upcoming: Version 2.3.4 (Unreleased)
+### Version 2.3.4 (2021-12-26)
 
 - Fixes to test cases:
   - Add missing ingredient groups in JSON files
