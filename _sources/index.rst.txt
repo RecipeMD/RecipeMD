@@ -37,6 +37,8 @@ also maintain a :doc:`list of recommended tools <recommended_tools>` that work n
 
 Some RecipeMD repositories:
 
+.. rst-class:: recipemd-repos
+
 * `AberDerBart <https://github.com/AberDerBart/recipes>`_
 * `Chamaeleon- <https://github.com/Chamaeleon-/recipes>`_
 * `core-dd <https://github.com/core-dd/recipes>`_
@@ -50,6 +52,7 @@ Some RecipeMD repositories:
 * `mist <https://github.com/mist/recipes>`_
 * `p3tr0sh <https://github.com/p3tr0sh/recipes>`_
 * `puzzlewolf <https://github.com/puzzlewolf/recipes>`_
+* `rixx <https://github.com/rixx/recipes.rixx.de>`_
 * `tstehr <https://github.com/tstehr/recipes>`_
 
 
