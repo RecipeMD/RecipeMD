@@ -60,4 +60,8 @@ div.sphinxsidebar a.github-edit img {
 /* Space out top-level documentation*/
 div.section > dl {
     margin-top: 4rem;
+
+/* Repo list */
+.recipemd-repos {
+    column-width: 10rem;
 }

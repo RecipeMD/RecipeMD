@@ -37,6 +37,8 @@ also maintain a :doc:`list of recommended tools <recommended_tools>` that work n
 
 Some RecipeMD repositories:
 
+.. rst-class:: recipemd-repos
+
 * `AberDerBart <https://github.com/AberDerBart/recipes>`_
 * `Chamaeleon- <https://github.com/Chamaeleon-/recipes>`_
 * `core-dd <https://github.com/core-dd/recipes>`_
