@@ -48,6 +48,7 @@ setuptools.setup(
         'commonmark>=0.9.1,<1.0.0',
         'argcomplete>=1.10.0,<2.0.0',
         'pyparsing~=2.4.2',
+        'strictyaml~=1.6.1'
     ],
     extras_require={
         'tests': tests_require,
