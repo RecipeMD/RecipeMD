@@ -7,12 +7,16 @@ import re
 import unicodedata
 from dataclasses import dataclass, field, replace
 from decimal import Decimal
-from typing import List, Optional, Union, Dict, Generator, TypeVar
+from functools import total_ordering
+from typing import Generator, List, Optional, TypeVar, Union
 
 import commonmark
 from commonmark.node import Node
-from recipemd._vendor.commonmark_extensions.plaintext import CommonMarkToCommonMarkRenderer
-from dataclasses_json import dataclass_json, config
+from dataclasses_json import config, dataclass_json
+
+import recipemd.units
+from recipemd._vendor.commonmark_extensions.plaintext import \
+    CommonMarkToCommonMarkRenderer
 
 __all__ = ['RecipeParser', 'RecipeSerializer', 'multiply_recipe', 'get_recipe_with_yield',
            'Recipe', 'Ingredient', 'IngredientGroup', 'Amount', 'IngredientList']
@@ -45,6 +49,12 @@ class IngredientGroup(IngredientList):
     title: Optional[str] = None
 
 
+def _get_current_unit_system() -> Optional['recipemd.units.UnitSystem']:
+    # fqn to avoid circular import
+    return recipemd.units.get_current_unit_system()
+
+
+@total_ordering
 @dataclass_json
 @dataclass(frozen=True)
 class Amount:
@@ -54,10 +64,54 @@ class Amount:
         metadata=config(decoder=lambda val: Decimal(val) if val is not None else None)
     )
     unit: Optional[str] = None
+    unit_system: Optional['recipemd.units.UnitSystem'] = field(
+        default_factory=_get_current_unit_system, repr=False,
+        metadata=config(
+            exclude=lambda *_: True
+        )
+    )
 
     def __post_init__(self):
+        if self.factor is not None and not isinstance(self.factor, Decimal):
+            object.__setattr__(self, "factor", Decimal(self.factor))
         if self.factor is None and self.unit is None:
             raise TypeError(f"Factor and unit may not both be None")
+
+    def __hash__(self):
+        # The api contract for __hash__ states that hashable objects which compare equal must have the same hash value. Since
+        # amounts that convert to the same base amount compare equals, we can fulfil that by always hashing the base amount.
+        self_base = self._get_base_amount_if_possible()
+        return hash((self_base.factor, self_base.unit))
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Amount):
+            return NotImplemented
+        if self.unit_system != other.unit_system:
+            return False
+        self_base = self._get_base_amount_if_possible()
+        other_base = other._get_base_amount_if_possible()
+        return (self_base.factor, self_base.unit) == (other_base.factor, other_base.unit)
+
+    def __lt__(self, other):
+        if not isinstance(other, Amount):
+            return NotImplemented
+        if self.unit_system != other.unit_system:
+            raise ValueError("Can't compare amounts that use different unit systems")
+        self_base = self._get_base_amount_if_possible()
+        other_base = other._get_base_amount_if_possible()
+        if self_base.unit != other_base.unit:
+            raise ValueError(f'Can\'t convert unit "{other.unit}" to unit "{self.unit}"')
+        if self_base.factor is None or other_base.factor is None:
+            raise ValueError(f'Can\'t compare amounts with None factors')
+        return self_base.factor < other_base.factor
+
+    def _get_base_amount_if_possible(self) -> 'Amount':
+        if not self.unit_system:
+            return self
+        try:
+            return self.unit_system.convert_to_base(self)
+        except recipemd.units.UnitConversionError:
+            return self
 
 
 @dataclass_json
