@@ -1,0 +1,34 @@
+{
+  "title": "Recipe with ingredients",
+  "description": null,
+  "yields": [],
+  "tags": [],
+  "ingredients": [
+    {
+      "name": "water",
+      "amount": {
+        "factor": "20",
+        "unit": "ml"
+      },
+      "link": null
+    },
+    {
+      "name": "earl grey, hot\n  - nested sublist\n  - these items are not new ingredients, but part of the contents \n    of the top-level ingredient\n    - same goes for deeper nesting",
+      "amount": {
+        "factor": "1",
+        "unit": "cup"
+      },
+      "link": null
+    },
+    {
+      "name": "coffee",
+      "amount": {
+        "factor": "1.5",
+        "unit": "cup"
+      },
+      "link": null
+    }
+  ],
+  "ingredient_groups": [],
+  "instructions": null
+}

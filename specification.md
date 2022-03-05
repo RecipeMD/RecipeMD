@@ -180,6 +180,19 @@ either version 3 of the License, or any later version.
 ### Upcoming: Version 2.3.5 (Unreleased)
 
 - Fix test case "ingredients_multiline.md" to use valid link targets
+- Expand test cases to cover
+  - [reference links] and [reference-style images]
+  - ingredients with sublists 
+  - ingredients using numbered lists
+  - ingredients partially wrapped with links
+  - link ingredients with spaces in link targets
+  - link ingredients with link titles
+  - partial tag paragraphs that should not be interpreted as tags
+  - titles using [setext headings]
+
+[reference links]: https://spec.commonmark.org/0.30/#reference-link
+[reference-style images]: https://spec.commonmark.org/0.30/#example-581
+[setext headings]: https://spec.commonmark.org/0.30/#setext-headings
 
 ### Version 2.3.4 (2021-12-26)
 

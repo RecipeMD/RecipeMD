@@ -1,0 +1,18 @@
+{
+  "title": "Title",
+  "description": "[step_0]: https://example.org\n\nLinks: [Step 0][step_0]., [Step 1][step_1].\n\n[step_1]: https://example.org",
+  "yields": [],
+  "tags": [],
+  "ingredients": [
+    {
+      "name": "Thing",
+      "amount": {
+        "factor": "1",
+        "unit": null
+      },
+      "link": null
+    }
+  ],
+  "ingredient_groups": [],
+  "instructions": "[step_2]: https://example.org\n\nLinks: [Step 2][step_2]., [Step 3][step_3].\n\n[step_3]: https://example.org"
+}

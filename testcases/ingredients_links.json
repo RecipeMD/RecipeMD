@@ -21,6 +21,26 @@
         "unit": "ml"
       },
       "link": "http://example.org"
+    },
+    {
+      "name": "link with spaces in target",
+      "amount": null,
+      "link": "./foo%20bar.md"
+    },
+    {
+      "name": "link with title that is ignored",
+      "amount": null,
+      "link": "./foo.md"
+    },
+    {
+      "name": "[not parsed as a link](http://example.org) due to additional text after it",
+      "amount": null,
+      "link": null
+    },
+    {
+      "name": "[not parsed as a link](http://example.org)\n  \n  due to second paragraph",
+      "amount": null,
+      "link": null
     }
   ],
   "ingredient_groups": [],
