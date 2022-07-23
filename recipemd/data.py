@@ -7,12 +7,12 @@ import re
 import unicodedata
 from dataclasses import dataclass, field, replace
 from decimal import Decimal
-from typing import (Callable, Generator, List, Literal, Optional, Tuple,
-                    TypeVar, Union)
+from typing import Callable, Generator, List, Optional, Tuple, TypeVar, Union
 
 from dataclasses_json import config, dataclass_json
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
+from typing_extensions import Literal
 
 __all__ = ['RecipeParser', 'RecipeSerializer', 'multiply_recipe', 'get_recipe_with_yield',
            'Recipe', 'Ingredient', 'IngredientGroup', 'Amount', 'IngredientList']
