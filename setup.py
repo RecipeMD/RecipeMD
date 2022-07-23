@@ -43,6 +43,7 @@ setuptools.setup(
         'argcomplete>=1.10.0,<2.0.0',
         'pyparsing~=2.4.2',
         'markdown-it-py>=2.1.0,<3.0.0',
+        'typing_extensions>=4.3.0,<5.0.0',
     ],
     extras_require={
         'tests': tests_require,
