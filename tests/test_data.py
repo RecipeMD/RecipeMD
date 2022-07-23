@@ -6,10 +6,11 @@ from decimal import Decimal
 from pprint import pprint
 
 import pytest
+from recipemd.data import (Amount, Ingredient, IngredientGroup, Recipe,
+                           RecipeParser, RecipeSerializer,
+                           get_recipe_with_yield, multiply_recipe)
 
-from recipemd.data import Recipe, Amount, Ingredient, IngredientGroup, multiply_recipe, RecipeParser, RecipeSerializer, \
-    get_recipe_with_yield
-
+WRITE_MISSING_TESTCASES = bool(os.environ.get('WRITE_MISSING_TESTCASES'))
 
 @pytest.fixture(scope="session")
 def parser():
@@ -73,12 +74,18 @@ class TestRecipeParser:
                 with open(testcase_file, 'r', encoding='UTF-8') as f:
                     parser.parse(f.read())
         else:
-            expected_result_file = os.path.splitext(testcase_file)[0] + '.json'
-            with open(expected_result_file, 'r', encoding='UTF-8') as f:
-                expected_result = Recipe.from_json(f.read())
             with open(testcase_file, 'r', encoding='UTF-8') as f:
                 actual_result = parser.parse(f.read())
-            assert actual_result == expected_result
+            expected_result_file = os.path.splitext(testcase_file)[0] + '.json'
+            try:
+                with open(expected_result_file, 'r', encoding='UTF-8') as f:
+                    expected_result = Recipe.from_json(f.read())
+                assert actual_result == expected_result
+            except FileNotFoundError:
+                if not WRITE_MISSING_TESTCASES:
+                    raise
+                with open(expected_result_file, 'w', encoding='UTF-8') as f:
+                    f.write(actual_result.to_json(indent=2))
 
     def test_parse_amount(self, parser):
         assert parser.parse_amount("2") == Amount(factor=Decimal('2'))
