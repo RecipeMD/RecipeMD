@@ -20,9 +20,9 @@
   
   is an amount that stands alone on the first line
   
-- [this is a link](some other recipe)
+- [this is a link](some_other_recipe)
 
 
-- [this is not a link](some other recipe) 
+- [this is not a link](some_other_recipe) 
 
   since links must wrap the whole ingredient text
