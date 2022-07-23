@@ -11,4 +11,3 @@ exclude_lines =
     def _yield_completer
 omit = 
     recipemd/cli/find.py
-    recipemd/_vendor/*
