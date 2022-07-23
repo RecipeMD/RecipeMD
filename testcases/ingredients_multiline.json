@@ -31,12 +31,12 @@
       "link": null
     },
     {
-      "name": "[this is a link](some other recipe)",
+      "name": "this is a link",
       "amount": null,
-      "link": null
+      "link": "some_other_recipe"
     },
     {
-      "name": "[this is not a link](some other recipe)\n\n  since links must wrap the whole ingredient text",
+      "name": "[this is not a link](some_other_recipe)\n\n  since links must wrap the whole ingredient text",
       "amount": null,
       "link": null
     }
