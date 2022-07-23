@@ -69,7 +69,7 @@ class TestRecipeParser:
     )
     def test_parse(self, parser, testcase_file):
         if testcase_file.endswith('.invalid.md'):
-            with pytest.raises(BaseException):
+            with pytest.raises(RuntimeError):
                 with open(testcase_file, 'r', encoding='UTF-8') as f:
                     parser.parse(f.read())
         else:

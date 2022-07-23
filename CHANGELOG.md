@@ -2,10 +2,29 @@
 
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
+## Upcoming: Version 4.1.0 (Unreleased)
+
+- *Fix:* Don't parse links that partially wrap an ingredient's name as
+  amount links. This was never spec conformant, but the test cases
+  were incorrect up to spec version 2.3.5
+- *Fix:* Preserve reference links and reference-style images in
+  description and instructions
+- Switch the underlying commonmark markdown parser from
+  [`commonmark.py`] to [`markdown-it-py`]
+    - [`commonmark.py`] is deprecated and the project recommends
+      switching to [`markdown-it-py`]
+    - The new parser allows for more accurate parsing of certain
+      markdown constructs, enabling the fixes detailed above
+
+[`markdown-it-py`]: https://markdown-it-py.readthedocs.io/
+
+
 ## Version 4.0.8 (2021-12-26)
 
-- *Fix:* Work around bug in [`commonmark.py`](https://github.com/readthedocs/commonmark.py) which led to incorrect 
+- *Fix:* Work around bug in [`commonmark.py`] which led to incorrect
   parsing of fenced code blocks
+
+[`commonmark.py`]: https://github.com/readthedocs/commonmark.py
 
 
 ## Version 4.0.7 (2021-05-01)
