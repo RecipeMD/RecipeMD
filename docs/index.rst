@@ -41,6 +41,7 @@ Some RecipeMD repositories:
 
 * `AberDerBart <https://github.com/AberDerBart/recipes>`_
 * `Chamaeleon- <https://github.com/Chamaeleon-/recipes>`_
+* `chrissi^ <https://gitli.stratum0.org/chrissi/recipes>`_
 * `core-dd <https://github.com/core-dd/recipes>`_
 * `crisartistry <https://github.com/crisartistry/recipes>`_
 * `dadada <https://github.com/dadada/recipes>`_
