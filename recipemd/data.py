@@ -137,33 +137,33 @@ class RecipeParser:
 
     _list_split = re.compile(r"(?<!\d),|,(?!\d)")
 
-    md_block: MarkdownIt
-    md_emph: MarkdownIt
-    md_link: MarkdownIt
+    _md_block: MarkdownIt
+    _md_emph: MarkdownIt
+    _md_link: MarkdownIt
 
-    src: Optional[str]
-    src_lines: List[str]
-    block_tokens: List[Token]
+    _src: Optional[str]
+    _src_lines: List[str]
+    _block_tokens: List[Token]
 
 
     def __init__(self):
-        self.md_block = MarkdownIt()
-        self.md_block.disable("reference")
-        self.md_block.disable(
-            names=[*self.md_block.get_all_rules()["inline"], *self.md_block.get_all_rules()["inline2"]]
+        self._md_block = MarkdownIt()
+        self._md_block.disable("reference")
+        self._md_block.disable(
+            names=[*self._md_block.get_all_rules()["inline"], *self._md_block.get_all_rules()["inline2"]]
         )
 
-        self.md_emph = MarkdownIt()
-        self.md_emph.disable(self.md_emph.get_all_rules()["inline"])
-        self.md_emph.enable("emphasis")
+        self._md_emph = MarkdownIt()
+        self._md_emph.disable(self._md_emph.get_all_rules()["inline"])
+        self._md_emph.enable("emphasis")
 
-        self.md_link = MarkdownIt()
-        self.md_link.disable(self.md_link.get_all_rules()["inline"])
-        self.md_link.enable("link")
+        self._md_link = MarkdownIt()
+        self._md_link.disable(self._md_link.get_all_rules()["inline"])
+        self._md_link.enable("link")
 
-        self.src = None
-        self.src_lines = []
-        self.block_tokens = []
+        self._src = None
+        self._src_lines = []
+        self._block_tokens = []
 
     def parse(self, src: str) -> Recipe:
         """
@@ -191,28 +191,28 @@ class RecipeParser:
 
         :raises RuntimeException: If src is not a valid RecipeMD recipe.
         """
-        self.src = src
-        self.src_lines = src.splitlines()
+        self._src = src
+        self._src_lines = src.splitlines()
 
-        self.block_tokens = self.md_block.parse(src)
+        self._block_tokens = self._md_block.parse(src)
 
         title = self._parse_title()
         description = self._parse_description()
         tags, yields = self._parse_tags_and_yields()
 
-        if self.block_tokens and self.block_tokens[0].type == "hr":
-            self.block_tokens.pop(0)
+        if self._block_tokens and self._block_tokens[0].type == "hr":
+            self._block_tokens.pop(0)
         else:
             # TODO this hr is required, but we might just continue anyways?
-            raise RuntimeError(f"Invalid, expected hr before ingredient list, got {self.block_tokens[0] and self.block_tokens[0].type if self.block_tokens else None} instead")
+            raise RuntimeError(f"Invalid, expected hr before ingredient list, got {self._block_tokens[0] and self._block_tokens[0].type if self._block_tokens else None} instead")
 
         ingredients, ingredient_groups = self._parse_ingredients()
 
-        if self.block_tokens and self.block_tokens[0].type == "hr":
-            self.block_tokens.pop(0)
-        elif self.block_tokens:
+        if self._block_tokens and self._block_tokens[0].type == "hr":
+            self._block_tokens.pop(0)
+        elif self._block_tokens:
             # TODO this hr is required, but we might just continue anyways?
-            raise RuntimeError(f"Invalid, expected hr before instructions, got {self.block_tokens[0] and self.block_tokens[0].type} instead")
+            raise RuntimeError(f"Invalid, expected hr before instructions, got {self._block_tokens[0] and self._block_tokens[0].type} instead")
 
         instructions = self._parse_instructions()
 
@@ -227,12 +227,12 @@ class RecipeParser:
         )
 
     def _parse_title(self):
-        if not self.block_tokens:
+        if not self._block_tokens:
             raise RuntimeError(
                 f"Invalid, title (heading_open with level h1) required, got None instead"
             )
 
-        heading_open_token = self.block_tokens.pop(0)
+        heading_open_token = self._block_tokens.pop(0)
 
         # TODO title is required according to spec, maybe the parser might be more forgiving?
         if heading_open_token.type != "heading_open":
@@ -244,13 +244,13 @@ class RecipeParser:
                 f"Invalid, title (heading_open with level h1) required, got level {heading_open_token.tag} instead"
             )
 
-        heading_content_token = self.block_tokens.pop(0)
-        assert self.block_tokens.pop(0).type == "heading_close"
+        heading_content_token = self._block_tokens.pop(0)
+        assert self._block_tokens.pop(0).type == "heading_close"
 
         return heading_content_token.content
 
     def _parse_description(self):
-        return self._parse_blocks_while(lambda: (self.block_tokens[0].type != "hr") and self._peek_emph_paragraph() is None)
+        return self._parse_blocks_while(lambda: (self._block_tokens[0].type != "hr") and self._peek_emph_paragraph() is None)
 
     def _parse_tags_and_yields(self):
         tags: List[str] = []
@@ -268,7 +268,7 @@ class RecipeParser:
                 yields = [self.parse_amount(t.strip()) for t in self._list_split.split(content)]
             
             # consume paragraph
-            del self.block_tokens[:3]            
+            del self._block_tokens[:3]            
             peeked_emph_paragraph = self._peek_emph_paragraph()
         return tags, yields
 
@@ -276,12 +276,12 @@ class RecipeParser:
     def _parse_ingredients(self):
         ingredients: List[Ingredient] = []
         ingredient_groups: List[IngredientGroup] = []
-        while self.block_tokens and (
-            self.block_tokens[0].type == "heading_open" 
-            or self.block_tokens[0].type == "bullet_list_open"
-            or self.block_tokens[0].type == "ordered_list_open"
+        while self._block_tokens and (
+            self._block_tokens[0].type == "heading_open" 
+            or self._block_tokens[0].type == "bullet_list_open"
+            or self._block_tokens[0].type == "ordered_list_open"
         ):
-            if self.block_tokens[0].type == 'heading_open':
+            if self._block_tokens[0].type == 'heading_open':
                 self._parse_ingredient_groups(ingredient_groups, parent_level=-1)
                 pass
             else:
@@ -289,19 +289,19 @@ class RecipeParser:
         return ingredients, ingredient_groups
 
     def _parse_ingredient_groups(self, ingredient_groups: List['IngredientGroup'], parent_level):
-        while self.block_tokens and (
-            self.block_tokens[0].type == "heading_open" 
+        while self._block_tokens and (
+            self._block_tokens[0].type == "heading_open" 
         ):
-            level = int(self.block_tokens[0].tag.lstrip('h'))
+            level = int(self._block_tokens[0].tag.lstrip('h'))
             if level <= parent_level:
                 return
 
-            self.block_tokens.pop(0)
-            heading_content_token = self.block_tokens.pop(0)
-            assert self.block_tokens.pop(0).type == "heading_close"
+            self._block_tokens.pop(0)
+            heading_content_token = self._block_tokens.pop(0)
+            assert self._block_tokens.pop(0).type == "heading_close"
 
             group = IngredientGroup(title=heading_content_token.content)
-            if self.block_tokens and (self.block_tokens[0].type == "bullet_list_open" or self.block_tokens[0].type == "ordered_list_open"):
+            if self._block_tokens and (self._block_tokens[0].type == "bullet_list_open" or self._block_tokens[0].type == "ordered_list_open"):
                 self._parse_ingredient_list(group.ingredients)
 
             ingredient_groups.append(group)
@@ -309,37 +309,37 @@ class RecipeParser:
             self._parse_ingredient_groups(group.ingredient_groups, parent_level=level)
 
     def _parse_ingredient_list(self, ingredients: List['Ingredient']):
-        while self.block_tokens and (
-            self.block_tokens[0].type == "bullet_list_open"
-            or self.block_tokens[0].type == "ordered_list_open"
+        while self._block_tokens and (
+            self._block_tokens[0].type == "bullet_list_open"
+            or self._block_tokens[0].type == "ordered_list_open"
         ):
-            list_open = self.block_tokens.pop(0)
+            list_open = self._block_tokens.pop(0)
 
-            list_close_index = RecipeParser._get_close_index(list_open, self.block_tokens)
-            list_close = self.block_tokens[list_close_index]
-            while self.block_tokens[0].type == "list_item_open":
+            list_close_index = RecipeParser._get_close_index(list_open, self._block_tokens)
+            list_close = self._block_tokens[list_close_index]
+            while self._block_tokens[0].type == "list_item_open":
                 ingredients.append(self._parse_ingredient())
-            assert self.block_tokens.pop(0) == list_close
+            assert self._block_tokens.pop(0) == list_close
 
     def _parse_ingredient(self) -> 'Ingredient':
-        list_item_open = self.block_tokens.pop(0)
+        list_item_open = self._block_tokens.pop(0)
         assert list_item_open.type == "list_item_open"
 
 
         continuation_start_line = None
         first_paragraph_content = None
-        if self.block_tokens and self.block_tokens[0].type == "paragraph_open":
-            first_paragraph_open = self.block_tokens.pop(0)
-            first_paragraph_content = self.block_tokens.pop(0)
+        if self._block_tokens and self._block_tokens[0].type == "paragraph_open":
+            first_paragraph_open = self._block_tokens.pop(0)
+            first_paragraph_content = self._block_tokens.pop(0)
             first_paragraph_close_index = RecipeParser._get_close_index(
-                first_paragraph_open, self.block_tokens
+                first_paragraph_open, self._block_tokens
             )
-            del self.block_tokens[: first_paragraph_close_index + 1]
+            del self._block_tokens[: first_paragraph_close_index + 1]
             if first_paragraph_open.map:
                 continuation_start_line =  first_paragraph_open.map[1]
 
-        end_index = RecipeParser._get_close_index(list_item_open, self.block_tokens)
-        list_item_close = self.block_tokens[end_index]
+        end_index = RecipeParser._get_close_index(list_item_open, self._block_tokens)
+        list_item_close = self._block_tokens[end_index]
 
         if first_paragraph_content is not None:
             amount, rest = self._parse_first_emph(first_paragraph_content.content)
@@ -354,11 +354,11 @@ class RecipeParser:
             name = ""
             link = None
 
-        name_continuation = self._parse_blocks_while(lambda: self.block_tokens[0] != list_item_close, start_line=continuation_start_line)
+        name_continuation = self._parse_blocks_while(lambda: self._block_tokens[0] != list_item_close, start_line=continuation_start_line)
         if name_continuation:
             name += "\n" + name_continuation
 
-        assert self.block_tokens.pop(0) == list_item_close
+        assert self._block_tokens.pop(0) == list_item_close
 
         if not name:
             raise RuntimeError("No ingredient name!")
@@ -367,7 +367,7 @@ class RecipeParser:
         return Ingredient(name=name, amount=RecipeParser.parse_amount(amount) if amount is not None else None, link=link)
 
     def _parse_instructions(self):
-        if not self.block_tokens:
+        if not self._block_tokens:
             return None
         return self._parse_blocks_while(lambda: True)
 
@@ -420,15 +420,15 @@ class RecipeParser:
 
     def _peek_emph_paragraph(self) -> Optional[Tuple[Union[Literal['em_open'], Literal['strong_open']], str]]:
         if (
-            len(self.block_tokens) < 3
-            or self.block_tokens[0].type != "paragraph_open"
-            or self.block_tokens[1].type != "inline"
-            or self.block_tokens[2].type != "paragraph_close"
+            len(self._block_tokens) < 3
+            or self._block_tokens[0].type != "paragraph_open"
+            or self._block_tokens[1].type != "inline"
+            or self._block_tokens[2].type != "paragraph_close"
         ):
             return None
-        inline_content = self.block_tokens[1].content
+        inline_content = self._block_tokens[1].content
 
-        inline_tokens = self.md_emph.parseInline(inline_content)[0].children or []
+        inline_tokens = self._md_emph.parseInline(inline_content)[0].children or []
 
         RecipeParser._consume_empty_text_tokens(inline_tokens)
 
@@ -449,24 +449,24 @@ class RecipeParser:
         
     def _parse_blocks_while(self, condition: Callable[[], bool], start_line: Optional[int] = None):
         end_line = None
-        while self.block_tokens and condition():
+        while self._block_tokens and condition():
             open_token = self._consume_block()        
             assert open_token.map
             start_line = start_line or open_token.map[0]
             end_line = open_token.map[1]
         if start_line is None or end_line is None:
             return None
-        return "\n".join(self.src_lines[start_line:end_line])
+        return "\n".join(self._src_lines[start_line:end_line])
 
     def _consume_block(self):
-        open = self.block_tokens.pop(0)
+        open = self._block_tokens.pop(0)
         if open.type.endswith("_open"):
-            close_index = RecipeParser._get_close_index(open, self.block_tokens)
-            del self.block_tokens[0 : close_index + 1]
+            close_index = RecipeParser._get_close_index(open, self._block_tokens)
+            del self._block_tokens[0 : close_index + 1]
         return open
 
     def _parse_first_emph(self, first_paragraph: str):
-        inline_tokens = self.md_emph.parseInline(first_paragraph)[0].children or []
+        inline_tokens = self._md_emph.parseInline(first_paragraph)[0].children or []
 
         if len(inline_tokens) and inline_tokens[0].type == "em_open":
             emph_open_token = inline_tokens.pop(0)
@@ -482,8 +482,8 @@ class RecipeParser:
         return emph_content, rest
 
     def _parse_wrapping_link(self, first_paragraph: str) -> Tuple[Optional[str], str]:
-        p = self.md_link.parseInline(first_paragraph)
-        inline_tokens = self.md_link.parseInline(first_paragraph)[0].children or []
+        p = self._md_link.parseInline(first_paragraph)
+        inline_tokens = self._md_link.parseInline(first_paragraph)[0].children or []
 
         RecipeParser._consume_whitespace_text_tokens(inline_tokens)
 
