@@ -9,15 +9,13 @@ tests_require = [
 ]
 
 docs_require = [
-    'Sphinx==2.2.2',
-    'm2r==0.2.1',
-    # restrict version of m2r depencency, see https://github.com/Azure/azure-sdk-for-python/issues/22019#issuecomment-987195928
-    'mistune<2.0.0', 
+    'Sphinx==5.1.1',
+    'm2r2==0.3.3',
     'sphinxcontrib.fulltoc==1.2.0',
-    'sphinxcontrib.autoprogram==0.1.5',
-    'sphinx_autodoc_typehints==1.10.3',
+    'sphinxcontrib.autoprogram==0.1.7',
+    'sphinx_autodoc_typehints==1.19.2',
     'sphinxcontrib.apidoc==0.3.0',
-    'sphinx-autobuild==0.7.1'
+    'sphinx-autobuild==2021.3.14'
 ]
 
 release_requires = [

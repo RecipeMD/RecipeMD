@@ -40,7 +40,7 @@ extensions = [
     "sphinx.ext.linkcode",
     'sphinx.ext.githubpages',
     'sphinx.ext.autosectionlabel',
-    'm2r',
+    'm2r2',
     'sphinxcontrib.fulltoc',
     'sphinxcontrib.autoprogram',
     'sphinx_autodoc_typehints',
@@ -60,7 +60,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # autodoc settings
 autodoc_inherit_docstrings = True
-#autodoc_member_order = 'bysource'
+autodoc_member_order = 'bysource'
 autodoc_default_options = {
     'exclude-members': 'schema,from_dict,to_dict',
 }
