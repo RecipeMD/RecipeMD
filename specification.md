@@ -177,7 +177,7 @@ either version 3 of the License, or any later version.
 
 ## Version History
 
-### Upcoming: Version 2.3.5 (Unreleased)
+### Version 2.3.5 (2022-08-14)
 
 - Fix test case "ingredients_multiline.md" to use valid link targets
 - Expand test cases to cover
