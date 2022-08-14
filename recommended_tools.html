@@ -1,18 +1,19 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
-    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Recommended Tools &#8212; RecipeMD 4.0.8 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="canonical" href="https://recipemd.org/recommended_tools.html" />
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
@@ -35,10 +36,10 @@
           <div class="body" role="main">
             
   <section id="recommended-tools">
-<h1>Recommended Tools<a class="headerlink" href="#recommended-tools" title="Permalink to this headline">¶</a></h1>
+<h1>Recommended Tools<a class="headerlink" href="#recommended-tools" title="Permalink to this heading">¶</a></h1>
 <p>On this pages we summarize some tools that work nicely with RecipeMD recipes.</p>
 <section id="recipemd-extract">
-<h2>recipemd-extract<a class="headerlink" href="#recipemd-extract" title="Permalink to this headline">¶</a></h2>
+<h2>recipemd-extract<a class="headerlink" href="#recipemd-extract" title="Permalink to this heading">¶</a></h2>
 <p>With <a class="reference external" href="https://github.com/AberDerBart/recipemd-extract">recipemd-extract</a>, you can easily download recipes from <a class="reference external" href="https://github.com/AberDerBart/recipemd-extract#supported-websites">large number of popular websites</a> as RecipeMD.</p>
 <p>After installation you can download into the current folder via:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipmd-extract <span class="s1">&#39;&lt;url-of-recipe&gt;&#39;</span>
@@ -46,19 +47,19 @@
 </div>
 </section>
 <section id="recipemd-validator">
-<h2>recipemd-validator<a class="headerlink" href="#recipemd-validator" title="Permalink to this headline">¶</a></h2>
+<h2>recipemd-validator<a class="headerlink" href="#recipemd-validator" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://github.com/gindex/recipemd-validator">recipemd-validator</a> is a <a class="reference external" href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks">git hook</a> that validates recipes and works out-of-the-box with <a class="reference external" href="https://pre-commit.com/">pre-commit</a>.</p>
 <p>To configure add to your <code class="code docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code>:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">repos</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">git://github.com/gindex/recipemd-validator</span>
-  <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v0.0.1</span>
-  <span class="nt">hooks</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">validate-recipemd</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">repos</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git://github.com/gindex/recipemd-validator</span><span class="w"></span>
+<span class="w">  </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v0.0.1</span><span class="w"></span>
+<span class="w">  </span><span class="nt">hooks</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validate-recipemd</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="pandoc">
-<h2>Pandoc<a class="headerlink" href="#pandoc" title="Permalink to this headline">¶</a></h2>
+<h2>Pandoc<a class="headerlink" href="#pandoc" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://pandoc.org">Pandoc</a> is a tool that can be used to convert files between difference markup formats, for example from Markdown to lots of other formats.</p>
 <p>Convert a recipe to pdf:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd &lt;path/to/recipe.md&gt; <span class="p">|</span> pandoc --pdf-engine<span class="o">=</span>xelatex  -V geometry:margin<span class="o">=</span>2cm -V geometry:a4paper -o &lt;path/to/recipe.pdf&gt;
@@ -71,11 +72,11 @@
 <p>Note that you can specify the <a class="reference external" href="https://pandoc.org/MANUAL.html#templates">latex template</a> used by pandoc to adopt the output to your taste.</p>
 </section>
 <section id="gitlab-markdown-viewer">
-<h2>GitLab Markdown Viewer<a class="headerlink" href="#gitlab-markdown-viewer" title="Permalink to this headline">¶</a></h2>
+<h2>GitLab Markdown Viewer<a class="headerlink" href="#gitlab-markdown-viewer" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://addons.mozilla.org/en-US/firefox/addon/gitlab-markdown-viewer/">GitLab Markdown Viewer</a> is an add-on for Firefox that allows it to render Markdown recipe. This allows you to use Firefox to navigate your recipe collection.</p>
 </section>
 <section id="other-tools">
-<h2>Other Tools<a class="headerlink" href="#other-tools" title="Permalink to this headline">¶</a></h2>
+<h2>Other Tools<a class="headerlink" href="#other-tools" title="Permalink to this heading">¶</a></h2>
 <p>If you use any other tools with RecipeMD recipes, we’d like to include them here. Please <a class="reference external" href="https://github.com/tstehr/recipemd/edit/master/docs/recommended_tools.rst">send a pull request</a> or <a class="reference external" href="https://github.com/tstehr/recipemd/issues">open an issue</a> to add to this page.</p>
 </section>
 </section>
@@ -132,12 +133,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script><div role="note" aria-label="source link" class="edit-on-github">
+<script>document.getElementById('searchbox').style.display = "block"</script><div role="note" aria-label="source link" class="edit-on-github">
     
     
     <h3>Edit this page</h3>
@@ -155,7 +156,7 @@
       &copy;2019, Tilman Stehr and contributors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
