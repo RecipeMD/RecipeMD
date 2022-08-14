@@ -2,7 +2,7 @@
 
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
-## Upcoming: Version 4.1.0 (Unreleased)
+## Version 4.1.0 (2022-08-14)
 
 - *Fix:* Don't parse links that partially wrap an ingredient's name as
   amount links. This was never spec conformant, but the test cases
