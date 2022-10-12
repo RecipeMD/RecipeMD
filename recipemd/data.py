@@ -4,10 +4,14 @@ Defines the RecipeMD data structures, provides parser, serializer and recipe sca
 #from __future__ import annotations
 
 import re
+import frontmatter
 import unicodedata
 from dataclasses import dataclass, field, replace
 from decimal import Decimal
-from typing import Callable, Generator, List, Optional, Tuple, TypeVar, Union
+from typing import Callable, Generator, List, Optional, Tuple, TypeVar, Union, \
+    Any
+from ruamel.yaml import YAML
+from io import StringIO
 
 from dataclasses_json import config, dataclass_json
 from markdown_it import MarkdownIt
@@ -76,11 +80,18 @@ class Recipe(IngredientList):
     yields: List[Amount] = field(default_factory=list)
     tags: List[str] = field(default_factory=list)
     instructions: Optional[str] = None
+    metadata: Optional[dict[str, Any]] = None
 
 
 class RecipeSerializer:
     def serialize(self, recipe: Recipe, *, rounding: Optional[int] = None) -> str:
         rep = ""
+        if recipe.metadata:
+            yaml = YAML()
+            yaml.indent(mapping=2, sequence=4, offset=2)
+            stream = StringIO()
+            yaml.dump(recipe.metadata, stream)
+            rep += f"---\n{stream.getvalue()}---\n\n"
         rep += f'# {recipe.title}\n\n'
         if recipe.description is not None:
             rep += f'{recipe.description}\n\n'
@@ -191,10 +202,13 @@ class RecipeParser:
 
         :raises RuntimeException: If src is not a valid RecipeMD recipe.
         """
-        self._src = src
-        self._src_lines = src.splitlines()
 
-        self._block_tokens = self._md_block.parse(src)
+        full_src = frontmatter.loads(src)
+        metadata = full_src.metadata
+        self._src = full_src.content
+        self._src_lines = self._src.splitlines()
+
+        self._block_tokens = self._md_block.parse(self._src)
 
         title = self._parse_title()
         description = self._parse_description()
@@ -224,6 +238,7 @@ class RecipeParser:
             ingredients=ingredients,
             ingredient_groups=ingredient_groups,
             instructions=instructions,
+            metadata=metadata,
         )
 
     def _parse_title(self):

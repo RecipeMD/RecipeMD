@@ -44,6 +44,8 @@ setuptools.setup(
         'pyparsing~=2.4.2',
         'markdown-it-py>=2.1.0,<3.0.0',
         'typing_extensions>=4.3.0,<5.0.0',
+        'python-frontmatter',
+        'ruamel.yaml'
     ],
     extras_require={
         'tests': tests_require,
