@@ -181,6 +181,9 @@ either version 3 of the License, or any later version.
 
 - Update link to test cases to point to the new "RecipeMD" GitHub
   organization.
+- Fix test cases that included amounts with no factor.
+  - These were always invalid according to the spec, but the reference
+    incorrectly accepted them
 
 ### Version 2.3.5 (2022-08-14)
 

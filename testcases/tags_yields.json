@@ -19,10 +19,6 @@
       "unit": "servings"
     },
     {
-      "factor": null,
-      "unit": "factorless"
-    },
-    {
       "factor": "5",
       "unit": null
     }
