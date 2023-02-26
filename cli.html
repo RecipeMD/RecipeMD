@@ -46,31 +46,31 @@
 <section id="usage-examples">
 <span id="cli-examples"></span><h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Permalink to this heading">¶</a></h2>
 <p>Display and validate a recipe:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd &lt;path/to/recipe.md&gt;
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd<span class="w"> </span>&lt;path/to/recipe.md&gt;
 </pre></div>
 </div>
 <p>Get recipe title:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd &lt;path/to/recipe.md&gt; -t
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd<span class="w"> </span>&lt;path/to/recipe.md&gt;<span class="w"> </span>-t
 </pre></div>
 </div>
 <p>Get recipe ingredients, e.g. to pipe to <a class="reference external" href="https://github.com/AberDerBart/shoppinglist-cli">shoppinglist-cli</a>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd &lt;path/to/recipe.md&gt; -i
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd<span class="w"> </span>&lt;path/to/recipe.md&gt;<span class="w"> </span>-i
 </pre></div>
 </div>
 <p>Multiply recipe by a factor:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd &lt;path/to/recipe.md&gt; -m <span class="m">5</span>.5
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd<span class="w"> </span>&lt;path/to/recipe.md&gt;<span class="w"> </span>-m<span class="w"> </span><span class="m">5</span>.5
 </pre></div>
 </div>
 <p>Scale recipe for a given yield (e.g. number of servings, volume, mass, amount):</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd &lt;path/to/recipe.md&gt; -y <span class="s2">&quot;10 servings&quot;</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd<span class="w"> </span>&lt;path/to/recipe.md&gt;<span class="w"> </span>-y<span class="w"> </span><span class="s2">&quot;10 servings&quot;</span>
 </pre></div>
 </div>
 <p>Get all tags of all recipes in the current folder:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd-find tags
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd-find<span class="w"> </span>tags
 </pre></div>
 </div>
 <p>Get recipes by tag:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd-find -e <span class="s2">&quot;tag:cheese or tag:summer&quot;</span> recipes
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd-find<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;tag:cheese or tag:summer&quot;</span><span class="w"> </span>recipes
 </pre></div>
 </div>
 </section>
@@ -385,7 +385,7 @@
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="_sources/cli.rst.txt"

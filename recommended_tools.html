@@ -42,7 +42,7 @@
 <h2>recipemd-extract<a class="headerlink" href="#recipemd-extract" title="Permalink to this heading">¶</a></h2>
 <p>With <a class="reference external" href="https://github.com/AberDerBart/recipemd-extract">recipemd-extract</a>, you can easily download recipes from <a class="reference external" href="https://github.com/AberDerBart/recipemd-extract#supported-websites">large number of popular websites</a> as RecipeMD.</p>
 <p>After installation you can download into the current folder via:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipmd-extract <span class="s1">&#39;&lt;url-of-recipe&gt;&#39;</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipmd-extract<span class="w"> </span><span class="s1">&#39;&lt;url-of-recipe&gt;&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -50,11 +50,11 @@
 <h2>recipemd-validator<a class="headerlink" href="#recipemd-validator" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://github.com/gindex/recipemd-validator">recipemd-validator</a> is a <a class="reference external" href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks">git hook</a> that validates recipes and works out-of-the-box with <a class="reference external" href="https://pre-commit.com/">pre-commit</a>.</p>
 <p>To configure add to your <code class="code docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code>:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">repos</span><span class="p">:</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git://github.com/gindex/recipemd-validator</span><span class="w"></span>
-<span class="w">  </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v0.0.1</span><span class="w"></span>
-<span class="w">  </span><span class="nt">hooks</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validate-recipemd</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">repos</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git://github.com/gindex/recipemd-validator</span>
+<span class="w">  </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v0.0.1</span>
+<span class="w">  </span><span class="nt">hooks</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validate-recipemd</span>
 </pre></div>
 </div>
 </section>
@@ -62,11 +62,11 @@
 <h2>Pandoc<a class="headerlink" href="#pandoc" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://pandoc.org">Pandoc</a> is a tool that can be used to convert files between difference markup formats, for example from Markdown to lots of other formats.</p>
 <p>Convert a recipe to pdf:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd &lt;path/to/recipe.md&gt; <span class="p">|</span> pandoc --pdf-engine<span class="o">=</span>xelatex  -V geometry:margin<span class="o">=</span>2cm -V geometry:a4paper -o &lt;path/to/recipe.pdf&gt;
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>recipemd<span class="w"> </span>&lt;path/to/recipe.md&gt;<span class="w"> </span><span class="p">|</span><span class="w"> </span>pandoc<span class="w"> </span>--pdf-engine<span class="o">=</span>xelatex<span class="w">  </span>-V<span class="w"> </span>geometry:margin<span class="o">=</span>2cm<span class="w"> </span>-V<span class="w"> </span>geometry:a4paper<span class="w"> </span>-o<span class="w"> </span>&lt;path/to/recipe.pdf&gt;
 </pre></div>
 </div>
 <p>Convert a folder of recipes to pdfs:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ls *.md <span class="p">|</span> xargs -P10 -I<span class="o">{}</span> bash -c <span class="s1">&#39;pandoc --pdf-engine=xelatex  -V geometry:margin=2cm -V geometry:a4paper {} -o $(basename {} md)pdf&#39;</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>*.md<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>-P10<span class="w"> </span>-I<span class="o">{}</span><span class="w"> </span>bash<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;pandoc --pdf-engine=xelatex  -V geometry:margin=2cm -V geometry:a4paper {} -o $(basename {} md)pdf&#39;</span>
 </pre></div>
 </div>
 <p>Note that you can specify the <a class="reference external" href="https://pandoc.org/MANUAL.html#templates">latex template</a> used by pandoc to adopt the output to your taste.</p>
@@ -157,7 +157,7 @@
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="_sources/recommended_tools.rst.txt"
