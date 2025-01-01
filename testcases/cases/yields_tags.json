@@ -1,6 +1,5 @@
 {
-  "title": "Yields",
-  "description": null,
+  "title": "Yields Then Tags",
   "yields": [
     {
       "factor": "1.2",
@@ -19,16 +18,20 @@
       "unit": "servings"
     },
     {
-      "factor": null,
-      "unit": "factorless"
-    },
-    {
       "factor": "5",
       "unit": null
     }
   ],
-  "tags": [],
+  "tags": [
+    "tag1",
+    "tag2",
+    "tag3",
+    "tag4",
+    "tag with special! char",
+    "tag5"
+  ],
   "ingredients": [],
   "ingredient_groups": [],
+  "description": null,
   "instructions": null
 }

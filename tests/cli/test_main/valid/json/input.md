@@ -27,7 +27,6 @@ It can have multiple lines an may even include pictures.
 ## Group 2
 
 - text isn't optional
-- *hey* amount is valid without factor
 
 ---
 

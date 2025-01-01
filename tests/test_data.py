@@ -6,6 +6,9 @@ from decimal import Decimal
 from pprint import pprint
 
 import pytest
+import json
+import jsonschema
+
 from recipemd.data import (Amount, Ingredient, IngredientGroup, Recipe,
                            RecipeParser, RecipeSerializer,
                            get_recipe_with_yield, multiply_recipe)
@@ -20,13 +23,6 @@ def parser():
 @pytest.fixture(scope="session")
 def serializer():
     return RecipeSerializer()
-
-
-def test_amount():
-    with pytest.raises(TypeError) as excinfo:
-        Amount()
-
-    assert excinfo.value.args[0] == "Factor and unit may not both be None"
 
 
 def test_ingredient_list_get_leaf_ingredients():
@@ -66,7 +62,7 @@ def test_ingredient_list_get_leaf_ingredients():
 class TestRecipeParser:
     @pytest.mark.parametrize(
         "testcase_file",
-        glob.glob(os.path.join(os.path.dirname(__file__), '..', 'testcases', '*.md')),
+        glob.glob(os.path.join(os.path.dirname(__file__), '..', 'testcases', 'cases', '*.md')),
     )
     def test_parse(self, parser, testcase_file):
         if testcase_file.endswith('.invalid.md'):
@@ -78,8 +74,15 @@ class TestRecipeParser:
                 actual_result = parser.parse(f.read())
             expected_result_file = os.path.splitext(testcase_file)[0] + '.json'
             try:
+                # Validate expected result against json schema
                 with open(expected_result_file, 'r', encoding='UTF-8') as f:
-                    expected_result = Recipe.from_json(f.read())
+                    expected_result_json = json.loads(f.read())
+                with open(os.path.join(os.path.dirname(__file__), '..', 'testcases', 'testcase.schema.json'), 'r', encoding='UTF-8') as f:
+                    schema_json = json.loads(f.read())
+                jsonschema.validate(instance=expected_result_json, schema=schema_json)
+
+                # Check that recipes are equal
+                expected_result = Recipe.from_dict(expected_result_json)
                 assert actual_result == expected_result
             except FileNotFoundError:
                 if not WRITE_MISSING_TESTCASES:
@@ -102,7 +105,7 @@ class TestRecipeParser:
 
 class TestRecipeSerializer:
     def test_serialize(self, serializer):
-        testcase_folder = os.path.join(os.path.dirname(__file__), '..', 'testcases')
+        testcase_folder = os.path.join(os.path.dirname(__file__), '..', 'testcases', 'cases')
         with open(os.path.join(testcase_folder, 'recipe.md'), 'r', encoding='UTF-8') as f:
             expected_result = f.read()
         with open(os.path.join(testcase_folder, 'recipe.json'), 'r', encoding='UTF-8') as f:
@@ -119,7 +122,7 @@ class TestRecipeSerializer:
 def test_multiply_recipe():
     recipe = Recipe(
         title="Test",
-        yields=[Amount(factor=Decimal('5'), unit="servings"), Amount(unit="unitless yield")],
+        yields=[Amount(factor=Decimal('5'), unit="servings")],
         ingredients=[
             Ingredient(amount=Amount(factor=Decimal('5')), name='Eggs'),
             Ingredient(amount=Amount(factor=Decimal('200'), unit='g'), name='Butter'),
@@ -171,12 +174,3 @@ def test_get_recipe_with_yield():
     # try with unit not in recipe yields
     with pytest.raises(StopIteration):
         get_recipe_with_yield(recipe, Amount(factor=Decimal('500'), unit='ml'))
-
-    # try with factorless required yield
-    with pytest.raises(RuntimeError):
-        get_recipe_with_yield(recipe, Amount(unit='ml'))
-
-    # try with factorless yield in recipe
-    recipe_with_factorless_yield = replace(recipe, yields=[Amount(unit='Foos')])
-    with pytest.raises(RuntimeError):
-        get_recipe_with_yield(recipe_with_factorless_yield, Amount(factor=Decimal('500'), unit='Foos'))

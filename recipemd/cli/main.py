@@ -78,7 +78,10 @@ def _yield_completer(prefix, action, parser, parsed_args):
 def _process_scaling(r, args):
     """Returns recipes scaled according to --multiply or --yield"""
     if args.required_yield is not None:
-        required_yield = RecipeParser.parse_amount(args.required_yield)
+        try:
+            required_yield = RecipeParser.parse_amount(args.required_yield)
+        except:
+            required_yield = None
         if required_yield is None or required_yield.factor is None:
             print(f'Given yield is not valid', file=sys.stderr)
             raise Exit()
@@ -88,7 +91,10 @@ def _process_scaling(r, args):
             print(_make_missing_yield_warning(r, required_yield), file=sys.stderr)
             raise Exit()
     elif args.multiply is not None:
-        multiply = RecipeParser.parse_amount(args.multiply)
+        try:
+            multiply = RecipeParser.parse_amount(args.multiply)
+        except:
+            multiply = None
         if multiply is None or multiply.factor is None:
             print(f'Given multiplier is not valid', file=sys.stderr)
             raise Exit()

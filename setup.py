@@ -6,6 +6,7 @@ tests_require = [
     'pytest==6.2.5',
     'pytest-cov==2.8.1',
     'tox==4.23.2',
+    'jsonschema==4.23.0',
 ]
 
 docs_require = [
