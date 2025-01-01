@@ -157,7 +157,212 @@ An ingredient group us represented as follows:
 
 [heading]: https://spec.commonmark.org/0.28/#atx-heading
 
+## RecipeMD Parsing Strategy
 
+This section presents a parsing strategy for RecipeMD documents. This
+is based on the parsing algorithm used by the reference
+implementation. 
+
+The main algorithm is presented first. 
+
+### Definitions
+
+The following conventions are common to all algorithms.
+
+- Variables are represented as `code`
+- Advance a block `b`: Set `b` to the block after `b`. If `b` is the
+  last block, it will be unset afterwards. 
+- Enter a block `b`: Set `b` to the first child of `b`. This is only
+  defined for [container blocks], and will error otherwise.
+- Leave a block `b`: Set `b` to the parent of `b`. If `b` has no
+  parent, it will be unset afterwards.
+
+[container blocks]: https://spec.commonmark.org/0.31.2/#container-blocks
+
+### Parsing a Recipe
+
+The RecipeMD syntax is described in terms of the [commonmark]
+specification. To parse a recipe, follow this algorithm. The algorithm
+accepts a commonmark document.
+
+1. Let `c` be the first block of the document.
+2. Parse title:
+    - **If** `c` it is a *heading* and has a level of 1:
+      - Assign `c`'s contents to the recipe's title.
+      - Advance `c`.
+    - **Else** abort parsing with an error.
+3. Let `descriptionStart` be the index of the starting line of `c`,
+   let `descriptionEnd` be unset
+4. Parse the description:
+    - **If** `c` is a *paragraph* whose contents are a single
+      *emphasis* or *strong emphasis*, go to 5.
+    - **Else if** `c` is a thematic break, go to 5.
+    - **Else** set `descriptionEnd` to the ending line of `c`, advance
+      `c`.
+5. Set the description:
+    - **If** `descriptionEnd` is unset, keep the description unset.
+    - **Else** set the recipe's description to the the inclusive range
+      of lines between `descriptionStart` and `descriptionEnd` 
+6. Parse tags and yields:
+    - **If** `c` is a *paragraph* whose contents are a single
+      *emphasis*:
+      - **If** the recipe's tags are set, abort parsing with an error
+      - **Else** set the recipe's tags to the contents of the
+        paragraph, split at the comma character (with commas between
+        ASCII digits ignored) and each element stripped from
+        whitespace. 
+      - Advance `c`, go to 6.
+    - **Else if** `c` ia a *paragraph* whose contents are a single
+      *strong emphasis*:
+      - **If** the recipe's yields are set, abort parsing with an
+        error
+      - **Else** set the recipe's yields to the contents of the
+        paragraph, split a the comma character (with commas between
+        ASCII digits ignored), each element stripped from whitespace
+        and parsed as an amount.
+      - Advance `c`, go to 6.
+    - **Else** go to next step.
+7. Find ingredient divider:
+    - **If** `c` is a *thematic break*, advance `c`
+    - **Else** abort parsing with an error.
+8. Parse ingredients and ingredient groups:
+  - **If** `c` is a *heading*: 
+    - Run "Parsing Ingredient Groups" with `c`, `groups` set to the
+      recipe's ingredient groups and `parentLevel` set to -1.
+    - Set `c` to the returned block
+    - Go to 8.
+  - **Else if** `c` is a list item (ordered or unordered)
+    - Run "Parsing an Ingredient List" with `c` and `ingredients` set
+      to the recipe's ingredients.
+    - Go to 8.
+9. Find instruction divider
+    - **If** `c` is a *thematic break*, advance `c`
+10. Set the recipe's instructions to the remainder of the documents
+    contents from `c` to the end of the file.
+    
+
+### Parsing Ingredient Groups
+
+This algorithm accepts a block `c`, a list of ingredients groups
+`groups` and an integer parent level `parentLevel`. It modifies
+`groups` to append the ingredient groups found and returns the current
+block `c`.
+
+1. Examine `c`:
+  - **If** `c` is not a *heading*, return.
+  - **Else**
+    - Let `l` be the heading level of `c`
+    - Check nesting:
+      - **If** `l` is less than or equal to `parentLevel`, return.
+    - Let `g` be an ingredient group with a title equal to the
+      contents of the heading `c`, empty ingredients and empty
+      ingredient groups.
+    - Advance `c`
+    - Run "Parsing an Ingredient List" with `c` and `i` set to the
+      ingredients of `g`.
+    - Run "Parsing Ingredient Groups" with `c`, `groups` set to the
+      ingredient groups of `g` and `parentLevel` set to `l`.
+    - Go to 1.
+
+
+### Parsing an Ingredient List
+
+This algorithm accepts a block `c` and a list of ingredients
+`ingredients`. It modifies `ingredients` to append the ingredients
+found and returns the current block `c`.
+
+1. Examine `c`:
+  - **If** `c` is not the start of a bulleted list of an ordered list,
+    return.
+  - **Else**:
+    - Enter `c`
+2. Collect ingredients:
+  - **If** `c` is a list item:
+    - Run "Parsing an Ingredient" on `c` and append the result to
+      `ingredients`.
+    - Go to next item:
+      - **If** `c` has a following block
+        - Advance `c` and go to 2.
+      - **Else** leave `c`
+
+### Parsing an Ingredient
+
+This algorithm accepts a block `c`. It returns an ingredient `i`:
+
+1. Examine `c`:
+  - **If** `c` is a [list item], enter `c`-
+  - **Else** abort parsing with an error.
+2. Let `a` be the amount, set to unset.
+3. Let `n` be the name, set to an empty string.
+4. Let `l` be a link, set to unset.
+5. Examine `c`:
+  - **If** `c` is not a paragraph, set `n` to the verbatim contents of
+    `c`.
+  - **Else**:
+    - Parse the amount:
+      - **If** `c`'s contents start with an [emphasis] inline:
+        - Run "Parsing an Amount" with `s` set to the emphasis'
+          contents, and set `a` to the result.
+        - Let `r` be the remaining contents of `c` after the emphasis.
+      - **Else**: Let `r` be the verbatim contents of `c`
+    - Parse the link:
+      - **If** `c` is the only child of its containing list item and
+        `c`'s contents consist only of a single [inline link]:
+          - Set `l` to the link's destination.
+          - Set `n` to the link's text.
+      - **Else** set `n` to `r`.
+6. Parse the following blocks of the list item:
+  - **If** `c` has a block following after it:
+    - Advance `c`.
+    - Append `c`'s verbatim contents to `n`.
+    - Go to 6.
+7. Leave `c`
+8. Let `i` be an ingredient with the amount `a`, name `n` and link
+   `l`.
+
+[list item]: https://spec.commonmark.org/0.31.2/#list-items
+[emphasis]: https://spec.commonmark.org/0.31.2/#emphasis-and-strong-emphasis
+[inline link]: https://spec.commonmark.org/0.28/#inline-link
+
+### Parsing an Amount
+
+This algorithm accepts a string `s` and returns an amount or nothing.
+In this algorithm the following conventions are used.
+
+- `w+` represents one or more whitespace characters
+- `w*` represents zero or more whitespace characters
+- `[xy]` represents the set of literal characters enclosed by the
+  brackets, in this case the character "x" or "y"
+
+1. Trim all whitespace at the beginning of `s`
+2. Check for negative
+  - **If** `s` starts with a `"-"` character, let `negative` be true.
+    Remove the `"-"` and trim all whitespace at the beginning of `s`
+  - **Else** let `negative` be false
+3. Let `v` be a number, set it to unset
+  - **If** `s` starts with an improper fraction (`a` `w+` `b` `w*`
+`[/]` `w*` `c`, with `a`, `b`, `c` integers), set `v` to `a` +
+(`b`/`c`).
+  - **Else if** `s` stars with an improper faction using Unicode
+    vulgar fractions (`a` `w+` `b`, with `a` integers and `b` a
+    Unicode vulgar fractions). Set `f` to the numeric value assigned
+    to `b` and `v` to `a` + `f`.
+  - **Else if** `s` starts with a proper fraction (`a` `w*` `[/]` `w*`
+    `b`, with `a`, `b` integers), set `v` to (`a`/`b`).
+  - **Else if** `s` starts with a Unicode vulgar fraction `a`. Set `v`
+    to the numeric value assigned to `a`.
+  - **Else if** `s` starts with a decimal number (`a` `[.,]` `b`, with
+    `a`, `b` integers), set `v` to a decimal number with `a` being its
+    whole and `b` being its fractional part.
+  - **Else if** `s` starts with an integer `a`, set `v` to `a`.
+4. Let `u` be the remainder of `s`, stripped of whitespace. Set `u` to
+   unset if it is the empty string.
+5. Return result:
+  - **If** `v` is set, return an amount the the value `v` and the unit
+    `u`.
+  - **Else if** `u` is set, abort parsing with an error.
+  - **Else** return nothing.
+  
 
 ## Test Cases
 
@@ -195,6 +400,7 @@ either version 3 of the License, or any later version.
   [d-k-bo](https://github.com/d-k-bo) for the [detailed
   report](https://github.com/RecipeMD/RecipeMD/issues/52) on the
   discrepancies.
+- Add a detailed description of a RecipeMD parsing strategy.
 
 
 ### Version 2.3.5 (2022-08-14)
