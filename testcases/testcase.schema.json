@@ -1,0 +1,125 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "RecipeMD Test Case",
+    "type": "object",
+    "required": [
+        "title",
+        "description",
+        "tags",
+        "yields",
+        "ingredients",
+        "ingredient_groups",
+        "instructions"
+    ],
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "description": {
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "yields": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/amount"
+            }
+        },
+        "tags": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "ingredients": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/ingredient"
+            }
+        },
+        "ingredient_groups": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/ingredient_group"
+            }
+        },
+        "instructions": {
+            "type": [
+                "string",
+                "null"
+            ]
+        }
+    },
+    "definitions": {
+        "ingredient": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "amount": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/amount"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "link": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            }
+        },
+        "ingredient_group": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "ingredients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ingredient"
+                    }
+                },
+                "ingredient_groups": {
+                    "type": "array",
+                    "items": [
+                        {
+                            "$ref": "#/definitions/ingredient_group"
+                        }
+                    ]
+                }
+            }
+        },
+        "amount": {
+            "type": [
+                "object"
+            ],
+            "properties": {
+                "factor": {
+                    "type": "string"
+                },
+                "unit": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            }
+        }
+    }
+}

@@ -366,9 +366,13 @@ In this algorithm the following conventions are used.
 
 ## Test Cases
 
-Implementations of this specification must conform with all 
-[test cases]. There are two kinds of test cases: valid files (`*.md` 
-with a corresponding `*.json`) and invalid files (`*.invalid.md`)
+Implementations of this specification must conform with all [test
+cases]. There are two kinds of test cases: valid files (`*.md` with a
+corresponding `*.json`) and invalid files (`*.invalid.md`). 
+
+The format of the JSON files is specified via a JSON schema file
+distributed with the testcases. When comparing the actual to the
+expected results property order in objects should be ignored.
 
 [test cases]: https://github.com/RecipeMD/RecipeMD/tree/master/testcases
 
@@ -401,6 +405,7 @@ either version 3 of the License, or any later version.
   report](https://github.com/RecipeMD/RecipeMD/issues/52) on the
   discrepancies.
 - Add a detailed description of a RecipeMD parsing strategy.
+- Reference new JSON Schema for test case JSON files.
 
 
 ### Version 2.3.5 (2022-08-14)
