@@ -336,7 +336,7 @@ class RecipeParser:
             )
             del self._block_tokens[: first_paragraph_close_index + 1]
             if first_paragraph_open.map:
-                continuation_start_line =  first_paragraph_open.map[1]
+                continuation_start_line = first_paragraph_open.map[1]
 
         end_index = RecipeParser._get_close_index(list_item_open, self._block_tokens)
         list_item_close = self._block_tokens[end_index]
