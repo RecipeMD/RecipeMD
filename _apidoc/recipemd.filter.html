@@ -23,8 +23,9 @@
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -44,7 +45,7 @@ with the <a class="reference internal" href="#recipemd.filter.FilterParser" titl
 module.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="recipemd.filter.FilterParser">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">FilterParser</span></span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L260-L341"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.FilterParser" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">FilterParser</span></span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L260-L341"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.FilterParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Allows parsing filter strings into ASTs</p>
 <dl class="py attribute">
@@ -54,7 +55,7 @@ module.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="recipemd.filter.FilterParser.parse_filter_string">
-<span class="sig-name descname"><span class="pre">parse_filter_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_string</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L267-L280"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.FilterParser.parse_filter_string" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">parse_filter_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_string</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L267-L280"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.FilterParser.parse_filter_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses a filter string into an evaluateable AST.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span> <span class="o">=</span> <span class="n">FilterParser</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span><span class="o">.</span><span class="n">parse_filter_string</span><span class="p">(</span><span class="s1">&#39;vegan and summer&#39;</span><span class="p">)</span>
@@ -95,7 +96,7 @@ module.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="recipemd.filter.FilterBuilder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">FilterBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L382-L431"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.FilterBuilder" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">FilterBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L382-L431"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.FilterBuilder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterTermBuilder</span></code></p>
 <p>Creates filter expressions in code</p>
 <p>Allows using a language similar to the expressions parsed by <cite>recipemd.filter.FilterParser</cite> directly in python code.
@@ -175,7 +176,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="recipemd.filter.BooleanAndOperation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">BooleanAndOperation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operands</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L207-L222"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanAndOperation" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">BooleanAndOperation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operands</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L207-L222"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanAndOperation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BooleanBinaryOperation</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -184,7 +185,7 @@ This makes filters usable as an embedded domain specific language.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="recipemd.filter.BooleanAndOperation.evaluate">
-<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L209-L210"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanAndOperation.evaluate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L209-L210"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanAndOperation.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate filter against given recipe</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -200,7 +201,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="recipemd.filter.BooleanOrOperation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">BooleanOrOperation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operands</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L225-L236"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanOrOperation" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">BooleanOrOperation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operands</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L225-L236"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanOrOperation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BooleanBinaryOperation</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -209,7 +210,7 @@ This makes filters usable as an embedded domain specific language.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="recipemd.filter.BooleanOrOperation.evaluate">
-<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L227-L228"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanOrOperation.evaluate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L227-L228"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanOrOperation.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate filter against given recipe</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -225,7 +226,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="recipemd.filter.BooleanNotOperation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">BooleanNotOperation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operands</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L198-L204"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanNotOperation" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">BooleanNotOperation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operands</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L198-L204"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanNotOperation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BooleanUnaryOperation</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -234,7 +235,7 @@ This makes filters usable as an embedded domain specific language.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="recipemd.filter.BooleanNotOperation.evaluate">
-<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L200-L201"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanNotOperation.evaluate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L200-L201"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanNotOperation.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate filter against given recipe</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -250,7 +251,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="recipemd.filter.BooleanXorOperation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">BooleanXorOperation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operands</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L239-L252"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanXorOperation" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">BooleanXorOperation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operands</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L239-L252"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanXorOperation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BooleanBinaryOperation</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -264,7 +265,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="recipemd.filter.BooleanXorOperation.evaluate">
-<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L243-L244"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanXorOperation.evaluate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L243-L244"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.BooleanXorOperation.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate filter against given recipe</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -280,7 +281,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="recipemd.filter.AnyFilterTerm">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">AnyFilterTerm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_string</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L172-L176"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.AnyFilterTerm" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">AnyFilterTerm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_string</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L172-L176"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.AnyFilterTerm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#recipemd.filter.IngredientFilterTerm" title="recipemd.filter.IngredientFilterTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">IngredientFilterTerm</span></code></a>, <a class="reference internal" href="#recipemd.filter.TagFilterTerm" title="recipemd.filter.TagFilterTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">TagFilterTerm</span></code></a>, <a class="reference internal" href="#recipemd.filter.UnitFilterTerm" title="recipemd.filter.UnitFilterTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnitFilterTerm</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -289,7 +290,7 @@ This makes filters usable as an embedded domain specific language.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="recipemd.filter.AnyFilterTerm.evaluate">
-<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L174-L176"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.AnyFilterTerm.evaluate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L174-L176"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.AnyFilterTerm.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate filter against given recipe</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -305,7 +306,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="recipemd.filter.TagFilterTerm">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">TagFilterTerm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_string</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L151-L154"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.TagFilterTerm" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">TagFilterTerm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_string</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L151-L154"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.TagFilterTerm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FilterTerm</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -314,7 +315,7 @@ This makes filters usable as an embedded domain specific language.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="recipemd.filter.TagFilterTerm.evaluate">
-<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L153-L154"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.TagFilterTerm.evaluate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L153-L154"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.TagFilterTerm.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate filter against given recipe</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -330,7 +331,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="recipemd.filter.IngredientFilterTerm">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">IngredientFilterTerm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_string</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L157-L161"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.IngredientFilterTerm" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">IngredientFilterTerm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_string</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L157-L161"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.IngredientFilterTerm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FilterTerm</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -339,7 +340,7 @@ This makes filters usable as an embedded domain specific language.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="recipemd.filter.IngredientFilterTerm.evaluate">
-<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L159-L161"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.IngredientFilterTerm.evaluate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L159-L161"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.IngredientFilterTerm.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate filter against given recipe</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -355,7 +356,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="recipemd.filter.UnitFilterTerm">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">UnitFilterTerm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_string</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L164-L169"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.UnitFilterTerm" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">UnitFilterTerm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_string</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L164-L169"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.UnitFilterTerm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FilterTerm</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -364,7 +365,7 @@ This makes filters usable as an embedded domain specific language.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="recipemd.filter.UnitFilterTerm.evaluate">
-<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L166-L169"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.UnitFilterTerm.evaluate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L166-L169"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.UnitFilterTerm.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate filter against given recipe</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -380,7 +381,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="recipemd.filter.FuzzyFilterString">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">FuzzyFilterString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L96-L106"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.FuzzyFilterString" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">FuzzyFilterString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L96-L106"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.FuzzyFilterString" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterString</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -394,7 +395,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="recipemd.filter.FuzzyFilterString.contained_in">
-<span class="sig-name descname"><span class="pre">contained_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_search</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L104-L106"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.FuzzyFilterString.contained_in" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">contained_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_search</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L104-L106"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.FuzzyFilterString.contained_in" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if any of the elements in <cite>to_search</cite> match the filter string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -410,7 +411,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="recipemd.filter.ExactFilterString">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">ExactFilterString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L109-L119"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.ExactFilterString" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">ExactFilterString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L109-L119"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.ExactFilterString" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterString</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -424,7 +425,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="recipemd.filter.ExactFilterString.contained_in">
-<span class="sig-name descname"><span class="pre">contained_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_search</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L117-L119"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.ExactFilterString.contained_in" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">contained_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_search</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L117-L119"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.ExactFilterString.contained_in" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if any of the elements in <cite>to_search</cite> match the filter string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -440,7 +441,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="recipemd.filter.RegexFilterString">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">RegexFilterString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regex</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L122-L131"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.RegexFilterString" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipemd.filter.</span></span><span class="sig-name descname"><span class="pre">RegexFilterString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regex</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L122-L131"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.RegexFilterString" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_FilterString</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -454,7 +455,7 @@ This makes filters usable as an embedded domain specific language.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="recipemd.filter.RegexFilterString.contained_in">
-<span class="sig-name descname"><span class="pre">contained_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_search</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/tstehr/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L130-L131"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.RegexFilterString.contained_in" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">contained_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_search</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/RecipeMD/RecipeMD/blob/gh-pages-source/recipemd/filter.py#L130-L131"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipemd.filter.RegexFilterString.contained_in" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if any of the elements in <cite>to_search</cite> match the filter string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -479,7 +480,7 @@ This makes filters usable as an embedded domain specific language.</p>
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../index.html">
-    <img class="logo" src="../_static/recipemd-mark.svg" alt="Logo"/>
+    <img class="logo" src="../_static/recipemd-mark.svg" alt="Logo" />
     
     <h1 class="logo logo-name">RecipeMD</h1>
     
@@ -543,7 +544,7 @@ This makes filters usable as an embedded domain specific language.</p>
     
     
     <h3>Edit this page</h3>
-    <a class="github-edit" href="https://github.com/tstehr/recipemd/edit/master/docs/_apidoc/recipemd.filter.rst">
+    <a class="github-edit" href="https://github.com/RecipeMD/recipemd/edit/master/docs/_apidoc/recipemd.filter.rst">
         <img src="../_static/github_logo.png" class="inlinelogo" />
         Edit on GitHub
     </a>
@@ -554,11 +555,11 @@ This makes filters usable as an embedded domain specific language.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019, Tilman Stehr and contributors.
+      &#169;2025, Tilman Stehr and contributors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 5.1.1</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="../_sources/_apidoc/recipemd.filter.rst.txt"
@@ -566,8 +567,8 @@ This makes filters usable as an embedded domain specific language.</p>
     </div>
 
     
-    <a href="https://github.com/tstehr/recipemd" class="github">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    <a href="https://github.com/RecipeMD/recipemd" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
     </a>
     
 

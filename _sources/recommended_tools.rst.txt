@@ -56,4 +56,4 @@ GitLab Markdown Viewer
 Other Tools
 -----------
 
-If you use any other tools with RecipeMD recipes, we'd like to include them here. Please `send a pull request <https://github.com/tstehr/recipemd/edit/master/docs/recommended_tools.rst>`_ or `open an issue <https://github.com/tstehr/recipemd/issues>`_ to add to this page.
+If you use any other tools with RecipeMD recipes, we'd like to include them here. Please `send a pull request <https://github.com/RecipeMD/RecipeMD/edit/master/docs/recommended_tools.rst>`_ or `open an issue <https://github.com/RecipeMD/RecipeMD/issues>`_ to add to this page.
