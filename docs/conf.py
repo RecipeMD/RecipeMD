@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath('../recipemd'))
 # -- Project information -----------------------------------------------------
 
 project = 'RecipeMD'
-copyright = '2019, Tilman Stehr and contributors'
+copyright = '2025, Tilman Stehr and contributors'
 author = 'Tilman Stehr and contributors'
 
 # The full version, including alpha/beta/rc tags
