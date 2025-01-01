@@ -293,9 +293,9 @@ class RecipeParser:
             if self._block_tokens and (self._block_tokens[0].type == "bullet_list_open" or self._block_tokens[0].type == "ordered_list_open"):
                 self._parse_ingredient_list(group.ingredients)
 
-            ingredient_groups.append(group)
-
             self._parse_ingredient_groups(group.ingredient_groups, parent_level=level)
+
+            ingredient_groups.append(group)
 
     def _parse_ingredient_list(self, ingredients: List['Ingredient']):
         while self._block_tokens and (
