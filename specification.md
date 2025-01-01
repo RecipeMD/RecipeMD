@@ -61,7 +61,7 @@ with salt, pepper and lemon juice.
 
 
 
-## RecipeMD Data types
+## RecipeMD Data Types
 
 ### Recipe
 
@@ -69,26 +69,26 @@ A *valid* recipe consists of:
 
 - a title
 - *optional*: a short description
-- *optional*: 1..n tags
-- *optional*: 1..n yields
-- the ingredients as 1..n ingredient groups
+- 0..n tags
+- 0..n yields
+- ingredients:
+  - ungrouped ingredients as 0..n ingredients
+  - grouped ingredients as 0..n ingredient groups
 - *optional*: instructions
 
 A recipe is represented in markdown as follows:
 
 1. Title as a first level heading
 2. Short description as zero or more paragraphs
-3. Yield and Tags (arbitrary order):
+3. Yield and Tags (arbitrary order, both optional):
     - Tags as a single paragraph which is completely in italics. Tags 
       are a comma separated list of strings.
     - Yields as a single paragraph which is completely in bold. Yields 
       are a comma separated list of amounts. Note the rules about 
       commas in amounts.
 5. a horizontal line
-6. the ingredients, consisting of
-    1. *optional*: headings to group ingredients
-    2. lists, where each list item is an ingredient
-7. a horizontal line -- this may be omitted if there are no 
+6. the ingredients
+7. a horizontal line -- this may be omitted if there are no
    instructions
 8. *optional*: the instructions, everything following the second line
 
@@ -142,14 +142,20 @@ An ingredient group is a group of related ingredients, e.g. the
 ingredients making up one component of a dish. It consists of:
 
 - *optional* a title
-- 1..n ingredients
+- 0..n ingredients
+- 0..n ingredients groups
 
 An ingredient group us represented as follows:
 
 1. A [heading], whose contents are the group's title
-2. A list of ingredients
+2. A list of ingredients (can be skipped)
+3. A group may have child groups: Groups directly following a group
+   are considered children of that group if their initial heading has
+   a lower level than the original group. Heading levels are
+   determined by their corresponding HTML heading, with `<h1>` being
+   the highest heading level and `<h6>` the lowest.
 
-[heading]: https://spec.commonmark.org/0.28/#atx-headings
+[heading]: https://spec.commonmark.org/0.28/#atx-heading
 
 
 
@@ -183,7 +189,13 @@ either version 3 of the License, or any later version.
   organization.
 - Fix test cases that included amounts with no factor.
   - These were always invalid according to the spec, but the reference
-    incorrectly accepted them
+    implementation incorrectly accepted them.
+- Update data type definitions to align with the test cases and the
+  reference implementation. Many thanks to
+  [d-k-bo](https://github.com/d-k-bo) for the [detailed
+  report](https://github.com/RecipeMD/RecipeMD/issues/52) on the
+  discrepancies.
+
 
 ### Version 2.3.5 (2022-08-14)
 
