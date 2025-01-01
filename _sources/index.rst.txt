@@ -53,7 +53,7 @@ Some RecipeMD repositories:
 * `mist <https://github.com/mist/recipes>`_
 * `p3tr0sh <https://github.com/p3tr0sh/recipes>`_
 * `rixx <https://github.com/rixx/recipes.rixx.de>`_
-* `RecipeMD <https://github.com/RecipeMD/recipes>`_
+* `tstehr <https://github.com/tstehr/recipes>`_
 
 
 License
@@ -67,6 +67,7 @@ License as published by the Free Software Foundation, either version 3 of the Li
 
    Home <self>
    Specification <specification>
+   Implementations <implementations>
    Python Implementation <reference_implementation>
    Recommended Tools <recommended_tools>
 
