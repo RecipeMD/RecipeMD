@@ -8,6 +8,7 @@ The `recipemd` package uses [semantic versioning](https://semver.org).
 - *Breaking*: Disallow amounts without a factor.
   - These were always invalid according to the spec, but the reference
     implementation incorrectly accepted them until now.
+- *Breaking*: Drop support for Python 3.7.
 
 ## Version 4.1.0 (2022-08-14)
 
