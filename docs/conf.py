@@ -136,7 +136,7 @@ def linkcode_resolve(domain, info):
     except:
         branch = "master"
 
-    return f"https://github.com/tstehr/RecipeMD/blob/{branch}/recipemd/{fn}{linespec}"
+    return f"https://github.com/RecipeMD/RecipeMD/blob/{branch}/recipemd/{fn}{linespec}"
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -174,7 +174,7 @@ html_theme_options = {
     'logo_name': True,
     'logo_text_align': 'center',
     'fixed_sidebar': False,
-    'github_user': 'tstehr',
+    'github_user': 'RecipeMD',
     'github_repo': 'recipemd',
     'github_banner': True,
     'github_button': False,

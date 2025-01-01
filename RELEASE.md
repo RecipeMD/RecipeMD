@@ -13,4 +13,4 @@
 
 6. Upload release to pypi with `twine upload --username <username> dist/*`
 
-6. Create a new release [on Github](https://github.com/tstehr/RecipeMD/releases/new). Attach the release files, and put the changelog for the new version in the description.
+6. Create a new release [on Github](https://github.com/RecipeMD/RecipeMD/releases/new). Attach the release files, and put the changelog for the new version in the description.

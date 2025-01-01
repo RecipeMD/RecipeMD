@@ -159,7 +159,7 @@ Implementations of this specification must conform with all
 [test cases]. There are two kinds of test cases: valid files (`*.md` 
 with a corresponding `*.json`) and invalid files (`*.invalid.md`)
 
-[test cases]: https://github.com/tstehr/RecipeMD/tree/master/testcases
+[test cases]: https://github.com/RecipeMD/RecipeMD/tree/master/testcases
 
 
 

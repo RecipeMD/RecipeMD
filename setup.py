@@ -70,6 +70,6 @@ setuptools.setup(
     ],
     project_urls={
         'Documentation': 'https://recipemd.org/reference_implementation.html',
-        'Source': 'https://github.com/tstehr/recipemd',
+        'Source': 'https://github.com/RecipeMD/RecipeMD',
     },
 )

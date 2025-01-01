@@ -14,20 +14,20 @@ Quick Start
 -----------
 
 1. Install the tool: ``pip install recipemd`` (optionally you can also :ref:`install shell completions<install_completions>`)
-2. Look at some `example recipes <https://github.com/tstehr/RecipeMD/tree/master/examples>`_ or start with a
-   `recipe template <https://github.com/tstehr/RecipeMD/tree/master/examples/template.md>`_ to create your own recipes
+2. Look at some `example recipes <https://github.com/RecipeMD/RecipeMD/tree/master/examples>`_ or start with a
+   `recipe template <https://github.com/RecipeMD/RecipeMD/tree/master/examples/template.md>`_ to create your own recipes
 3. Learn how to use the CLI tool with some :ref:`example calls <cli_examples>`
 
 Specification
 -------------
 
 We provide a  :doc:`specification <specification>` for RecipeMD so other tools can use the format. The specification
-also comes with a set of `test cases <https://github.com/tstehr/RecipeMD/tree/master/testcases>`_.
+also comes with a set of `test cases <https://github.com/RecipeMD/RecipeMD/tree/master/testcases>`_.
 
 Contributing
 ------------
 
-You can take part in RecipeMD's development in our `GitHub repository <https://github.com/tstehr/RecipeMD>`_.
+You can take part in RecipeMD's development in our `GitHub repository <https://github.com/RecipeMD/RecipeMD>`_.
 
 Resources
 ---------

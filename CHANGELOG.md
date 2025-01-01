@@ -75,7 +75,7 @@ The `recipemd` package uses [semantic versioning](https://semver.org).
 ## Version 4.0.0 (2019-12-18)
 
 - *Breaking*: Create separate lists of ingredients and ingredients groups in `Recipe` and `IngredientGroup`. This 
-  ensures that ingredients groups always follow after ingredients (see https://github.com/tstehr/RecipeMD/issues/6)
+  ensures that ingredients groups always follow after ingredients (see https://github.com/RecipeMD/RecipeMD/issues/6)
 - Improve error message when trying to flatten a linked recipe and no matching yield can be found.
 - License under LGPL
 

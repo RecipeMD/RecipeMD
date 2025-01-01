@@ -9,7 +9,7 @@ More info on our website: [recipemd.org](https://recipemd.org)
 
 <p>&nbsp;</p>
 
-<a href="https://recipemd.org/"><img src="https://raw.githubusercontent.com/tstehr/RecipeMD/master/logo/recipemd-mark.png" style="float:right; margin-left:5em"></a>
+<a href="https://recipemd.org/"><img src="https://raw.githubusercontent.com/RecipeMD/RecipeMD/master/logo/recipemd-mark.png" style="float:right; margin-left:5em"></a>
 
 ## License
 
