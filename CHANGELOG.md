@@ -4,11 +4,13 @@ The `recipemd` package uses [semantic versioning](https://semver.org).
 
 ## Version 5.0.0 (Unreleased)
 
-- This release support version 2.3.6 of the RecipeMD specification.
+- This release support version 2.4.0 of the RecipeMD specification.
 - *Breaking*: Disallow amounts without a factor.
   - These were always invalid according to the spec, but the reference
     implementation incorrectly accepted them until now.
 - *Breaking*: Drop support for Python 3.7.
+- *Breaking*: Change the `title` field of `IngredientGroup` from
+  optional to mandatory. 
 
 ## Version 4.1.0 (2022-08-14)
 

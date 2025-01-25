@@ -42,7 +42,10 @@ class IngredientList:
 @dataclass_json
 @dataclass(frozen=True)
 class IngredientGroup(IngredientList):
-    title: Optional[str] = None
+    # This needs to have a default value. It inherits from IngredientList, which has default values for its fields. In the
+    # generated dataclass constructor this field comes after the parent fields and fields without a default value need to precede
+    # fields without one. We just use empty string here, the value is always overwritten during parse. 
+    title: str = ""
 
 
 @dataclass_json
