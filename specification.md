@@ -148,7 +148,8 @@ ingredients making up one component of a dish. It consists of:
 An ingredient group us represented as follows:
 
 1. A [heading], whose contents are the group's title
-2. A list of ingredients (can be skipped)
+2. A list of ingredients (can be skipped). The items of all lists
+   following the heading are treated as ingredients of the group.
 3. A group may have child groups: Groups directly following a group
    are considered children of that group if their initial heading has
    a lower level than the original group. Heading levels are
@@ -283,7 +284,7 @@ found and returns the current block `c`.
     - Go to next item:
       - **If** `c` has a following block
         - Advance `c` and go to 2.
-      - **Else** leave `c`
+      - **Else** leave `c` and go to 1.
 
 ### Parsing an Ingredient
 
@@ -394,16 +395,19 @@ either version 3 of the License, or any later version.
 
 ### Version 2.4.0 (Unreleased)
 
+This spec version mostly contains clarifications for previously
+undefined behavior and fixes of inconsistencies. Many thanks to
+  [d-k-bo](https://github.com/d-k-bo) for the [detailed
+  report](https://github.com/RecipeMD/RecipeMD/issues/52) on these
+  that lead to this release!
+
 - Update link to test cases to point to the new "RecipeMD" GitHub
   organization.
 - Fix test cases that included amounts with no factor.
   - These were always invalid according to the spec, but the reference
     implementation incorrectly accepted them.
 - Update data type definitions to align with the test cases and the
-  reference implementation. Many thanks to
-  [d-k-bo](https://github.com/d-k-bo) for the [detailed
-  report](https://github.com/RecipeMD/RecipeMD/issues/52) on the
-  discrepancies.
+  reference implementation. 
 - Add a detailed description of a RecipeMD parsing strategy.
 - Reference new JSON Schema for test case JSON files.
 - Specify the *title*  of an *ingredient group* as a non-optional
@@ -415,6 +419,8 @@ either version 3 of the License, or any later version.
       however be a breaking change for implementations, since it
       changes the interface of the *ingredient group*  data type in a
       way that may not be backwards compatible. 
+- Clarify the behavior of multiple lists following an ingredient group
+  heading.
 
 
 ### Version 2.3.5 (2022-08-14)
