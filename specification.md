@@ -141,7 +141,7 @@ An ingredient is represented as follows:
 An ingredient group is a group of related ingredients, e.g. the
 ingredients making up one component of a dish. It consists of:
 
-- *optional* a title
+- a title
 - 0..n ingredients
 - 0..n ingredients groups
 
@@ -406,6 +406,15 @@ either version 3 of the License, or any later version.
   discrepancies.
 - Add a detailed description of a RecipeMD parsing strategy.
 - Reference new JSON Schema for test case JSON files.
+- Specify the *title*  of an *ingredient group* as a non-optional
+  field.
+    - The parsing algorithm never allowed the creation of groups
+      without a *title*, but the field was marked as optional in the
+      data type description.
+    - This will not change the parsing behavior of any recipes. It may
+      however be a breaking change for implementations, since it
+      changes the interface of the *ingredient group*  data type in a
+      way that may not be backwards compatible. 
 
 
 ### Version 2.3.5 (2022-08-14)
