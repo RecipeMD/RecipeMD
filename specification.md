@@ -1,6 +1,6 @@
 # RecipeMD Specification
 
-This is version 2.3.6 of the RecipeMD specification.
+This is version 2.4.0 of the RecipeMD specification.
 
 RecipeMD is a Markdown-based format for writing down recipes. It 
 defines a certain structure which a document must follow to be a 
@@ -392,7 +392,7 @@ either version 3 of the License, or any later version.
 
 ## Version History
 
-### Version 2.3.6 (Unreleased)
+### Version 2.4.0 (Unreleased)
 
 - Update link to test cases to point to the new "RecipeMD" GitHub
   organization.
