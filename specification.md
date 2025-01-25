@@ -84,13 +84,17 @@ A recipe is represented in markdown as follows:
     - Tags as a single paragraph which is completely in italics. Tags 
       are a comma separated list of strings.
     - Yields as a single paragraph which is completely in bold. Yields 
-      are a comma separated list of amounts. Note the rules about 
-      commas in amounts.
+      are a comma separated list of amounts.
 5. a horizontal line
 6. the ingredients
 7. a horizontal line -- this may be omitted if there are no
    instructions
 8. *optional*: the instructions, everything following the second line
+
+Note that for the comma separated lists, a comma is not treated as a
+list divider if the characters directly before and after are
+numerical. This is to allow amounts with a comma as a decimal divider
+to appear in lists.
 
 ### Amount
 
@@ -109,10 +113,6 @@ An amount is represented as follows:
 2. A unit which is just everything following the number
 
 [unicode vulgar fractions]: http://unicode.org/cldr/utility/list-unicodeset.jsp?a=[:Decomposition_Type=Fraction:]
-
-Note that when an amount is inside of a comma separated list, a comma
-is treated as a decimal divider if the characters directly before and
-after are numerical and as a list divider otherwise.
 
 ### Ingredient
 
@@ -421,6 +421,8 @@ undefined behavior and fixes of inconsistencies. Many thanks to
       way that may not be backwards compatible. 
 - Clarify the behavior of multiple lists following an ingredient group
   heading.
+- Clarify that the comma splitting algorithm is to be used for tags as
+  well as for yields.
 
 
 ### Version 2.3.5 (2022-08-14)
