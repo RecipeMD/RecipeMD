@@ -42,22 +42,17 @@ class IngredientList:
 @dataclass_json
 @dataclass(frozen=True)
 class IngredientGroup(IngredientList):
-    title: Optional[str] = None
+    # This needs to have a default value. It inherits from IngredientList, which has default values for its fields. In the
+    # generated dataclass constructor this field comes after the parent fields and fields without a default value need to precede
+    # fields without one. We just use empty string here, the value is always overwritten during parse. 
+    title: str = ""
 
 
 @dataclass_json
 @dataclass(frozen=True)
 class Amount:
-    factor: Optional[Decimal] = field(
-        default=None,
-        # decoder is workaround for https://github.com/lidatong/dataclasses-json/issues/137
-        metadata=config(decoder=lambda val: Decimal(val) if val is not None else None)
-    )
+    factor: Decimal
     unit: Optional[str] = None
-
-    def __post_init__(self):
-        if self.factor is None and self.unit is None:
-            raise TypeError(f"Factor and unit may not both be None")
 
 
 @dataclass_json
@@ -112,12 +107,9 @@ class RecipeSerializer:
 
     @staticmethod
     def _serialize_amount(amount: Amount, *, rounding: Optional[int] = None):
-        if amount.factor is not None and amount.unit is not None:
-            return f'{RecipeSerializer._normalize_factor(amount.factor, rounding=rounding)} {amount.unit}'
-        if amount.factor is not None:
-            return f'{RecipeSerializer._normalize_factor(amount.factor, rounding=rounding)}'
         if amount.unit is not None:
-            return f'{amount.unit}'
+            return f'{RecipeSerializer._normalize_factor(amount.factor, rounding=rounding)} {amount.unit}'
+        return f'{RecipeSerializer._normalize_factor(amount.factor, rounding=rounding)}'
 
     @staticmethod
     def _normalize_factor(factor: Decimal, *, rounding: Optional[int]=None):
@@ -304,9 +296,9 @@ class RecipeParser:
             if self._block_tokens and (self._block_tokens[0].type == "bullet_list_open" or self._block_tokens[0].type == "ordered_list_open"):
                 self._parse_ingredient_list(group.ingredients)
 
-            ingredient_groups.append(group)
-
             self._parse_ingredient_groups(group.ingredient_groups, parent_level=level)
+
+            ingredient_groups.append(group)
 
     def _parse_ingredient_list(self, ingredients: List['Ingredient']):
         while self._block_tokens and (
@@ -336,7 +328,7 @@ class RecipeParser:
             )
             del self._block_tokens[: first_paragraph_close_index + 1]
             if first_paragraph_open.map:
-                continuation_start_line =  first_paragraph_open.map[1]
+                continuation_start_line = first_paragraph_open.map[1]
 
         end_index = RecipeParser._get_close_index(list_item_open, self._block_tokens)
         list_item_close = self._block_tokens[end_index]
@@ -416,7 +408,10 @@ class RecipeParser:
                 return Amount(factor, unit or None)
             
         unit = amount_str.strip()
-        return Amount(None, unit) if unit else None
+        if unit:
+            raise RuntimeError("Amount must start with a number")
+
+        return None
 
     def _peek_emph_paragraph(self) -> Optional[Tuple[Union[Literal['em_open'], Literal['strong_open']], str]]:
         if (

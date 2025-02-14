@@ -82,10 +82,10 @@
           "link": null
         },
         {
-          "name": "amount is valid without factor",
+          "name": "amount is valid without unit",
           "amount": {
-            "factor": null,
-            "unit": "hey"
+            "factor": "1",
+            "unit": null
           },
           "link": null
         }

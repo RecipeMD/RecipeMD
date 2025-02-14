@@ -1,0 +1,52 @@
+{
+  "ingredients": [
+    {
+      "name": "ingredient 0",
+      "amount": null,
+      "link": null
+    }
+  ],
+  "ingredient_groups": [
+    {
+      "ingredients": [
+        {
+          "name": "ingredient 1",
+          "amount": null,
+          "link": null
+        },
+        {
+          "name": "ingredient 2",
+          "amount": null,
+          "link": null
+        },
+        {
+          "name": "ingredient 3 (2nd list, ingredients go into same group)",
+          "amount": null,
+          "link": null
+        },
+        {
+          "name": "ingredient 4",
+          "amount": null,
+          "link": null
+        },
+        {
+          "name": "ingredient 5 (3nd list, ingredients go into same group)",
+          "amount": null,
+          "link": null
+        },
+        {
+          "name": "ingredient 6",
+          "amount": null,
+          "link": null
+        }
+      ],
+      "ingredient_groups": [],
+      "title": "Group 1"
+    }
+  ],
+  "title": "Recipe with ingredient groups with multiple lists",
+  "description": null,
+  "yields": [],
+  "tags": [],
+  "instructions": null
+}
