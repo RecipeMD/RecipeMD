@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>RecipeMD Specification &#8212; RecipeMD 4.1.0 documentation</title>
+    <title>RecipeMD Specification &#8212; RecipeMD 5.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -39,7 +39,7 @@
             
   <section id="recipemd-specification">
 <h1>RecipeMD Specification<a class="headerlink" href="#recipemd-specification" title="Permalink to this heading">¶</a></h1>
-<p>This is version 2.3.2 of the RecipeMD specification.</p>
+<p>This is version 2.4.0 of the RecipeMD specification.</p>
 <p>RecipeMD is a Markdown-based format for writing down recipes. It
 defines a certain structure which a document must follow to be a
 RecipeMD recipe.</p>
@@ -92,42 +92,45 @@ instructions</p></li>
 </ul>
 </section>
 <section id="recipemd-data-types">
-<h2>RecipeMD Data types<a class="headerlink" href="#recipemd-data-types" title="Permalink to this heading">¶</a></h2>
+<h2>RecipeMD Data Types<a class="headerlink" href="#recipemd-data-types" title="Permalink to this heading">¶</a></h2>
 <section id="recipe">
 <h3>Recipe<a class="headerlink" href="#recipe" title="Permalink to this heading">¶</a></h3>
 <p>A <em>valid</em> recipe consists of:</p>
 <ul class="simple">
 <li><p>a title</p></li>
 <li><p><em>optional</em>: a short description</p></li>
-<li><p><em>optional</em>: 1..n tags</p></li>
-<li><p><em>optional</em>: 1..n yields</p></li>
-<li><p>the ingredients as 1..n ingredient groups</p></li>
+<li><p>0..n tags</p></li>
+<li><p>0..n yields</p></li>
+<li><p>ingredients:</p>
+<ul>
+<li><p>ungrouped ingredients as 0..n ingredients</p></li>
+<li><p>grouped ingredients as 0..n ingredient groups</p></li>
+</ul>
+</li>
 <li><p><em>optional</em>: instructions</p></li>
 </ul>
 <p>A recipe is represented in markdown as follows:</p>
 <ol class="arabic simple">
 <li><p>Title as a first level heading</p></li>
 <li><p>Short description as zero or more paragraphs</p></li>
-<li><p>Yield and Tags (arbitrary order):</p>
+<li><p>Yield and Tags (arbitrary order, both optional):</p>
 <ul class="simple">
 <li><p>Tags as a single paragraph which is completely in italics. Tags
 are a comma separated list of strings.</p></li>
 <li><p>Yields as a single paragraph which is completely in bold. Yields
-are a comma separated list of amounts. Note the rules about
-commas in amounts.</p></li>
+are a comma separated list of amounts.</p></li>
 </ul>
 </li>
 <li><p>a horizontal line</p></li>
-<li><p>the ingredients, consisting of</p>
-<ol class="arabic simple">
-<li><p><em>optional</em>: headings to group ingredients</p></li>
-<li><p>lists, where each list item is an ingredient</p></li>
-</ol>
-</li>
+<li><p>the ingredients</p></li>
 <li><p>a horizontal line – this may be omitted if there are no
 instructions</p></li>
 <li><p><em>optional</em>: the instructions, everything following the second line</p></li>
 </ol>
+<p>Note that for the comma separated lists, a comma is not treated as a
+list divider if the characters directly before and after are
+numerical. This is to allow amounts with a comma as a decimal divider
+to appear in lists.</p>
 </section>
 <section id="amount">
 <h3>Amount<a class="headerlink" href="#amount" title="Permalink to this heading">¶</a></h3>
@@ -148,9 +151,6 @@ instructions</p></li>
 </li>
 <li><p>A unit which is just everything following the number</p></li>
 </ol>
-<p>Note that when an amount is inside of a comma separated list, a comma
-is treated as a decimal divider if the characters directly before and
-after are numerical and as a list divider otherwise.</p>
 </section>
 <section id="ingredient">
 <h3>Ingredient<a class="headerlink" href="#ingredient" title="Permalink to this heading">¶</a></h3>
@@ -179,21 +179,334 @@ specifies a resource that contains a recipe for the ingredient</p></li>
 <p>An ingredient group is a group of related ingredients, e.g. the
 ingredients making up one component of a dish. It consists of:</p>
 <ul class="simple">
-<li><p><em>optional</em> a title</p></li>
-<li><p>1..n ingredients</p></li>
+<li><p>a title</p></li>
+<li><p>0..n ingredients</p></li>
+<li><p>0..n ingredients groups</p></li>
 </ul>
 <p>An ingredient group us represented as follows:</p>
 <ol class="arabic simple">
-<li><p>A <a class="reference external" href="https://spec.commonmark.org/0.28/#atx-headings">heading</a>, whose contents are the group’s title</p></li>
-<li><p>A list of ingredients</p></li>
+<li><p>A <a class="reference external" href="https://spec.commonmark.org/0.28/#atx-heading">heading</a>, whose contents are the group’s title</p></li>
+<li><p>A list of ingredients (can be skipped). The items of all lists
+following the heading are treated as ingredients of the group.</p></li>
+<li><p>A group may have child groups: Groups directly following a group
+are considered children of that group if their initial heading has
+a lower level than the original group. Heading levels are
+determined by their corresponding HTML heading, with <code class="docutils literal notranslate"><span class="pre">&lt;h1&gt;</span></code> being
+the highest heading level and <code class="docutils literal notranslate"><span class="pre">&lt;h6&gt;</span></code> the lowest.</p></li>
+</ol>
+</section>
+</section>
+<section id="recipemd-parsing-strategy">
+<h2>RecipeMD Parsing Strategy<a class="headerlink" href="#recipemd-parsing-strategy" title="Permalink to this heading">¶</a></h2>
+<p>This section presents a parsing strategy for RecipeMD documents. This
+is based on the parsing algorithm used by the reference
+implementation.</p>
+<p>The main algorithm is presented first.</p>
+<section id="definitions">
+<h3>Definitions<a class="headerlink" href="#definitions" title="Permalink to this heading">¶</a></h3>
+<p>The following conventions are common to all algorithms.</p>
+<ul class="simple">
+<li><p>Variables are represented as <code class="docutils literal notranslate"><span class="pre">code</span></code></p></li>
+<li><p>Advance a block <code class="docutils literal notranslate"><span class="pre">b</span></code>: Set <code class="docutils literal notranslate"><span class="pre">b</span></code> to the block after <code class="docutils literal notranslate"><span class="pre">b</span></code>. If <code class="docutils literal notranslate"><span class="pre">b</span></code> is the
+last block, it will be unset afterwards.</p></li>
+<li><p>Enter a block <code class="docutils literal notranslate"><span class="pre">b</span></code>: Set <code class="docutils literal notranslate"><span class="pre">b</span></code> to the first child of <code class="docutils literal notranslate"><span class="pre">b</span></code>. This is only
+defined for <a class="reference external" href="https://spec.commonmark.org/0.31.2/#container-blocks">container blocks</a>, and will error otherwise.</p></li>
+<li><p>Leave a block <code class="docutils literal notranslate"><span class="pre">b</span></code>: Set <code class="docutils literal notranslate"><span class="pre">b</span></code> to the parent of <code class="docutils literal notranslate"><span class="pre">b</span></code>. If <code class="docutils literal notranslate"><span class="pre">b</span></code> has no
+parent, it will be unset afterwards.</p></li>
+</ul>
+</section>
+<section id="parsing-a-recipe">
+<h3>Parsing a Recipe<a class="headerlink" href="#parsing-a-recipe" title="Permalink to this heading">¶</a></h3>
+<p>The RecipeMD syntax is described in terms of the <a class="reference external" href="https://commonmark.org">commonmark</a>
+specification. To parse a recipe, follow this algorithm. The algorithm
+accepts a commonmark document.</p>
+<ol class="arabic simple">
+<li><p>Let <code class="docutils literal notranslate"><span class="pre">c</span></code> be the first block of the document.</p></li>
+<li><p>Parse title:</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> it is a <em>heading</em> and has a level of 1:</p>
+<ul>
+<li><p>Assign <code class="docutils literal notranslate"><span class="pre">c</span></code>‘s contents to the recipe’s title.</p></li>
+<li><p>Advance <code class="docutils literal notranslate"><span class="pre">c</span></code>.</p></li>
+</ul>
+</li>
+<li><p><strong>Else</strong> abort parsing with an error.</p></li>
+</ul>
+</li>
+<li><p>Let <code class="docutils literal notranslate"><span class="pre">descriptionStart</span></code> be the index of the starting line of <code class="docutils literal notranslate"><span class="pre">c</span></code>,
+let <code class="docutils literal notranslate"><span class="pre">descriptionEnd</span></code> be unset</p></li>
+<li><p>Parse the description:</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> is a <em>paragraph</em> whose contents are a single
+<em>emphasis</em> or <em>strong emphasis</em>, go to 5.</p></li>
+<li><p><strong>Else if</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> is a thematic break, go to 5.</p></li>
+<li><p><strong>Else</strong> set <code class="docutils literal notranslate"><span class="pre">descriptionEnd</span></code> to the ending line of <code class="docutils literal notranslate"><span class="pre">c</span></code>, advance
+<code class="docutils literal notranslate"><span class="pre">c</span></code>.</p></li>
+</ul>
+</li>
+<li><p>Set the description:</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">descriptionEnd</span></code> is unset, keep the description unset.</p></li>
+<li><p><strong>Else</strong> set the recipe’s description to the the inclusive range
+of lines between <code class="docutils literal notranslate"><span class="pre">descriptionStart</span></code> and <code class="docutils literal notranslate"><span class="pre">descriptionEnd</span></code></p></li>
+</ul>
+</li>
+<li><p>Parse tags and yields:</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> is a <em>paragraph</em> whose contents are a single
+<em>emphasis</em>:</p>
+<ul>
+<li><p><strong>If</strong> the recipe’s tags are set, abort parsing with an error</p></li>
+<li><p><strong>Else</strong> set the recipe’s tags to the contents of the
+paragraph, split at the comma character (with commas between
+ASCII digits ignored) and each element stripped from
+whitespace.</p></li>
+<li><p>Advance <code class="docutils literal notranslate"><span class="pre">c</span></code>, go to 6.</p></li>
+</ul>
+</li>
+<li><p><strong>Else if</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> ia a <em>paragraph</em> whose contents are a single
+<em>strong emphasis</em>:</p>
+<ul>
+<li><p><strong>If</strong> the recipe’s yields are set, abort parsing with an
+error</p></li>
+<li><p><strong>Else</strong> set the recipe’s yields to the contents of the
+paragraph, split a the comma character (with commas between
+ASCII digits ignored), each element stripped from whitespace
+and parsed as an amount.</p></li>
+<li><p>Advance <code class="docutils literal notranslate"><span class="pre">c</span></code>, go to 6.</p></li>
+</ul>
+</li>
+<li><p><strong>Else</strong> go to next step.</p></li>
+</ul>
+</li>
+<li><p>Find ingredient divider:</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> is a <em>thematic break</em>, advance <code class="docutils literal notranslate"><span class="pre">c</span></code></p></li>
+<li><p><strong>Else</strong> abort parsing with an error.</p></li>
+</ul>
+</li>
+<li><p>Parse ingredients and ingredient groups:</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> is a <em>heading</em>:</p>
+<ul>
+<li><p>Run “Parsing Ingredient Groups” with <code class="docutils literal notranslate"><span class="pre">c</span></code>, <code class="docutils literal notranslate"><span class="pre">groups</span></code> set to the
+recipe’s ingredient groups and <code class="docutils literal notranslate"><span class="pre">parentLevel</span></code> set to -1.</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">c</span></code> to the returned block</p></li>
+<li><p>Go to 8.</p></li>
+</ul>
+</li>
+<li><p><strong>Else if</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> is a list item (ordered or unordered)</p>
+<ul>
+<li><p>Run “Parsing an Ingredient List” with <code class="docutils literal notranslate"><span class="pre">c</span></code> and <code class="docutils literal notranslate"><span class="pre">ingredients</span></code> set
+to the recipe’s ingredients.</p></li>
+<li><p>Go to 8.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Find instruction divider</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> is a <em>thematic break</em>, advance <code class="docutils literal notranslate"><span class="pre">c</span></code></p></li>
+</ul>
+</li>
+<li><p>Set the recipe’s instructions to the remainder of the documents
+contents from <code class="docutils literal notranslate"><span class="pre">c</span></code> to the end of the file.</p></li>
+</ol>
+</section>
+<section id="parsing-ingredient-groups">
+<h3>Parsing Ingredient Groups<a class="headerlink" href="#parsing-ingredient-groups" title="Permalink to this heading">¶</a></h3>
+<p>This algorithm accepts a block <code class="docutils literal notranslate"><span class="pre">c</span></code>, a list of ingredients groups
+<code class="docutils literal notranslate"><span class="pre">groups</span></code> and an integer parent level <code class="docutils literal notranslate"><span class="pre">parentLevel</span></code>. It modifies
+<code class="docutils literal notranslate"><span class="pre">groups</span></code> to append the ingredient groups found and returns the current
+block <code class="docutils literal notranslate"><span class="pre">c</span></code>.</p>
+<ol class="arabic simple">
+<li><p>Examine <code class="docutils literal notranslate"><span class="pre">c</span></code>:</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> is not a <em>heading</em>, return.</p></li>
+<li><p><strong>Else</strong></p>
+<ul>
+<li><p>Let <code class="docutils literal notranslate"><span class="pre">l</span></code> be the heading level of <code class="docutils literal notranslate"><span class="pre">c</span></code></p></li>
+<li><p>Check nesting:</p>
+<ul>
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">l</span></code> is less than or equal to <code class="docutils literal notranslate"><span class="pre">parentLevel</span></code>, return.</p></li>
+</ul>
+</li>
+<li><p>Let <code class="docutils literal notranslate"><span class="pre">g</span></code> be an ingredient group with a title equal to the
+contents of the heading <code class="docutils literal notranslate"><span class="pre">c</span></code>, empty ingredients and empty
+ingredient groups.</p></li>
+<li><p>Advance <code class="docutils literal notranslate"><span class="pre">c</span></code></p></li>
+<li><p>Run “Parsing an Ingredient List” with <code class="docutils literal notranslate"><span class="pre">c</span></code> and <code class="docutils literal notranslate"><span class="pre">i</span></code> set to the
+ingredients of <code class="docutils literal notranslate"><span class="pre">g</span></code>.</p></li>
+<li><p>Run “Parsing Ingredient Groups” with <code class="docutils literal notranslate"><span class="pre">c</span></code>, <code class="docutils literal notranslate"><span class="pre">groups</span></code> set to the
+ingredient groups of <code class="docutils literal notranslate"><span class="pre">g</span></code> and <code class="docutils literal notranslate"><span class="pre">parentLevel</span></code> set to <code class="docutils literal notranslate"><span class="pre">l</span></code>.</p></li>
+<li><p>Go to 1.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="parsing-an-ingredient-list">
+<h3>Parsing an Ingredient List<a class="headerlink" href="#parsing-an-ingredient-list" title="Permalink to this heading">¶</a></h3>
+<p>This algorithm accepts a block <code class="docutils literal notranslate"><span class="pre">c</span></code> and a list of ingredients
+<code class="docutils literal notranslate"><span class="pre">ingredients</span></code>. It modifies <code class="docutils literal notranslate"><span class="pre">ingredients</span></code> to append the ingredients
+found and returns the current block <code class="docutils literal notranslate"><span class="pre">c</span></code>.</p>
+<ol class="arabic simple">
+<li><p>Examine <code class="docutils literal notranslate"><span class="pre">c</span></code>:</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> is not the start of a bulleted list of an ordered list,
+return.</p></li>
+<li><p><strong>Else</strong>:</p>
+<ul>
+<li><p>Enter <code class="docutils literal notranslate"><span class="pre">c</span></code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Collect ingredients:</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> is a list item:</p>
+<ul>
+<li><p>Run “Parsing an Ingredient” on <code class="docutils literal notranslate"><span class="pre">c</span></code> and append the result to
+<code class="docutils literal notranslate"><span class="pre">ingredients</span></code>.</p></li>
+<li><p>Go to next item:</p>
+<ul>
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> has a following block</p>
+<ul>
+<li><p>Advance <code class="docutils literal notranslate"><span class="pre">c</span></code> and go to 2.</p></li>
+</ul>
+</li>
+<li><p><strong>Else</strong> leave <code class="docutils literal notranslate"><span class="pre">c</span></code> and go to 1.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="parsing-an-ingredient">
+<h3>Parsing an Ingredient<a class="headerlink" href="#parsing-an-ingredient" title="Permalink to this heading">¶</a></h3>
+<p>This algorithm accepts a block <code class="docutils literal notranslate"><span class="pre">c</span></code>. It returns an ingredient <code class="docutils literal notranslate"><span class="pre">i</span></code>:</p>
+<ol class="arabic simple">
+<li><p>Examine <code class="docutils literal notranslate"><span class="pre">c</span></code>:</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> is a <a class="reference external" href="https://spec.commonmark.org/0.31.2/#list-items">list item</a>, enter <code class="docutils literal notranslate"><span class="pre">c</span></code>-</p></li>
+<li><p><strong>Else</strong> abort parsing with an error.</p></li>
+</ul>
+</li>
+<li><p>Let <code class="docutils literal notranslate"><span class="pre">a</span></code> be the amount, set to unset.</p></li>
+<li><p>Let <code class="docutils literal notranslate"><span class="pre">n</span></code> be the name, set to an empty string.</p></li>
+<li><p>Let <code class="docutils literal notranslate"><span class="pre">l</span></code> be a link, set to unset.</p></li>
+<li><p>Examine <code class="docutils literal notranslate"><span class="pre">c</span></code>:</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> is not a paragraph, set <code class="docutils literal notranslate"><span class="pre">n</span></code> to the verbatim contents of
+<code class="docutils literal notranslate"><span class="pre">c</span></code>.</p></li>
+<li><p><strong>Else</strong>:</p>
+<ul>
+<li><p>Parse the amount:</p>
+<ul>
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code>‘s contents start with an <a class="reference external" href="https://spec.commonmark.org/0.31.2/#emphasis-and-strong-emphasis">emphasis</a> inline:</p>
+<ul>
+<li><p>Run “Parsing an Amount” with <code class="docutils literal notranslate"><span class="pre">s</span></code> set to the emphasis’
+contents, and set <code class="docutils literal notranslate"><span class="pre">a</span></code> to the result.</p></li>
+<li><p>Let <code class="docutils literal notranslate"><span class="pre">r</span></code> be the remaining contents of <code class="docutils literal notranslate"><span class="pre">c</span></code> after the emphasis.</p></li>
+</ul>
+</li>
+<li><p><strong>Else</strong>: Let <code class="docutils literal notranslate"><span class="pre">r</span></code> be the verbatim contents of <code class="docutils literal notranslate"><span class="pre">c</span></code></p></li>
+</ul>
+</li>
+<li><p>Parse the link:</p>
+<ul>
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> is the only child of its containing list item and
+<code class="docutils literal notranslate"><span class="pre">c</span></code>‘s contents consist only of a single <a class="reference external" href="https://spec.commonmark.org/0.28/#inline-link">inline link</a>:</p>
+<ul>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">l</span></code> to the link’s destination.</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">n</span></code> to the link’s text.</p></li>
+</ul>
+</li>
+<li><p><strong>Else</strong> set <code class="docutils literal notranslate"><span class="pre">n</span></code> to <code class="docutils literal notranslate"><span class="pre">r</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Parse the following blocks of the list item:</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">c</span></code> has a block following after it:</p>
+<ul>
+<li><p>Advance <code class="docutils literal notranslate"><span class="pre">c</span></code>.</p></li>
+<li><p>Append <code class="docutils literal notranslate"><span class="pre">c</span></code>‘s verbatim contents to <code class="docutils literal notranslate"><span class="pre">n</span></code>.</p></li>
+<li><p>Go to 6.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Leave <code class="docutils literal notranslate"><span class="pre">c</span></code></p></li>
+<li><p>Let <code class="docutils literal notranslate"><span class="pre">i</span></code> be an ingredient with the amount <code class="docutils literal notranslate"><span class="pre">a</span></code>, name <code class="docutils literal notranslate"><span class="pre">n</span></code> and link
+<code class="docutils literal notranslate"><span class="pre">l</span></code>.</p></li>
+</ol>
+</section>
+<section id="parsing-an-amount">
+<h3>Parsing an Amount<a class="headerlink" href="#parsing-an-amount" title="Permalink to this heading">¶</a></h3>
+<p>This algorithm accepts a string <code class="docutils literal notranslate"><span class="pre">s</span></code> and returns an amount or nothing.
+In this algorithm the following conventions are used.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">w+</span></code> represents one or more whitespace characters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">w*</span></code> represents zero or more whitespace characters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[xy]</span></code> represents the set of literal characters enclosed by the
+brackets, in this case the character “x” or “y”</p></li>
+</ul>
+<ol class="arabic simple">
+<li><p>Trim all whitespace at the beginning of <code class="docutils literal notranslate"><span class="pre">s</span></code></p></li>
+<li><p>Check for negative</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">s</span></code> starts with a <code class="docutils literal notranslate"><span class="pre">&quot;-&quot;</span></code> character, let <code class="docutils literal notranslate"><span class="pre">negative</span></code> be true.
+Remove the <code class="docutils literal notranslate"><span class="pre">&quot;-&quot;</span></code> and trim all whitespace at the beginning of <code class="docutils literal notranslate"><span class="pre">s</span></code></p></li>
+<li><p><strong>Else</strong> let <code class="docutils literal notranslate"><span class="pre">negative</span></code> be false</p></li>
+</ul>
+</li>
+<li><p>Let <code class="docutils literal notranslate"><span class="pre">v</span></code> be a number, set it to unset</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">s</span></code> starts with an improper fraction (<code class="docutils literal notranslate"><span class="pre">a</span></code> <code class="docutils literal notranslate"><span class="pre">w+</span></code> <code class="docutils literal notranslate"><span class="pre">b</span></code> <code class="docutils literal notranslate"><span class="pre">w*</span></code>
+<code class="docutils literal notranslate"><span class="pre">[/]</span></code> <code class="docutils literal notranslate"><span class="pre">w*</span></code> <code class="docutils literal notranslate"><span class="pre">c</span></code>, with <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code>, <code class="docutils literal notranslate"><span class="pre">c</span></code> integers), set <code class="docutils literal notranslate"><span class="pre">v</span></code> to <code class="docutils literal notranslate"><span class="pre">a</span></code> +
+(<code class="docutils literal notranslate"><span class="pre">b</span></code>/<code class="docutils literal notranslate"><span class="pre">c</span></code>).</p></li>
+<li><p><strong>Else if</strong> <code class="docutils literal notranslate"><span class="pre">s</span></code> stars with an improper faction using Unicode
+vulgar fractions (<code class="docutils literal notranslate"><span class="pre">a</span></code> <code class="docutils literal notranslate"><span class="pre">w+</span></code> <code class="docutils literal notranslate"><span class="pre">b</span></code>, with <code class="docutils literal notranslate"><span class="pre">a</span></code> integers and <code class="docutils literal notranslate"><span class="pre">b</span></code> a
+Unicode vulgar fractions). Set <code class="docutils literal notranslate"><span class="pre">f</span></code> to the numeric value assigned
+to <code class="docutils literal notranslate"><span class="pre">b</span></code> and <code class="docutils literal notranslate"><span class="pre">v</span></code> to <code class="docutils literal notranslate"><span class="pre">a</span></code> + <code class="docutils literal notranslate"><span class="pre">f</span></code>.</p></li>
+<li><p><strong>Else if</strong> <code class="docutils literal notranslate"><span class="pre">s</span></code> starts with a proper fraction (<code class="docutils literal notranslate"><span class="pre">a</span></code> <code class="docutils literal notranslate"><span class="pre">w*</span></code> <code class="docutils literal notranslate"><span class="pre">[/]</span></code> <code class="docutils literal notranslate"><span class="pre">w*</span></code>
+<code class="docutils literal notranslate"><span class="pre">b</span></code>, with <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code> integers), set <code class="docutils literal notranslate"><span class="pre">v</span></code> to (<code class="docutils literal notranslate"><span class="pre">a</span></code>/<code class="docutils literal notranslate"><span class="pre">b</span></code>).</p></li>
+<li><p><strong>Else if</strong> <code class="docutils literal notranslate"><span class="pre">s</span></code> starts with a Unicode vulgar fraction <code class="docutils literal notranslate"><span class="pre">a</span></code>. Set <code class="docutils literal notranslate"><span class="pre">v</span></code>
+to the numeric value assigned to <code class="docutils literal notranslate"><span class="pre">a</span></code>.</p></li>
+<li><p><strong>Else if</strong> <code class="docutils literal notranslate"><span class="pre">s</span></code> starts with a decimal number (<code class="docutils literal notranslate"><span class="pre">a</span></code> <code class="docutils literal notranslate"><span class="pre">[.,]</span></code> <code class="docutils literal notranslate"><span class="pre">b</span></code>, with
+<code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code> integers), set <code class="docutils literal notranslate"><span class="pre">v</span></code> to a decimal number with <code class="docutils literal notranslate"><span class="pre">a</span></code> being its
+whole and <code class="docutils literal notranslate"><span class="pre">b</span></code> being its fractional part.</p></li>
+<li><p><strong>Else if</strong> <code class="docutils literal notranslate"><span class="pre">s</span></code> starts with an integer <code class="docutils literal notranslate"><span class="pre">a</span></code>, set <code class="docutils literal notranslate"><span class="pre">v</span></code> to <code class="docutils literal notranslate"><span class="pre">a</span></code>.</p></li>
+</ul>
+</li>
+<li><p>Let <code class="docutils literal notranslate"><span class="pre">u</span></code> be the remainder of <code class="docutils literal notranslate"><span class="pre">s</span></code>, stripped of whitespace. Set <code class="docutils literal notranslate"><span class="pre">u</span></code> to
+unset if it is the empty string.</p></li>
+<li><p>Return result:</p>
+<ul class="simple">
+<li><p><strong>If</strong> <code class="docutils literal notranslate"><span class="pre">v</span></code> is set, return an amount the the value <code class="docutils literal notranslate"><span class="pre">v</span></code> and the unit
+<code class="docutils literal notranslate"><span class="pre">u</span></code>.</p></li>
+<li><p><strong>Else if</strong> <code class="docutils literal notranslate"><span class="pre">u</span></code> is set, abort parsing with an error.</p></li>
+<li><p><strong>Else</strong> return nothing.</p></li>
+</ul>
+</li>
 </ol>
 </section>
 </section>
 <section id="test-cases">
 <h2>Test Cases<a class="headerlink" href="#test-cases" title="Permalink to this heading">¶</a></h2>
-<p>Implementations of this specification must conform with all
-<a class="reference external" href="https://github.com/RecipeMD/RecipeMD/tree/master/testcases">test cases</a>. There are two kinds of test cases: valid files (<code class="docutils literal notranslate"><span class="pre">*.md</span></code>
-with a corresponding <code class="docutils literal notranslate"><span class="pre">*.json</span></code>) and invalid files (<code class="docutils literal notranslate"><span class="pre">*.invalid.md</span></code>)</p>
+<p>Implementations of this specification must conform with all <a class="reference external" href="https://github.com/RecipeMD/RecipeMD/tree/master/testcases">test
+cases</a>. There are two kinds of test cases: valid files (<code class="docutils literal notranslate"><span class="pre">*.md</span></code> with a
+corresponding <code class="docutils literal notranslate"><span class="pre">*.json</span></code>) and invalid files (<code class="docutils literal notranslate"><span class="pre">*.invalid.md</span></code>).</p>
+<p>The format of the JSON files is specified via a JSON schema file
+distributed with the testcases. When comparing the actual to the
+expected results property order in objects should be ignored.</p>
 </section>
 <section id="authors-licensing">
 <h2>Authors Licensing<a class="headerlink" href="#authors-licensing" title="Permalink to this heading">¶</a></h2>
@@ -205,6 +518,46 @@ either version 3 of the License, or any later version.</p>
 </section>
 <section id="version-history">
 <h2>Version History<a class="headerlink" href="#version-history" title="Permalink to this heading">¶</a></h2>
+<section id="version-2-4-0-2024-02-14">
+<h3>Version 2.4.0 (2024-02-14)<a class="headerlink" href="#version-2-4-0-2024-02-14" title="Permalink to this heading">¶</a></h3>
+<p>This spec version mostly contains clarifications for previously
+undefined behavior and fixes of inconsistencies. Many thanks to</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/d-k-bo">d-k-bo</a> for the <a class="reference external" href="https://github.com/RecipeMD/RecipeMD/issues/52">detailed
+report</a> on these
+that lead to this release!</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Update link to test cases to point to the new “RecipeMD” GitHub
+organization.</p></li>
+<li><p>Fix test cases that included amounts with no factor.</p>
+<ul>
+<li><p>These were always invalid according to the spec, but the reference
+implementation incorrectly accepted them.</p></li>
+</ul>
+</li>
+<li><p>Update data type definitions to align with the test cases and the
+reference implementation.</p></li>
+<li><p>Add a detailed description of a RecipeMD parsing strategy.</p></li>
+<li><p>Reference new JSON Schema for test case JSON files.</p></li>
+<li><p>Specify the <em>title</em>  of an <em>ingredient group</em> as a non-optional
+field.</p>
+<ul>
+<li><p>The parsing algorithm never allowed the creation of groups
+without a <em>title</em>, but the field was marked as optional in the
+data type description.</p></li>
+<li><p>This will not change the parsing behavior of any recipes. It may
+however be a breaking change for implementations, since it
+changes the interface of the <em>ingredient group</em>  data type in a
+way that may not be backwards compatible.</p></li>
+</ul>
+</li>
+<li><p>Clarify the behavior of multiple lists following an ingredient group
+heading.</p></li>
+<li><p>Clarify that the comma splitting algorithm is to be used for tags as
+well as for yields.</p></li>
+</ul>
+</section>
 <section id="version-2-3-5-2022-08-14">
 <h3>Version 2.3.5 (2022-08-14)<a class="headerlink" href="#version-2-3-5-2022-08-14" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
@@ -274,27 +627,27 @@ either version 3 of the License, or any later version.</p>
 <li><p>Allow recipes to reference other recipes</p></li>
 </ul>
 </section>
-<section id="id2">
-<h3>2.1.0 (2019-03-25)<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+<section id="id4">
+<h3>2.1.0 (2019-03-25)<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Allow unicode vulgar fractions in ingredient amounts</p></li>
 </ul>
 </section>
-<section id="id3">
-<h3>2.0.1 (2018-09-17)<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<section id="id5">
+<h3>2.0.1 (2018-09-17)<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Reword specification</p></li>
 <li><p>Clarify edge cases</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>2.0.0 (2018-09-13)<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+<section id="id6">
+<h3>2.0.0 (2018-09-13)<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><em>Breaking:</em> Seperate yields and tags into own paragraphs</p></li>
 </ul>
 </section>
-<section id="id5">
-<h3>1.0.0 (2018-08-26)<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
+<section id="id7">
+<h3>1.0.0 (2018-08-26)<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Initial version</p></li>
 </ul>
@@ -332,16 +685,26 @@ either version 3 of the License, or any later version.</p>
 <li class="toctree-l1"><a class="reference internal" href="index.html">Home</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Specification</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#recipemd-data-types">RecipeMD Data types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#recipemd-data-types">RecipeMD Data Types</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#recipe">Recipe</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#amount">Amount</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ingredient">Ingredient</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ingredient-group">Ingredient Group</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#recipemd-parsing-strategy">RecipeMD Parsing Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#definitions">Definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parsing-a-recipe">Parsing a Recipe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parsing-ingredient-groups">Parsing Ingredient Groups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parsing-an-ingredient-list">Parsing an Ingredient List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parsing-an-ingredient">Parsing an Ingredient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parsing-an-amount">Parsing an Amount</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#test-cases">Test Cases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#authors-licensing">Authors Licensing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-history">Version History</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#version-2-4-0-2024-02-14">Version 2.4.0 (2024-02-14)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-2-3-5-2022-08-14">Version 2.3.5 (2022-08-14)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-2-3-4-2021-12-26">Version 2.3.4 (2021-12-26)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-2-3-3-2021-01-02">Version 2.3.3 (2021-01-02)</a></li>
@@ -349,10 +712,10 @@ either version 3 of the License, or any later version.</p>
 <li class="toctree-l3"><a class="reference internal" href="#version-2-3-1-2019-11-18">Version 2.3.1 (2019-11-18)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-2-3-0-2019-11-18">Version 2.3.0 (2019-11-18)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-2-2-0-2019-04-22">Version 2.2.0 (2019-04-22)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id2">2.1.0 (2019-03-25)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">2.0.1 (2018-09-17)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">2.0.0 (2018-09-13)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id5">1.0.0 (2018-08-26)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">2.1.0 (2019-03-25)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">2.0.1 (2018-09-17)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">2.0.0 (2018-09-13)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">1.0.0 (2018-08-26)</a></li>
 </ul>
 </li>
 </ul>
