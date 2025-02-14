@@ -393,7 +393,7 @@ either version 3 of the License, or any later version.
 
 ## Version History
 
-### Version 2.4.0 (Unreleased)
+### Version 2.4.0 (2024-02-14)
 
 This spec version mostly contains clarifications for previously
 undefined behavior and fixes of inconsistencies. Many thanks to
