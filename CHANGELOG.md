@@ -2,7 +2,7 @@
 
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
-## Version 5.0.0 (Unreleased)
+## Version 5.0.0 (2025-02-14)
 
 - This release support version 2.4.0 of the RecipeMD specification.
 - *Breaking*: Disallow amounts without a factor.
