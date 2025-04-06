@@ -63,6 +63,12 @@ class DisplayUnit:
     min: Optional[Decimal] = None
     max: Optional[Decimal] = None
 
+    only_if_matching_source_unit: bool = False
+    '''
+    When converting for display (human consumption) purposes, use this conversion only if the source is in the same unit. This
+    allows you to keep the authored unit for small values, where it makes sense (e.g. 3 Tbsp instead of 45ml) but the standard
+    unit for larger values (e.g. 450 ml instead of 30 Tbsp).'''
+
 
 @dataclass_json
 @dataclass(frozen=True)
@@ -128,6 +134,9 @@ class Quantity:
         return unit
 
     def _is_applicable(self, display_unit: DisplayUnit, amount: 'data.Amount') -> bool:
+        unit = self._get_unit(amount.unit)
+        if display_unit.only_if_matching_source_unit and not display_unit.unit_name in unit.names:
+            return False
         min_base_factor = self._get_base_factor(display_unit.min, display_unit.unit_name, Decimal('-Infinity'))
         max_base_factor = self._get_base_factor(display_unit.max, display_unit.unit_name, Decimal('Infinity'))
         try:
