@@ -182,12 +182,12 @@ class UnitSystem(AbstractContextManager, ContextDecorator):
     >>> amount2 < amount3
     True
 
-    Amounts can only be compared if they belong to the same unit system.
+    Amounts with different units can only be compared if they belong to the same unit system.
 
-    >>> amount1 < amount2
+    >>> amount1 < amount3
     Traceback (most recent call last):
     ...
-    ValueError: Can't compare amounts that use different unit systems
+    ValueError: Can't perform this operation on amounts that use different unit systems
 
     Instead of specifying the unit system in an amount's constructor every time, you can make a UnitSystem active by using it as a
     `ContextManager <https://www.python.org/dev/peps/pep-0343/>`_. All amounts created in the context will be associated with the
