@@ -8,11 +8,14 @@ import unicodedata
 from dataclasses import dataclass, field, replace
 from decimal import Decimal
 from typing import Callable, Generator, List, Optional, Tuple, TypeVar, Union
+from functools import total_ordering
 
 from dataclasses_json import config, dataclass_json
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
 from typing_extensions import Literal
+
+import recipemd.units
 
 __all__ = ['RecipeParser', 'RecipeSerializer', 'multiply_recipe', 'get_recipe_with_yield',
            'Recipe', 'Ingredient', 'IngredientGroup', 'Amount', 'IngredientList']
@@ -57,6 +60,12 @@ class IngredientGroup(IngredientList):
     title: str = ""
 
 
+def _get_current_unit_system() -> Optional['recipemd.units.UnitSystem']:
+    # fqn to avoid circular import
+    return recipemd.units.get_current_unit_system()
+
+
+@total_ordering
 @dataclass_json
 @dataclass(frozen=True)
 class Amount:
@@ -65,6 +74,46 @@ class Amount:
     """
     factor: Decimal
     unit: Optional[str] = None
+    unit_system: Optional['recipemd.units.UnitSystem'] = field(
+        default_factory=_get_current_unit_system, repr=False,
+        metadata=config(
+            exclude=lambda *_: True
+        )
+    )
+
+    def __hash__(self):
+        # The api contract for __hash__ states that hashable objects which compare equal must have the same hash value. Since
+        # amounts that convert to the same base amount compare equals, we can fulfil that by always hashing the base amount.
+        self_base = self._get_base_amount_if_possible()
+        return hash((self_base.factor, self_base.unit))
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Amount):
+            return NotImplemented
+        if self.unit_system != other.unit_system:
+            return False
+        self_base = self._get_base_amount_if_possible()
+        other_base = other._get_base_amount_if_possible()
+        return (self_base.factor, self_base.unit) == (other_base.factor, other_base.unit)
+
+    def __lt__(self, other):
+        if not isinstance(other, Amount):
+            return NotImplemented
+        if self.unit_system != other.unit_system:
+            raise ValueError("Can't compare amounts that use different unit systems")
+        self_base = self._get_base_amount_if_possible()
+        other_base = other._get_base_amount_if_possible()
+        if self_base.unit != other_base.unit:
+            raise ValueError(f'Can\'t convert unit "{other.unit}" to unit "{self.unit}"')
+        return self_base.factor < other_base.factor
+
+    def _get_base_amount_if_possible(self) -> 'Amount':
+        if not self.unit_system:
+            return self
+        try:
+            return self.unit_system.convert_to_base(self)
+        except recipemd.units.UnitConversionError:
+            return self
 
 
 @dataclass_json
