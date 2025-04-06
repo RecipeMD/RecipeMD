@@ -100,6 +100,14 @@ class Amount:
         if self.unit_system is None:
            return self
         return self.unit_system.normalize_unit(self)
+    
+    def is_identical(self, other: 'Amount') -> bool:
+        """
+        Checks if the given amount is identical to the current amount.
+
+        In contrast to ``==`` this checks for exact equality, without any unit conversion.
+        """
+        return self.factor == other.factor and self.unit == other.unit and self.unit_system == other.unit_system
 
     def __hash__(self):
         # The api contract for __hash__ states that hashable objects which compare equal must have the same hash value. Since
