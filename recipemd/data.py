@@ -3,6 +3,7 @@ Defines the RecipeMD data structures, provides parser, serializer and recipe sca
 """
 #from __future__ import annotations
 
+from numbers import Number
 import re
 import unicodedata
 from dataclasses import dataclass, field, replace
@@ -79,6 +80,35 @@ def _get_current_unit_system() -> Optional['recipemd.units.UnitSystem']:
 class Amount:
     """
     Represents an amount, which is a factor with an associated unit.
+
+    Amount implements math operators, allowing calculations and comparisons on amounts with the same unit:
+
+    >>> Amount(Decimal('0.15'), 'l') + Amount(Decimal('1'), 'l')
+    Amount(factor=Decimal('1.15'), unit='l')
+
+    Calculations for units with different amounts are not possible when the amount is not associated with a
+    :class:`recipemd.units.UnitSystem`:
+
+    >>> Amount(Decimal('150'), 'ml') + Amount(Decimal('1'), 'l')
+    Traceback (most recent call last):
+    ...
+    ValueError: Can't perform this operation on amounts without a unit system
+
+    Associating with a unit system that allows conversion between amount's units makes calculations on the amounts possible.
+
+    >>> from recipemd.units import UnitSystem, Quantity, Unit, DisplayUnit
+    >>> unit_system = UnitSystem(quantities=[
+    ...     Quantity(
+    ...         base_unit=Unit('l', Decimal('1')),
+    ...         alternative_units=[Unit('ml', Decimal('1000'))],
+    ...         display_units=[],
+    ...     ),
+    ... ])
+    ...
+    >>> with unit_system:
+    ...     Amount(Decimal('150'), 'ml') + Amount(Decimal('1'), 'l')
+    Amount(factor=Decimal('1150'), unit='ml')
+
     """
     factor: Decimal
     unit: Optional[str] = None
@@ -141,13 +171,102 @@ class Amount:
     def __lt__(self, other):
         if not isinstance(other, Amount):
             return NotImplemented
+        (self_base, other_base) = self._convert_to_base(other)
+        return self_base.factor < other_base.factor
+    
+    def __add__(self, other):
+        if not isinstance(other, Amount):
+            if self.unit is not None:
+                return NotImplemented
+            other_decimal = self._convert_to_decimal(other)
+            if other_decimal is None:
+                return NotImplemented
+            return replace(self, factor=self.factor + other_decimal)
+        other_in_self_unit = self._convert_to_self_unit(other)
+        return replace(self, factor=self.factor + other_in_self_unit.factor)
+
+    def __sub__(self, other):
+        if not isinstance(other, Amount):
+            if self.unit is not None:
+                return NotImplemented
+            other_decimal = self._convert_to_decimal(other)
+            if other_decimal is None:
+                return NotImplemented
+            return replace(self, factor=self.factor - other_decimal)
+        other_in_self_unit = self._convert_to_self_unit(other)
+        result = replace(self, factor=self.factor - other_in_self_unit.factor)
+        return result
+
+    def __mul__(self, other):
+        if isinstance(other, Amount):
+            if self.unit is not None and other.unit is not None:
+                raise ValueError("Can't multiply two Amounts with units.")
+            elif self.unit is not None:
+                result = replace(self, factor=self.factor * other.factor)
+            elif other.unit is not None:
+                result = replace(other, factor=self.factor * other.factor)
+            else:                
+                result = replace(self, factor=self.factor * other.factor)
+        else:
+            other_decimal = self._convert_to_decimal(other)
+            if other_decimal is None:
+                return NotImplemented
+            result = replace(self, factor=self.factor * other_decimal)
+        return result
+
+    def __truediv__(self, other):
+        if isinstance(other, Amount):
+            if other.unit is None:
+                result = replace(self, factor=self.factor / other.factor)
+            else:
+                (self_base, other_base) = self._convert_to_base(other)
+                result = Amount(factor=self_base.factor / other_base.factor)
+        else:
+            other_decimal = self._convert_to_decimal(other)
+            if other_decimal is None:
+                return NotImplemented
+            result = replace(self, factor=self.factor / other_decimal)
+        return result
+
+    def __mod__(self, other):
+        result = replace(self, factor=self.factor % other)
+        return result
+
+    def __rmul__(self, other):
+        return self * other
+    
+    def _convert_to_self_unit(self, other: 'Amount'):
+        if self.unit == other.unit:
+            return other
         if self.unit_system != other.unit_system:
-            raise ValueError("Can't compare amounts that use different unit systems")
+            raise ValueError("Can't perform this operation on amounts that use different unit systems")
+        if self.unit is None:
+            raise ValueError("Can't perform this operation on amounts without a unit")
+        if other.unit_system is None:
+            raise ValueError("Can't perform this operation on amounts without a unit system")
+        try:
+            other_in_self_unit = other.in_unit(self.unit)
+        except recipemd.units.UnitConversionError:
+            raise ValueError(f'Can\'t convert unit "{other.unit}" to unit "{self.unit}"')
+        return other_in_self_unit
+
+    def _convert_to_decimal(self, other):
+        if isinstance(other, Decimal):
+            return other
+        if isinstance(other, float) or isinstance(other, int):
+            return Decimal(other)
+        return None
+
+    def _convert_to_base(self, other: 'Amount'):
+        if self.unit == other.unit:
+            return (self, other)
+        if self.unit_system != other.unit_system:
+            raise ValueError("Can't perform this operation on amounts that use different unit systems")
         self_base = self._get_base_amount_if_possible()
         other_base = other._get_base_amount_if_possible()
         if self_base.unit != other_base.unit:
             raise ValueError(f'Can\'t convert unit "{other.unit}" to unit "{self.unit}"')
-        return self_base.factor < other_base.factor
+        return (self_base, other_base)
 
     def _get_base_amount_if_possible(self) -> 'Amount':
         if not self.unit_system:

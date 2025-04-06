@@ -229,10 +229,12 @@ class TestAmount:
             assert Amount(Decimal('2000'), 'ml').in_unit('l').is_identical(Amount(Decimal('2'), 'l'))
 
     def test_operators_comparison(self, unit_system):
-        assert not Amount(Decimal('20'), 'ml', unit_system=unit_system) == Amount(Decimal('20'), 'ml')
+        assert Amount(Decimal('20'), 'ml') == Amount(Decimal('20'), 'ml')
+        assert Amount(Decimal('15'), 'ml') < Amount(Decimal('20'), 'ml')
 
+        assert not Amount(Decimal('20'), 'ml', unit_system=unit_system) == Amount(Decimal('20'), 'ml')
         with pytest.raises(ValueError):
-            Amount(Decimal('20'), 'ml', unit_system=unit_system) < Amount(Decimal('20'), 'ml') # type: ignore
+            Amount(Decimal('20'), 'ml', unit_system=unit_system) < Amount(Decimal('1'), 'l') # type: ignore
 
         with unit_system:            
             assert Amount(Decimal('20'), 'ml') == Amount(Decimal('20'), 'ml')
@@ -261,6 +263,131 @@ class TestAmount:
             left = RecipeParser.parse_amount(left)
             right = RecipeParser.parse_amount(right)
             assert relation(left, right)
+
+           
+    def test_operator_add(self, unit_system):
+        assert Amount(Decimal('20')) + Amount(Decimal('20')) == Amount(Decimal('40'))
+        assert Amount(Decimal('20')) + 20 == Amount(Decimal('40'))
+        assert Amount(Decimal('20')) + 20.0 == Amount(Decimal('40'))
+
+        assert Amount(Decimal('200'), 'ml') + Amount(Decimal('150'), 'ml') == Amount(Decimal('350'), 'ml')
+
+        with pytest.raises(ValueError):
+            Amount(Decimal('20'), 'cl') + Amount(Decimal('150'), 'ml') # type: ignore
+
+        with pytest.raises(ValueError):
+            Amount(Decimal('20'), 'cl', unit_system=unit_system) + Amount(Decimal('150'), 'ml') # type: ignore
+
+        with pytest.raises(ValueError):
+            Amount(Decimal('20')) + Amount(Decimal('150'), 'ml') # type: ignore
+
+        with pytest.raises(TypeError):
+            assert Amount(Decimal('20')) + "2" # type: ignore
+
+        with pytest.raises(TypeError):
+            assert Amount(Decimal('20'), 'cl') + 20 # type: ignore
+
+        with unit_system:
+            result1 = Amount(Decimal('20'), 'cl') + Amount(Decimal('150'), 'ml')
+            assert result1.is_identical(Amount(Decimal('35'), 'cl'))
+
+            result2 = Amount(Decimal('150'), 'ml') + Amount(Decimal('20'), 'cl')
+            assert result2.is_identical(Amount(Decimal('350'), 'ml'))
+
+            with pytest.raises(ValueError):
+                Amount(Decimal('20'), 'cl') + Amount(Decimal('150'), 'g') # type: ignore
+
+    def test_operator_sub(self, unit_system):
+        assert Amount(Decimal('20')) - Amount(Decimal('20')) == Amount(Decimal('0'))
+        assert Amount(Decimal('20')) - Decimal('20') == Amount(Decimal('0'))
+        assert Amount(Decimal('20')) - 20 == Amount(Decimal('0'))
+        assert Amount(Decimal('20')) - 20.0 == Amount(Decimal('0'))
+
+        assert Amount(Decimal('200'), 'ml') - Amount(Decimal('150'), 'ml') == Amount(Decimal('50'), 'ml')
+
+        with pytest.raises(ValueError):
+            Amount(Decimal('20'), 'cl') - Amount(Decimal('150'), 'ml') # type: ignore
+
+        with pytest.raises(TypeError):
+            assert Amount(Decimal('20')) - "2" # type: ignore
+
+        with pytest.raises(TypeError):
+            assert Amount(Decimal('20'), 'cl') - 20 # type: ignore
+
+        with unit_system:   
+            result1 = Amount(Decimal('20'), 'cl') - Amount(Decimal('150'), 'ml')
+            assert result1.is_identical(Amount(Decimal('5'), 'cl'))
+
+            result2 = Amount(Decimal('200'), 'ml') - Amount(Decimal('15'), 'cl')
+            assert result2.is_identical(Amount(Decimal('50'), 'ml'))
+
+            with pytest.raises(ValueError):
+                Amount(Decimal('20'), 'cl') - Amount(Decimal('150'), 'g') # type: ignore
+
+    def test_operator_mul(self, unit_system):
+        assert Amount(Decimal('6')) * Amount(Decimal('6')) == Amount(Decimal('36'))
+
+        assert Amount(Decimal('20'), 'cl') * 6 == Amount(Decimal('120'), 'cl')
+        assert 6 * Amount(Decimal('20'), 'cl') == Amount(Decimal('120'), 'cl')
+
+        assert Amount(Decimal('20'), 'cl') * 6.0 == Amount(Decimal('120'), 'cl')
+        assert 6.0 * Amount(Decimal('20'), 'cl') == Amount(Decimal('120'), 'cl')
+
+        assert Amount(Decimal('20'), 'cl') * Decimal('6') == Amount(Decimal('120'), 'cl')
+        assert Decimal('6') * Amount(Decimal('20'), 'cl') == Amount(Decimal('120'), 'cl')
+
+        assert Amount(Decimal('20'), 'cl') * Amount(Decimal('6')) == Amount(Decimal('120'), 'cl')
+        assert Amount(Decimal('6')) * Amount(Decimal('20'), 'cl') == Amount(Decimal('120'), 'cl')
+
+        with pytest.raises(ValueError):
+            Amount(Decimal('20'), 'cl') * Amount(Decimal('20'), 'cl') # type: ignore
+
+        with pytest.raises(TypeError):
+            assert Amount(Decimal('20')) * "2" # type: ignore
+
+        with unit_system:
+            result1 = Amount(Decimal('20'), 'cl') * 6
+            assert result1.is_identical(Amount(Decimal('120'), 'cl'))
+            assert result1.unit == 'cl'
+            
+            result2 = 6 * Amount(Decimal('20'), 'cl')
+            assert result2.is_identical(Amount(Decimal('120'), 'cl'))
+
+            assert Amount(Decimal('20'), 'cl') * 6.0 == Amount(Decimal('120'), 'cl')
+            assert 6.0 * Amount(Decimal('20'), 'cl') == Amount(Decimal('120'), 'cl')
+
+            assert Amount(Decimal('20'), 'cl') * Decimal('6') == Amount(Decimal('120'), 'cl')
+            assert Decimal('6') * Amount(Decimal('20'), 'cl') == Amount(Decimal('120'), 'cl')
+
+            assert Amount(Decimal('20'), 'cl') * Amount(Decimal('6')) == Amount(Decimal('120'), 'cl')
+            assert Amount(Decimal('6')) * Amount(Decimal('20'), 'cl') == Amount(Decimal('120'), 'cl')
+
+            with pytest.raises(ValueError):
+                Amount(Decimal('20'), 'cl') * Amount(Decimal('20'), 'cl') # type: ignore
+
+    def test_operator_truediv(self, unit_system):
+        assert Amount(Decimal('20'), 'cl') / Amount(Decimal('10'), 'cl') == Amount(Decimal('2'))
+
+        assert Amount(Decimal('20'), 'cl') / Amount(Decimal('10')) == Amount(Decimal('2'), unit='cl')
+        assert Amount(Decimal('20'), 'cl') / 10 == Amount(Decimal('2'), unit='cl')
+        assert Amount(Decimal('20'), 'cl') / 10.0 == Amount(Decimal('2'), unit='cl')
+
+        with pytest.raises(ValueError):
+            Amount(Decimal('20'), 'cl') / Amount(Decimal('20'), 'ml') # type: ignore
+
+        with pytest.raises(TypeError):
+            assert Amount(Decimal('20')) / "2" # type: ignore
+
+        with unit_system:
+            assert Amount(Decimal('20'), 'cl') / Amount(Decimal('20'), 'ml') == Amount(Decimal('10'))
+            assert Amount(Decimal('20'), 'ml') / Amount(Decimal('20'), 'cl') == Amount(Decimal('0.1'))
+            assert Amount(Decimal('20'), 'cl') / 10 == Amount(Decimal('20'), unit='ml')
+
+            with pytest.raises(ValueError):
+                Amount(Decimal('20'), 'cl') / Amount(Decimal('20'), 'g') # type: ignore
+
+    def test_operator_mod(self):
+        assert Amount(Decimal('20'), 'cl') % 3 == Amount(Decimal('2'), 'cl')
 
 class TestIngredient:
     def test_normalize(self, unit_system):
@@ -294,5 +421,5 @@ class TestRecipe:
             # because comparisons also use the unit system. To make sure that normalization actually happened we check that the
             # units change in the output.
             assert normalized.yields[0].unit == 'l'
-            assert normalized.ingredients[0].amount.unit == 'l'
-            assert normalized.ingredient_groups[0].ingredients[0].amount.unit == 'l'
+            assert normalized.ingredients[0].amount.unit == 'l' # type: ignore
+            assert normalized.ingredient_groups[0].ingredients[0].amount.unit == 'l' # type: ignore
