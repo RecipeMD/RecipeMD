@@ -1,6 +1,6 @@
 import glob
+import operator
 import os
-import textwrap
 from dataclasses import replace
 from decimal import Decimal
 from pprint import pprint
@@ -8,8 +8,9 @@ from pprint import pprint
 import pytest
 import json
 import jsonschema
+from recipemd.units import DisplayUnit, Quantity, Unit, UnitSystem
 
-from recipemd.data import (Amount, Ingredient, IngredientGroup, Recipe,
+from recipemd.data import (Amount, Ingredient, IngredientGroup, IngredientList, Recipe,
                            RecipeParser, RecipeSerializer,
                            get_recipe_with_yield, multiply_recipe)
 
@@ -23,6 +24,38 @@ def parser():
 @pytest.fixture(scope="session")
 def serializer():
     return RecipeSerializer()
+
+@pytest.fixture(scope="session")
+def quantity_volume():
+    return Quantity(
+        base_unit=Unit('l', Decimal('1'), alternative_names=frozenset(['liter', 'litre'])),
+        alternative_units=[
+            Unit('ml', Decimal('1000'), alternative_names=frozenset(['milliliter', 'millilitre'])),
+            Unit('cl', Decimal('100'), alternative_names=frozenset(['centiliter', 'centilitre'])),
+            Unit(
+                'tsp', 
+                Decimal('1000') / Decimal('5'),
+                alternative_names=frozenset(['Teelöffel', 'TL', 'teaspoon', 'teaspoons']),
+                preferred_name="TL"
+            ),
+            Unit(
+                'tbsp', 
+                Decimal('1000') / Decimal('15'),
+                alternative_names=frozenset(['Esslöffel', 'EL', 'tablespoon', 'tablespoons']),
+            ),
+        ],
+        display_units=[            
+            DisplayUnit(unit_name='tsp', max=Decimal('5'), only_if_matching_source_unit=True),
+            DisplayUnit(unit_name='tbsp', max=Decimal('5'), only_if_matching_source_unit=True),
+            DisplayUnit(unit_name='ml', max=Decimal('500')),
+            DisplayUnit(unit_name='cl', max=Decimal('100')),
+        ],
+    )
+
+
+@pytest.fixture(scope="session")
+def unit_system(quantity_volume):
+    return UnitSystem(quantities=[quantity_volume])
 
 
 def test_ingredient_list_get_leaf_ingredients():
@@ -179,3 +212,72 @@ def test_get_recipe_with_yield():
     # try with unit not in recipe yields
     with pytest.raises(StopIteration):
         get_recipe_with_yield(recipe, Amount(factor=Decimal('500'), unit='ml'))
+
+
+class TestAmount:
+    def test_normalize(self, unit_system):
+        assert Amount(Decimal('2000'), 'ml').normalized().is_identical(Amount(Decimal('2000'), 'ml'))
+
+        with unit_system: 
+            assert Amount(Decimal('2000'), 'ml').normalized().is_identical(Amount(Decimal('2'), 'l'))
+
+    def test_operators_comparison(self, unit_system):
+        assert not Amount(Decimal('20'), 'ml', unit_system=unit_system) == Amount(Decimal('20'), 'ml')
+
+        with pytest.raises(ValueError):
+            Amount(Decimal('20'), 'ml', unit_system=unit_system) < Amount(Decimal('20'), 'ml') # type: ignore
+
+        with unit_system:            
+            assert Amount(Decimal('20'), 'ml') == Amount(Decimal('20'), 'ml')
+            assert Amount(Decimal('20'), 'ml') == Amount(Decimal('2'), 'cl')
+
+            assert not Amount(Decimal('20'), 'ml') == 5
+            assert not Amount(Decimal('20'), 'ml') == Amount(Decimal('15'), 'g')
+
+            with pytest.raises(TypeError):
+                Amount(Decimal('20'), 'ml') < 5 # type: ignore
+            with pytest.raises(ValueError):
+                Amount(Decimal('20'), 'ml') < Amount(Decimal('15'), 'g') # type: ignore
+
+    @pytest.mark.parametrize("left, relation, right", [
+        ("1 TL", operator.eq, "1 TL"),
+        ("1 Teelöffel", operator.eq, "1 TL"),
+        ("6 TL", operator.eq, "30 ml"),
+        ("1 EL", operator.eq, "1 EL"),
+        ("1 Esslöffel", operator.eq, "1 Esslöffel"),
+        ("6 Esslöffel", operator.eq, "90 ml"),
+        ("5 ml", operator.eq, "5 ml"),
+        ("5000 ml", operator.gt, "4 liter")
+    ])
+    def test_operators_comparison_matrix(self, unit_system, left, right, relation):
+        with unit_system:
+            left = RecipeParser.parse_amount(left)
+            right = RecipeParser.parse_amount(right)
+            assert relation(left, right)
+
+class TestIngredient:
+    def test_normalize(self, unit_system):
+        assert Ingredient('salt').normalized() == Ingredient('salt')
+        with unit_system: 
+            assert Ingredient('water', Amount(Decimal('2000'), 'ml')).normalized() == Ingredient('water', Amount(Decimal('2'), 'l'))
+
+class TestRecipe:
+    def test_normalize(self, unit_system):
+        with unit_system: 
+            recipe = Recipe(
+                yields=[Amount(Decimal('2000'), 'ml')],
+                ingredients=[Ingredient('water', Amount(Decimal('2000'), 'ml'))],
+                ingredient_groups=[
+                    IngredientGroup(
+                        title='Test',
+                        ingredients=[Ingredient('water', Amount(Decimal('2000'), 'ml'))],
+                    )
+                ]
+            )
+            normalized = recipe.normalized()
+            # Note that comparing the whole recipe to an expected normalized version would work even without normalization,
+            # because comparisons also use the unit system. To make sure that normalization actually happened we check that the
+            # units change in the output.
+            assert normalized.yields[0].unit == 'l'
+            assert normalized.ingredients[0].amount.unit == 'l'
+            assert normalized.ingredient_groups[0].ingredients[0].amount.unit == 'l'
