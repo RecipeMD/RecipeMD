@@ -807,7 +807,7 @@ class RecipeParser:
         return close_index
 
 
-def multiply_recipe(recipe: Recipe, multiplier: Decimal) -> Recipe:
+def multiply_recipe(recipe: Recipe, multiplier: Union[Decimal, Amount]) -> Recipe:
     """
     Multiplies a recipe by the given multiplier.
 
@@ -827,7 +827,7 @@ def multiply_recipe(recipe: Recipe, multiplier: Decimal) -> Recipe:
     >>> multiplied_recipe.ingredients[1]
     Ingredient(name='Butter', amount=Amount(factor=Decimal('600'), unit='g'), link=None)
     """
-    recipe = replace(recipe, yields=[replace(y, factor=y.factor * multiplier) for y in recipe.yields if y.factor is not None])
+    recipe = replace(recipe, yields=[y * multiplier for y in recipe.yields if y.factor is not None])
     recipe = _multiply_ingredient_list(recipe, multiplier)
     return recipe
 
@@ -849,23 +849,20 @@ def get_recipe_with_yield(recipe: Recipe, required_yield: Amount) -> Recipe:
             matching_recipe_yield = Amount(Decimal(1))
         else:
             raise StopIteration
-    recipe = multiply_recipe(recipe, required_yield.factor / matching_recipe_yield.factor)
+    recipe = multiply_recipe(recipe, required_yield / matching_recipe_yield)
     return recipe
 
 
 IL = TypeVar('IL', bound=IngredientList)
 
-def _multiply_ingredient_list(ingredient_list: IL, multiplier: Decimal) -> IL:
+def _multiply_ingredient_list(ingredient_list: IL, multiplier: Union[Decimal, Amount]) -> IL:
     ingredients: List[Ingredient] = [_multiply_ingredient(i, multiplier) for i in ingredient_list.ingredients]
     ingredient_groups: List[IngredientGroup] = [_multiply_ingredient_list(ig, multiplier)
                                                 for ig in ingredient_list.ingredient_groups]
     return replace(ingredient_list, ingredients=ingredients, ingredient_groups=ingredient_groups)
 
 
-def _multiply_ingredient(ingr: Ingredient, multiplier: Decimal) -> Ingredient:
+def _multiply_ingredient(ingr: Ingredient, multiplier: Union[Decimal, Amount]) -> Ingredient:
     if ingr.amount is None:
         return ingr
-    return replace(ingr, amount=replace(
-        ingr.amount,
-        factor=ingr.amount.factor*multiplier if ingr.amount.factor is not None else None
-    ))
+    return ingr * multiplier
