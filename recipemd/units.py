@@ -214,6 +214,16 @@ class UnitSystem(AbstractContextManager, ContextDecorator):
     def __exit__(self, exc_type, exc_value, traceback):
         assert _unit_system_stack.pop() == self
 
+    def normalize_unit(self, amount: 'data.Amount') -> 'data.Amount':
+        if not amount.unit:
+            return self._insert_unit_system(amount)
+        for quantity in self.quantities:
+            try:
+                return self._insert_unit_system(quantity.normalize_unit(amount))
+            except UnitConversionError:
+                pass
+        return amount
+
     def convert_to(self, amount: 'data.Amount', target_unit_name: str) -> 'data.Amount':
         for quantity in self.quantities:
             try:
