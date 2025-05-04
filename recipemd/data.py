@@ -13,7 +13,7 @@ from functools import total_ordering
 from dataclasses_json import config, dataclass_json
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
-from typing_extensions import Literal
+from typing_extensions import Literal, Self
 
 import recipemd.units
 
@@ -46,6 +46,14 @@ class IngredientList:
     def all_ingredients(self) -> Generator[Union['Ingredient', 'IngredientGroup'], None, None]:
         yield from self.ingredients
         yield from self.ingredient_groups
+
+    def normalized(self) -> Self:        
+        """
+        Normalize all amounts in this ingredient list to the appropriate display unit.
+        """
+        ingredients: List[Ingredient] = [i.normalized() for i in self.ingredients]
+        ingredient_groups: List[IngredientGroup] = [ig.normalized() for ig in self.ingredient_groups]
+        return replace(self, ingredients=ingredients, ingredient_groups=ingredient_groups)
 
 
 @dataclass_json
@@ -80,6 +88,18 @@ class Amount:
             exclude=lambda *_: True
         )
     )
+
+    def normalized(self) -> 'Amount':
+        """
+        Normalize this amount to the appropriate display unit.
+
+        If if this amount is associated with a unit system, this returns a normalized version of this amount, according to the
+        display units set in the unit system. If not it returns the amount unchanged, as without a unit system the amount is
+        already normalized.
+        """
+        if self.unit_system is None:
+           return self
+        return self.unit_system.normalize_unit(self)
 
     def __hash__(self):
         # The api contract for __hash__ states that hashable objects which compare equal must have the same hash value. Since
@@ -126,6 +146,13 @@ class Ingredient:
     amount: Optional[Amount] = None
     link: Optional[str] = None
 
+    def normalized(self) -> Self:
+        """
+        Normalize this ingredient's amount to the appropriate display unit.
+        """
+        if self.amount is None:
+            return self
+        return replace(self, amount=self.amount.normalized())
 
 @dataclass_json
 @dataclass(frozen=True)
@@ -138,6 +165,13 @@ class Recipe(IngredientList):
     yields: List[Amount] = field(default_factory=list)
     tags: List[str] = field(default_factory=list)
     instructions: Optional[str] = None
+
+    def normalized(self) -> Self:
+        """
+        Normalize all amounts in this recipe to the appropriate display unit.
+        """
+        r = super().normalized()
+        return replace(r, yields=[y.normalized() for y in self.yields])
 
 
 class RecipeSerializer:
