@@ -583,7 +583,9 @@ def get_recipe_with_yield(recipe: Recipe, required_yield: Amount) -> Recipe:
     return recipe
 
 
-def _multiply_ingredient_list(ingredient_list: T, multiplier: Decimal) -> T:
+IL = TypeVar('IL', bound=IngredientList)
+
+def _multiply_ingredient_list(ingredient_list: IL, multiplier: Decimal) -> IL:
     ingredients: List[Ingredient] = [_multiply_ingredient(i, multiplier) for i in ingredient_list.ingredients]
     ingredient_groups: List[IngredientGroup] = [_multiply_ingredient_list(ig, multiplier)
                                                 for ig in ingredient_list.ingredient_groups]
