@@ -100,7 +100,12 @@ class TestRecipeParser:
         assert parser.parse_amount("3,2") == Amount(factor=Decimal('3.2'))
         assert parser.parse_amount("1 ½ cloves") == Amount(factor=Decimal('1.5'), unit='cloves')
         assert parser.parse_amount("½ pieces") == Amount(factor=Decimal('.5'), unit='pieces')
-        assert parser.parse_amount('') is None
+
+        with pytest.raises(RuntimeError):
+            parser.parse_amount('')
+
+        with pytest.raises(RuntimeError):
+            parser.parse_amount('foo')
 
 
 class TestRecipeSerializer:
