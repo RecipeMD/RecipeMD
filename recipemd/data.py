@@ -379,7 +379,7 @@ class RecipeParser:
     ]
 
     @staticmethod
-    def parse_amount(amount_str: str) -> Union[Amount, None]:
+    def parse_amount(amount_str: str) -> Amount:
         """
         Parses an amount string to an :class:`Amount`.
 
@@ -396,6 +396,8 @@ class RecipeParser:
         <BLANKLINE>
         >>> RecipeParser.parse_amount('3,5 l')
         Amount(factor=Decimal('3.5'), unit='l')
+
+        :raises RuntimeError: If the given string can not be parsed as an amount.
         """
         # iterate over different value format
         for regexp, factor_function, group_count in RecipeParser._value_formats:
@@ -407,11 +409,7 @@ class RecipeParser:
                 unit = match.group(group_count + 2).strip()
                 return Amount(factor, unit or None)
             
-        unit = amount_str.strip()
-        if unit:
-            raise RuntimeError("Amount must start with a number")
-
-        return None
+        raise RuntimeError("Amount must start with a number")
 
     def _peek_emph_paragraph(self) -> Optional[Tuple[Union[Literal['em_open'], Literal['strong_open']], str]]:
         if (
