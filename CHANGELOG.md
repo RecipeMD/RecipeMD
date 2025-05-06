@@ -7,6 +7,7 @@ The `recipemd` package uses [semantic versioning](https://semver.org).
 - Fix CLI error handling
 - Update Sphinx and dependencies
 - *Breaking*: Drop support for Python 3.8 and 3.9 which have reached EOL
+- *Breaking*: `RecipeParser.parse_amount` now throws instead of returning `None` for invalid inputs
 
 ## Version 5.0.0 (2025-02-14)
 
