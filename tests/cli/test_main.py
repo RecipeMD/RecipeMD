@@ -8,7 +8,7 @@ from typing import List
 from unittest import mock
 
 import pytest
-from recipemd.cli.main import Exit, main
+from recipemd.cli.main import Exit, main, run
 
 
 @pytest.mark.parametrize(
@@ -36,9 +36,9 @@ def test_valid_args(type: str, dir: str, arguments: List[str]):
         stack.enter_context(mock.patch('sys.stderr', new_callable=StringIO))
         if type == 'invalid':
             with pytest.raises(Exit):
-                main()
+                run()
         else:
-            main()
+            run()
         actual_stdout = sys.stdout.getvalue()  # type: ignore
         actual_stderr = sys.stderr.getvalue()  # type: ignore
 
@@ -62,7 +62,7 @@ def test_export_links():
         stack.enter_context(mock.patch('sys.stdout', new_callable=StringIO))
         stack.enter_context(mock.patch('sys.stderr', new_callable=StringIO))
 
-        main()
+        run()
 
         actual_stdout = sys.stdout.getvalue()  # type: ignore
         actual_stderr = sys.stderr.getvalue()  # type: ignore

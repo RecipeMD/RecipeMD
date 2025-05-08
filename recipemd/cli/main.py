@@ -25,9 +25,16 @@ from yarl import URL
 __all__ = ['main']
 
 
-def main():
+def main(): # pragma: no cover
     # completions
     argcomplete.autocomplete(parser)
+
+    try:
+        run()
+    except Exit:
+        exit(1)
+
+def run():
 
     # parse args
     args = parser.parse_args()
@@ -318,7 +325,4 @@ flatten_parser.add_argument(
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exit:
-        exit(1)
+    main()
