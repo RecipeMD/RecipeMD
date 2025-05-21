@@ -14,7 +14,7 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 from dataclasses import replace
-from typing import Dict, FrozenSet, List, Optional, Set, Tuple, TypeVar, Union
+from typing import Dict, FrozenSet, List, Literal, Optional, Set, Tuple, TypeVar, Union
 
 import argcomplete
 import recipemd
@@ -172,11 +172,46 @@ def _create_recipe_output(recipe: Recipe, serializer: RecipeSerializer, args: 'A
     if args.title:
         return str(recipe.title)
     elif args.ingredients:
-        return "\n".join(_ingredient_to_string(ingr, rounding=args.round) for ingr in recipe.leaf_ingredients)
+        return _create_ingredients_output(recipe, args)
     elif args.json:
         return recipe.to_json()
     else:
         return serializer.serialize(recipe, rounding=args.round)
+
+def _create_ingredients_output(recipe: Recipe, args: 'Args'):
+    if args.ingredients == 'merged':
+        ingredients  = _merge_ingredients([*recipe.leaf_ingredients])
+    else:
+        ingredients = recipe.leaf_ingredients
+    return "\n".join(_ingredient_to_string(ingr, rounding=args.round) for ingr in ingredients)
+
+def _merge_ingredients(ingredients: List[Ingredient]):
+    i = 0
+    while i < len(ingredients):
+        ingr = ingredients[i]
+        ingr_name_lowercased = ingr.name.lower()
+        merged_amount = ingr.amount
+        added = False
+        j = i + 1
+        while j < len(ingredients):
+            candidate_ingr = ingredients[j]
+            if ingr_name_lowercased != candidate_ingr.name.lower():
+                j += 1
+                continue
+            if merged_amount is None and candidate_ingr.amount is None: 
+                del ingredients[j]
+            elif merged_amount is not None and candidate_ingr.amount is not None:
+                try:
+                    merged_amount = merged_amount + candidate_ingr.amount
+                    added = True
+                    del ingredients[j]
+                except BaseException as e:
+                    pass
+            j += 1
+        if added:
+            ingredients[i] = replace(ingr, amount=merged_amount)
+        i += 1
+    return ingredients
 
 
 def _get_flattened_recipe(recipe: Recipe, *, recipe_url: URL, parser: RecipeParser, exclude_urls: FrozenSet[URL] = frozenset()) -> Recipe:
@@ -319,7 +354,7 @@ class Exit(Exception):
 class Args(argparse.Namespace):
     file: io.TextIOWrapper
     title: bool
-    ingredients: bool
+    ingredients: Union[Literal['merged'], Literal['plain']]
     json: bool
     round: Optional[int]
     multiply: Optional[str]
@@ -341,7 +376,10 @@ parser.add_argument('-v', '--version', action='version', version=f"%(prog)s ({re
 
 display_parser = parser.add_mutually_exclusive_group()
 display_parser.add_argument('-t', '--title', action='store_true', help='Display recipe title')
-display_parser.add_argument('-i', '--ingredients', action='store_true', help='Display recipe ingredients')
+display_parser.add_argument(
+    '-i', '--ingredients', nargs='?', const='merged', type=str, choices=['merged', 'plain'],
+    help='Display recipe ingredients'
+)
 display_parser.add_argument('-j', '--json', action='store_true', help='Display recipe as JSON')
 
 parser.add_argument(
