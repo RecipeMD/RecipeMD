@@ -82,6 +82,9 @@ def _run_with_unit_system(src: str, args: 'Args'):
     if args.flatten:
         r = _get_flattened_recipe(r, recipe_url=recipe_url, parser=rp)
 
+    if not args.no_normalize_units:
+        r = r.normalized()
+
     # create output depending on arguments
     print(_create_recipe_output(r, rs, args))
 
@@ -390,6 +393,7 @@ class Args(argparse.Namespace):
     required_yield: Optional[str]
     flatten: bool
     export_links: Union[bool, str]
+    no_normalize_units: bool
     unit_system: Optional[str]
     language_unit_system: Optional[List[Tuple[str, str]]]
 
@@ -427,6 +431,11 @@ flatten_parser.add_argument(
 flatten_parser.add_argument(
     '--export-links', type=str, metavar='DIR', nargs='?', default=False, const=True,
     help='Export flattened linked recipes as required for the main recipe to DIR (DIR defaults to recipe file name)'
+)
+
+parser.add_argument(
+    '--no-normalize-units', action='store_true',
+    help="Disable unit normalization. This is performed according to the unit system by default."
 )
 
 parser.add_argument(
