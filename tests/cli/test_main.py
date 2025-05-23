@@ -14,17 +14,17 @@ from recipemd.cli.main import Exit, main, run
 @pytest.mark.parametrize(
     'type,dir,arguments',
     [
-        ('valid', 'basic', []),
-        ('valid', 'title', ['-t']),
-        ('valid', 'ingredients', ['-i']),
-        ('valid', 'json', ['-j']),
-        ('valid', 'multiply', ['-m2']),
-        ('valid', 'yield', ['-y', '10 servings']),
-        ('valid', 'flatten', ['-f']),
-        ('invalid', 'yield_no_matching', ['-y', '500 ml']),
-        ('invalid', 'yield_required_invalid', ['-y', 'cheese']),
-        ('invalid', 'multiply_unit', ['-m', '500 ml']),
-        ('invalid', 'multiply_invalid', ['-m', 'cheese']),
+        ('valid', 'basic', ['--no-normalize']),
+        ('valid', 'title', ['-t', '--no-normalize']),
+        ('valid', 'ingredients', ['-i', '--no-normalize']),
+        ('valid', 'json', ['-j', '--no-normalize']),
+        ('valid', 'multiply', ['-m2', '--no-normalize']),
+        ('valid', 'yield', ['-y', '10 servings', '--no-normalize']),
+        ('valid', 'flatten', ['-f', '--no-normalize']),
+        ('invalid', 'yield_no_matching', ['-y', '500 ml', '--no-normalize']),
+        ('invalid', 'yield_required_invalid', ['-y', 'cheese', '--no-normalize']),
+        ('invalid', 'multiply_unit', ['-m', '500 ml', '--no-normalize']),
+        ('invalid', 'multiply_invalid', ['-m', 'cheese', '--no-normalize']),
     ]
 )
 def test_valid_args(type: str, dir: str, arguments: List[str]):

@@ -13,8 +13,8 @@ import sys
 import urllib.parse
 import urllib.request
 from pathlib import Path
-from dataclasses import dataclass, replace
-from typing import Dict, FrozenSet, Optional, Set, TypeVar, Union
+from dataclasses import replace
+from typing import Dict, FrozenSet, List, Optional, Set, Tuple, TypeVar, Union
 
 import argcomplete
 import recipemd
@@ -23,6 +23,7 @@ from recipemd.data import (Amount, Ingredient, IngredientGroup, IngredientList,
                            Recipe, RecipeParser, RecipeSerializer,
                            get_recipe_with_yield, multiply_recipe)
 from yarl import URL
+from langdetect import detect
 
 import recipemd.unit_systems
 
@@ -48,14 +49,21 @@ def run():
     rp = RecipeParser()
     rs = RecipeSerializer()
 
+    # read recipe file
+    src = args.file.read()
+
+
     # 
     if args.unit_system:
         unit_system = getattr(recipemd.unit_systems, args.unit_system.replace('-', '_'))
     else:
-        unit_system = None
+        detected_language = detect(src)
+        try:
+            unit_system = getattr(recipemd.unit_systems, detected_language)
+        except:
+            unit_system = None
 
-    # read and parse recipe
-    src = args.file.read()
+    # parse recipe
     if unit_system:
         with unit_system:
             r = rp.parse(src)
@@ -320,6 +328,7 @@ class Args(argparse.Namespace):
     export_links: Union[bool, str]
     no_normalize_units: bool
     unit_system: Optional[str]
+    language_unit_system: List[Tuple[str, str]]
 
 # parser is on module level for sphinx-autoprogram
 parser = argparse.ArgumentParser(description='Read and process recipemd recipes')
@@ -364,7 +373,12 @@ parser.add_argument(
 
 parser.add_argument(
     '-u', '--unit-system', type=str,
-    help="Specify which unit system to use. You can either use one of the built-in options (TODO), or a path to a python file."
+    help="Specify which unit system to use. You can either use one of the built-in options (TODO), or a path to a python file. If this option is not set, the unit system is determined based on the recipe's language."
+)
+
+parser.add_argument(
+    '--language-unit-system', type=str, action='append', metavar=('LANG', 'UNIT_SYSTEM'), nargs=2,
+    help='Specifies which unit system to use for the given language. Can be specified multiple times for different languages.'
 )
 
 if __name__ == "__main__":
