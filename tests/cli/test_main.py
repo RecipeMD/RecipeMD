@@ -1,5 +1,6 @@
 import filecmp
 import os
+from pprint import pprint
 import shutil
 import sys
 from contextlib import ExitStack
@@ -14,28 +15,42 @@ from recipemd.cli.main import Exit, main, run
 @pytest.mark.parametrize(
     'type,dir,arguments',
     [
-        ('valid', 'basic', []),
-        ('valid', 'title', ['-t']),
-        ('valid', 'ingredients', ['-i']),
-        ('valid', 'json', ['-j']),
-        ('valid', 'multiply', ['-m2']),
-        ('valid', 'yield', ['-y', '10 servings']),
-        ('valid', 'flatten', ['-f']),
+        ('valid', 'basic', ['--no-normalize']),
+        ('valid', 'title', ['-t', '--no-normalize']),
+        ('valid', 'ingredients', ['-i', '--no-normalize']),
+        ('valid', 'json', ['-j', '--no-normalize']),
+        ('valid', 'multiply', ['-m2', '--no-normalize']),
+        ('valid', 'yield', ['-y', '10 servings', '--no-normalize']),
+        ('valid', 'flatten', ['-f', '--no-normalize']),
+        ('valid', 'unit_system_no_lang_detect', []),
+        ('valid', 'unit_system_detect_de', []),
+        ('valid', 'unit_system_explicit', ['--unit-system', 'en']),
+        ('valid', 'unit_system_no', ['--unit-system', 'no']),
+        ('valid', 'unit_system_custom', ['--unit-system', '$TEST_DIR/test.py:foo']),
+        ('valid', 'normalize_detect_en', []),
+        ('valid', 'normalize_detect_de', []),
+        ('valid', 'normalize_detect_en_matching_language_unit_system', ['--language-unit-system', 'en', 'en-us-si']),
+        ('valid', 'normalize_detect_en_no_matching_language_unit_system', ['--language-unit-system', 'foo', 'bar']),
+        ('invalid', 'empty', []),
         ('invalid', 'yield_no_matching', ['-y', '500 ml']),
         ('invalid', 'yield_required_invalid', ['-y', 'cheese']),
         ('invalid', 'multiply_unit', ['-m', '500 ml']),
         ('invalid', 'multiply_invalid', ['-m', 'cheese']),
+        ('invalid', 'unit_system_unknown_builtin', ['--unit-system', 'UNKNOWN']),
+        ('invalid', 'unit_system_invalid_path', ['--unit-system', '$TEST_DIR/test.py:foo']),
+        ('invalid', 'unit_system_invalid_key', ['--unit-system', '$TEST_DIR/test.py:foo']),
+        ('invalid', 'unit_system_no_instance', ['--unit-system', '$TEST_DIR/test.py:foo']),
     ]
 )
 def test_valid_args(type: str, dir: str, arguments: List[str]):
-    test_dir = os.path.join(os.path.dirname(__file__), 'test_main', type, dir)
+    test_dir = os.path.relpath(os.path.join(os.path.dirname(__file__), 'test_main', type, dir))
     input_file = os.path.join(test_dir, 'input.md')
     with ExitStack() as stack:
-        stack.enter_context(mock.patch('sys.argv', [''] + arguments + [input_file]))
+        stack.enter_context(mock.patch('sys.argv', [''] + [arg.replace('$TEST_DIR', test_dir) for arg in arguments] + [input_file]))
         stack.enter_context(mock.patch('sys.stdout', new_callable=StringIO))
         stack.enter_context(mock.patch('sys.stderr', new_callable=StringIO))
         if type == 'invalid':
-            with pytest.raises(Exit):
+            with pytest.raises(Exception):
                 run()
         else:
             run()

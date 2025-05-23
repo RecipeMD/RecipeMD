@@ -1,0 +1,1 @@
+Can't load unit system! Attribute "foo" of "tests/cli/test_main/invalid/unit_system_no_instance/test.py" is not a unit system.

@@ -1,0 +1,15 @@
+# mI' pong
+
+**5 HIvje', 0.01 galon**
+
+---
+
+- *5* Doch  
+- *2* chuchHom  
+- *0.85 HIvje'* Doch  
+- *5* buq naHmey  
+- *1.25 HIvje'* Doch
+
+---
+
+ghojmoHmeH mIwqu’ ‘oH ghojmeH mI’wIj’e’.
