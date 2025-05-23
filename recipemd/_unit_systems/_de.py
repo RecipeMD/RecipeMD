@@ -15,10 +15,10 @@ de = UnitSystem(quantities=[
         ],
         display_units=[
             DisplayUnit(unit_name='Tropfen', max=Decimal('5')),
-            DisplayUnit(unit_name='TL', max=Decimal('5'), only_if_matching_source_unit=True),
-            DisplayUnit(unit_name='EL', max=Decimal('5'), only_if_matching_source_unit=True),
+            DisplayUnit(unit_name='TL', max=Decimal('10'), only_if_matching_source_unit=True),
+            DisplayUnit(unit_name='EL', max=Decimal('10'), only_if_matching_source_unit=True),
             DisplayUnit(unit_name='Tasse', max=Decimal('3'), only_if_matching_source_unit=True),
-            DisplayUnit(unit_name='ml', max=Decimal('1000')),
+            DisplayUnit(unit_name='ml', max=Decimal('999')),
         ],
     ),
     Quantity(
@@ -31,8 +31,8 @@ de = UnitSystem(quantities=[
             # Unit(['ounce'], Decimal('.02834952')),
         ],
         display_units=[
-            DisplayUnit(unit_name='mg', max=Decimal('500')),
-            DisplayUnit(unit_name='g', max=Decimal('1000')),
+            DisplayUnit(unit_name='mg', max=Decimal('1')),
+            DisplayUnit(unit_name='g', max=Decimal('999')),
         ],
     )
 ])

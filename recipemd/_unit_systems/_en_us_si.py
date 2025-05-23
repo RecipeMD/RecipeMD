@@ -18,10 +18,9 @@ en_us_si = UnitSystem(quantities=[
             Unit('gal', Decimal('1') / Decimal('4.54609'), alternative_names=frozenset(['gallon', 'gallons'])),  # US gallon
         ],
         display_units=[
-            DisplayUnit(unit_name='drop', max=Decimal('1')),
-            DisplayUnit(unit_name='drops', max=Decimal('5')),
-            DisplayUnit(unit_name='tsp', max=Decimal('5'), only_if_matching_source_unit=True),
-            DisplayUnit(unit_name='tbsp', max=Decimal('5'), only_if_matching_source_unit=True),
+            DisplayUnit(unit_name='drops', max=Decimal('10'), only_if_matching_source_unit=True),
+            DisplayUnit(unit_name='tsp', max=Decimal('10'), only_if_matching_source_unit=True),
+            DisplayUnit(unit_name='tbsp', max=Decimal('10'), only_if_matching_source_unit=True),
             DisplayUnit(unit_name='ml', max=Decimal('1000')),
         ],
     ),
