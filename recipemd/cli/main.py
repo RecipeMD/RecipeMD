@@ -5,6 +5,7 @@ Implements :ref:`cli_recipemd`
 
 import argparse
 import decimal
+import importlib.util
 import io
 import os
 from pprint import pprint
@@ -13,8 +14,8 @@ import sys
 import urllib.parse
 import urllib.request
 from pathlib import Path
-from dataclasses import dataclass, replace
-from typing import Dict, FrozenSet, Optional, Set, TypeVar, Union
+from dataclasses import replace
+from typing import Dict, FrozenSet, List, Optional, Set, Tuple, TypeVar, Union
 
 import argcomplete
 import recipemd
@@ -23,6 +24,10 @@ from recipemd.data import (Amount, Ingredient, IngredientGroup, IngredientList,
                            Recipe, RecipeParser, RecipeSerializer,
                            get_recipe_with_yield, multiply_recipe)
 from yarl import URL
+from langdetect import detect_langs, LangDetectException
+
+import recipemd.unit_systems
+import recipemd.units
 
 __all__ = ['main']
 
@@ -38,16 +43,28 @@ def main(): # pragma: no cover
         exit(1)
 
 def run():
-
     # parse args
     args = parser.parse_args(namespace=Args())
 
+    # read recipe file
+    src = args.file.read()
+
+    # load unit system
+    unit_system = _get_unit_system(src, args)
+
+    # parse recipe
+    if unit_system:
+        with unit_system:
+            _run_with_unit_system(src, args)
+    else:
+        _run_with_unit_system(src, args)
+
+
+def _run_with_unit_system(src: str, args: 'Args'):
     # initialize
     rp = RecipeParser()
     rs = RecipeSerializer()
 
-    # read and parse recipe
-    src = args.file.read()
     r = rp.parse(src)
 
     # scale recipe
@@ -68,7 +85,6 @@ def run():
     # create output depending on arguments
     print(_create_recipe_output(r, rs, args))
 
-
 def _yield_completer(prefix, action, parser, parsed_args):
     try:
         src = parsed_args.file.read()
@@ -84,6 +100,77 @@ def _yield_completer(prefix, action, parser, parsed_args):
         print(e)
         return []
 
+def _get_unit_system(src: str, args: 'Args') -> Optional[recipemd.units.UnitSystem]:
+    if args.unit_system:
+        return _get_unit_system_from_spec(args.unit_system)
+    
+    try: 
+        detected_languages = detect_langs(src)
+    except LangDetectException:
+        return None
+    if not detected_languages or detected_languages[0].prob < 0.9:
+        return None
+    
+    [detected_language] = detected_languages
+    if args.language_unit_system:
+        language_unit_system_spec = next((
+            language_unit_system[1] for language_unit_system in args.language_unit_system if language_unit_system[0] == detected_language.lang
+        ), None)
+        if language_unit_system_spec:
+            return _get_unit_system_from_spec(language_unit_system_spec)
+
+    return _get_builtin_unit_system(detected_language.lang)
+    
+def _get_unit_system_from_spec(unit_system_spec: str) -> Optional[recipemd.units.UnitSystem]: 
+    if unit_system_spec == "no":
+        return None
+
+    builtin_unit_system = _get_builtin_unit_system(unit_system_spec)
+    if builtin_unit_system:
+        return builtin_unit_system
+        
+    try:
+        file_path, expr = unit_system_spec.split(":", 1)
+    except ValueError:
+        print(
+            "Can't load unit system!\n"
+            "Given argument does not match any builtin unit system and does not contain a colon.\n"
+            "To use a custom unit system, specify a path to a python file followed by a colon and afterwards a string to define which attribute of module to use.", 
+            file=sys.stderr
+        )
+        raise Exit()
+    
+    spec = importlib.util.spec_from_file_location('', file_path)
+    if spec is None:
+        raise RuntimeError("Loaded module spec unexpectedly is None.") # pragma: no cover
+    if spec.loader is None:
+        raise RuntimeError("Loaded module spec unexpectedly does not have a loader.") # pragma: no cover
+    module = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(module)
+    except FileNotFoundError:
+        print(f"Can't load unit system! Given name does not match any builtin unit system and no valid python file found at path \"{file_path}\".", file=sys.stderr)
+        raise Exit()
+
+    try:
+        unit_system = getattr(module, expr)
+    except AttributeError:
+        print(f'Can\'t load unit system! Found python file at path "{file_path}", but it did not provide an attribute "{expr}".', file=sys.stderr)
+        raise Exit()
+
+    if not isinstance(unit_system, recipemd.units.UnitSystem):
+        print(f'Can\'t load unit system! Attribute "{expr}" of "{file_path}" is not a unit system.', file=sys.stderr)
+        raise Exit()
+    
+    return unit_system
+
+def _get_builtin_unit_system(unit_system_spec: str):
+    try:
+        return getattr(recipemd.unit_systems, unit_system_spec.replace('-', '_'))
+    except Exception as e:
+        if isinstance(e, AttributeError):
+            return None
+        raise e # pragma: no cover
 
 def _process_scaling(r: Recipe, args: 'Args'):
     """Returns recipes scaled according to --multiply or --yield"""
@@ -303,6 +390,8 @@ class Args(argparse.Namespace):
     required_yield: Optional[str]
     flatten: bool
     export_links: Union[bool, str]
+    unit_system: Optional[str]
+    language_unit_system: Optional[List[Tuple[str, str]]]
 
 # parser is on module level for sphinx-autoprogram
 parser = argparse.ArgumentParser(description='Read and process recipemd recipes')
@@ -340,6 +429,17 @@ flatten_parser.add_argument(
     help='Export flattened linked recipes as required for the main recipe to DIR (DIR defaults to recipe file name)'
 )
 
+parser.add_argument(
+    '-u', '--unit-system', type=str,
+    help=f"""Specify which unit system to use. You can use "no" to enforce no unit system or use one of the built-in options: {
+        ', '.join(attr.replace('_', '-') for attr in dir(recipemd.unit_systems) if not attr.startswith('_'))
+    }. Alternatively specify a path to a python file followed by a colon and afterwards a string to define which attribute of module to use.  If this option is not set, the unit system is determined based on the recipe's language."""
+)
+
+parser.add_argument(
+    '--language-unit-system', type=str, action='append', metavar=('LANG', 'UNIT_SYSTEM'), nargs=2,
+    help='Specifies which unit system to use for the given language. Can be specified multiple times for different languages.'
+)
 
 if __name__ == "__main__":
     main()
