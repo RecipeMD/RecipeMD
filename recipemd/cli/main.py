@@ -24,6 +24,8 @@ from recipemd.data import (Amount, Ingredient, IngredientGroup, IngredientList,
                            get_recipe_with_yield, multiply_recipe)
 from yarl import URL
 
+import recipemd.unit_systems
+
 __all__ = ['main']
 
 IL = TypeVar('IL', bound=IngredientList)
@@ -46,9 +48,19 @@ def run():
     rp = RecipeParser()
     rs = RecipeSerializer()
 
+    # 
+    if args.unit_system:
+        unit_system = getattr(recipemd.unit_systems, args.unit_system.replace('-', '_'))
+    else:
+        unit_system = None
+
     # read and parse recipe
     src = args.file.read()
-    r = rp.parse(src)
+    if unit_system:
+        with unit_system:
+            r = rp.parse(src)
+    else:
+        r = rp.parse(src)
 
     # scale recipe
     r = _process_scaling(r, args)
@@ -64,6 +76,9 @@ def run():
     # flatten recipe
     if args.flatten:
         r = _get_flattened_recipe(r, recipe_url=recipe_url, parser=rp)
+
+    if not args.no_normalize_units:
+        r = r.normalized()
 
     # create output depending on arguments
     print(_create_recipe_output(r, rs, args))
@@ -303,6 +318,8 @@ class Args(argparse.Namespace):
     required_yield: Optional[str]
     flatten: bool
     export_links: Union[bool, str]
+    no_normalize_units: bool
+    unit_system: Optional[str]
 
 # parser is on module level for sphinx-autoprogram
 parser = argparse.ArgumentParser(description='Read and process recipemd recipes')
@@ -340,6 +357,15 @@ flatten_parser.add_argument(
     help='Export flattened linked recipes as required for the main recipe to DIR (DIR defaults to recipe file name)'
 )
 
+parser.add_argument(
+    '--no-normalize-units', action='store_true',
+    help="Disable unit normalization. This is performed according to the unit system by default."
+)
+
+parser.add_argument(
+    '-u', '--unit-system', type=str,
+    help="Specify which unit system to use. You can either use one of the built-in options (TODO), or a path to a python file."
+)
 
 if __name__ == "__main__":
     main()
