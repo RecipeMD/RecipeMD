@@ -221,6 +221,13 @@ class TestAmount:
         with unit_system: 
             assert Amount(Decimal('2000'), 'ml').normalized().is_identical(Amount(Decimal('2'), 'l'))
 
+    def test_in_unit(self, unit_system):
+        with pytest.raises(ValueError):
+            Amount(Decimal('2000'), 'ml').in_unit('l')
+
+        with unit_system: 
+            assert Amount(Decimal('2000'), 'ml').in_unit('l').is_identical(Amount(Decimal('2'), 'l'))
+
     def test_operators_comparison(self, unit_system):
         assert not Amount(Decimal('20'), 'ml', unit_system=unit_system) == Amount(Decimal('20'), 'ml')
 
@@ -260,6 +267,14 @@ class TestIngredient:
         assert Ingredient('salt').normalized() == Ingredient('salt')
         with unit_system: 
             assert Ingredient('water', Amount(Decimal('2000'), 'ml')).normalized() == Ingredient('water', Amount(Decimal('2'), 'l'))
+
+
+    def test_in_unit(self, unit_system):
+        with pytest.raises(ValueError):
+            Ingredient('salt').in_unit('l')
+
+        with unit_system: 
+            assert Ingredient('salt', Amount(Decimal('2000'), 'ml')).in_unit('l') == Ingredient('salt', Amount(Decimal('2'), 'l'))
 
 class TestRecipe:
     def test_normalize(self, unit_system):
