@@ -282,6 +282,12 @@ class Amount:
 class Ingredient:    
     """
     Represents an ingredient with name and optional amount and link.
+
+    Ingredients implements multiplication and division for scaling an ingredient.
+
+    >>> 3 * Ingredient(name='salt', amount=Amount(factor=Decimal('1'), unit='tsp'), link=None)
+    Ingredient(name='salt', amount=Amount(factor=Decimal('3'), unit='tsp'), link=None)
+
     """
     name: str
     amount: Optional[Amount] = None
@@ -309,7 +315,15 @@ class Ingredient:
         if self.amount is None:
             raise ValueError("Can't convert ingredient to unit if no amount present")
         return replace(self, amount=self.amount.in_unit(unit))
+    
+    def __mul__(self, other):
+        return replace(self, amount=self.amount * other)
+    
+    def __truediv__(self, other):
+        return replace(self, amount=self.amount / other)
 
+    def __rmul__(self, other):
+        return self * other
 
 @dataclass_json
 @dataclass(frozen=True)

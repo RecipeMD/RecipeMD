@@ -403,6 +403,13 @@ class TestIngredient:
         with unit_system: 
             assert Ingredient('salt', Amount(Decimal('2000'), 'ml')).in_unit('l') == Ingredient('salt', Amount(Decimal('2'), 'l'))
 
+    def test_operator_mul(self):
+        assert Ingredient('water', Amount(Decimal('2000'), 'ml')) * 3 == Ingredient('water', Amount(Decimal('6000'), 'ml'))
+        assert 3 * Ingredient('water', Amount(Decimal('2000'), 'ml')) == Ingredient('water', Amount(Decimal('6000'), 'ml'))
+    
+    def test_operator_div(self):
+        assert Ingredient('water', Amount(Decimal('2000'), 'ml')) / 2 == Ingredient('water', Amount(Decimal('1000'), 'ml'))
+
 class TestRecipe:
     def test_normalize(self, unit_system):
         with unit_system: 
