@@ -100,7 +100,7 @@ class Amount:
         if self.unit_system is None:
            return self
         return self.unit_system.normalize_unit(self)
-    
+
     def is_identical(self, other: 'Amount') -> bool:
         """
         Checks if the given amount is identical to the current amount.
@@ -108,6 +108,20 @@ class Amount:
         In contrast to ``==`` this checks for exact equality, without any unit conversion.
         """
         return self.factor == other.factor and self.unit == other.unit and self.unit_system == other.unit_system
+    
+    def in_unit(self, unit: str):
+        """
+        Convert this amount to the given unit.
+
+        If this amount is associated with a unit system, returns a new amount which is this amount converted to the given unit. 
+
+        :parameter unit: Target unit of the conversion
+        :raises ValueError: If the amount is not associated with a unit system
+        :raises UnitConversionError: If there is not conversion to the target unit in the unit system
+        """
+        if self.unit_system is None:
+            raise ValueError("Can't convert amount to unit without a unit system")
+        return self.unit_system.convert_to(self, unit)
 
     def __hash__(self):
         # The api contract for __hash__ states that hashable objects which compare equal must have the same hash value. Since
@@ -161,6 +175,22 @@ class Ingredient:
         if self.amount is None:
             return self
         return replace(self, amount=self.amount.normalized())
+    
+    def in_unit(self, unit: str):
+        """
+        Convert this ingredient to the given unit.
+
+        If this ingredient's amount is associated with a unit system, returns a new ingredient with the amount converted to the
+        given unit. 
+
+        :parameter unit: Target unit of the conversion
+        :raises ValueError: If there is no amount or the amount is not associated with a unit system
+        :raises UnitConversionError: If there is not conversion to the target unit in the unit system
+        """
+        if self.amount is None:
+            raise ValueError("Can't convert ingredient to unit if no amount present")
+        return replace(self, amount=self.amount.in_unit(unit))
+
 
 @dataclass_json
 @dataclass(frozen=True)
