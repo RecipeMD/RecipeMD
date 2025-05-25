@@ -5,14 +5,16 @@ Implements :ref:`cli_recipemd`
 
 import argparse
 import decimal
+import io
 import os
+from pprint import pprint
 import re
 import sys
 import urllib.parse
 import urllib.request
 from pathlib import Path
-from dataclasses import replace
-from typing import Dict, FrozenSet, Optional, Set, TypeVar
+from dataclasses import dataclass, replace
+from typing import Dict, FrozenSet, Optional, Set, TypeVar, Union
 
 import argcomplete
 import recipemd
@@ -38,7 +40,7 @@ def main(): # pragma: no cover
 def run():
 
     # parse args
-    args = parser.parse_args()
+    args = parser.parse_args(namespace=Args())
 
     # initialize
     rp = RecipeParser()
@@ -83,7 +85,7 @@ def _yield_completer(prefix, action, parser, parsed_args):
         return []
 
 
-def _process_scaling(r, args):
+def _process_scaling(r: Recipe, args: 'Args'):
     """Returns recipes scaled according to --multiply or --yield"""
     if args.required_yield is not None:
         try:
@@ -120,7 +122,7 @@ def _make_missing_yield_warning(recipe: Recipe, required_yield: Amount):
     return warning
 
 
-def _export_links(r, args, recipe_url, parser, serializer):
+def _export_links(r: Recipe, args: 'Args', recipe_url: URL, parser: RecipeParser, serializer: RecipeSerializer):
     if type(args.export_links) == bool:
         folder = args.file.name.rsplit('.', 1)[0]
     else:
@@ -142,10 +144,10 @@ def _export_links(r, args, recipe_url, parser, serializer):
             f.write(_create_recipe_output(recipe, serializer, args))
 
 
-def _create_recipe_output(recipe, serializer, args):
+def _create_recipe_output(recipe: Recipe, serializer: RecipeSerializer, args: 'Args') -> str:
     """Serializes a recipes according to formatting options"""
     if args.title:
-        return recipe.title
+        return str(recipe.title)
     elif args.ingredients:
         return "\n".join(_ingredient_to_string(ingr, rounding=args.round) for ingr in recipe.leaf_ingredients)
     elif args.json:
@@ -291,6 +293,16 @@ def _ingredient_to_string(ingr: Ingredient, *, rounding: Optional[int] = None) -
 class Exit(Exception):
     pass
 
+class Args(argparse.Namespace):
+    file: io.TextIOWrapper
+    title: bool
+    ingredients: bool
+    json: bool
+    round: Optional[int]
+    multiply: Optional[str]
+    required_yield: Optional[str]
+    flatten: bool
+    export_links: Union[bool, str]
 
 # parser is on module level for sphinx-autoprogram
 parser = argparse.ArgumentParser(description='Read and process recipemd recipes')
