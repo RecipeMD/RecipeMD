@@ -24,6 +24,12 @@ T = TypeVar('T')
 @dataclass_json
 @dataclass(frozen=True)
 class IngredientList:
+    """
+    Represents a list of ingredients.
+
+    This is used as a base class for :class:`Recipe` and :class:`IngredientGroup`, allowing common algorithm implementations for
+    both.
+    """
     ingredients: List['Ingredient'] = field(default_factory=list)
     ingredient_groups: List['IngredientGroup'] = field(default_factory=list)
 
@@ -42,6 +48,9 @@ class IngredientList:
 @dataclass_json
 @dataclass(frozen=True)
 class IngredientGroup(IngredientList):
+    """
+    An ingredient group is a list of ingredients and ingredient groups with a title.
+    """
     # This needs to have a default value. It inherits from IngredientList, which has default values for its fields. In the
     # generated dataclass constructor this field comes after the parent fields and fields without a default value need to precede
     # fields without one. We just use empty string here, the value is always overwritten during parse. 
@@ -51,13 +60,19 @@ class IngredientGroup(IngredientList):
 @dataclass_json
 @dataclass(frozen=True)
 class Amount:
+    """
+    Represents an amount, which is a factor with an associated unit.
+    """
     factor: Decimal
     unit: Optional[str] = None
 
 
 @dataclass_json
 @dataclass(frozen=True)
-class Ingredient:
+class Ingredient:    
+    """
+    Represents an ingredient with name and optional amount and link.
+    """
     name: str
     amount: Optional[Amount] = None
     link: Optional[str] = None
@@ -66,6 +81,9 @@ class Ingredient:
 @dataclass_json
 @dataclass(frozen=True)
 class Recipe(IngredientList):
+    """
+    Represents a recipe. 
+    """
     title: Optional[str] = None
     description: Optional[str] = None
     yields: List[Amount] = field(default_factory=list)
