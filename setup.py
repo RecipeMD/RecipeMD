@@ -10,13 +10,13 @@ tests_require = [
 ]
 
 docs_require = [
-    'Sphinx==5.1.1',
-    'm2r2==0.3.3',
+    'Sphinx==8.2.3',
+    'm2r2==0.3.4',
     'sphinxcontrib.fulltoc==1.2.0',
-    'sphinxcontrib.autoprogram==0.1.7',
-    'sphinx_autodoc_typehints==1.19.2',
-    'sphinxcontrib.apidoc==0.3.0',
-    'sphinx-autobuild==2021.3.14'
+    'sphinxcontrib.autoprogram==0.1.9',
+    'sphinx_autodoc_typehints==3.2.0',
+    'sphinxcontrib.apidoc==0.6.0',
+    'sphinx-autobuild==2024.10.3'
 ]
 
 release_requires = [

@@ -40,8 +40,9 @@ extensions = [
     "sphinx.ext.linkcode",
     'sphinx.ext.githubpages',
     'sphinx.ext.autosectionlabel',
+    'sphinx.ext.autosummary',
     'm2r2',
-    'sphinxcontrib.fulltoc',
+    #'sphinxcontrib.fulltoc',
     'sphinxcontrib.autoprogram',
     'sphinx_autodoc_typehints',
     'sphinxcontrib.apidoc',
@@ -73,8 +74,9 @@ os.environ['SPHINX_APIDOC_OPTIONS'] = 'members,undoc-members,show-inheritance'
 apidoc_module_dir = '../recipemd'
 apidoc_output_dir = '_apidoc'
 apidoc_separate_modules = True
-apidoc_toc_file = False
+apidoc_toc_file = "test"
 apidoc_module_first = True
+apidoc_extra_args = ['-d', '1']
 
 
 # linkcode, based on numpy source (https://github.com/numpy/numpy/blob/master/doc/source/conf.py#L313)
