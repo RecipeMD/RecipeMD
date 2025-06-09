@@ -61,7 +61,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 autodoc_inherit_docstrings = True
 autodoc_member_order = 'bysource'
 autodoc_default_options = {
-    'exclude-members': 'schema,from_dict,to_dict',
+    'exclude-members': 'schema,from_dict,to_dict,from_json,to_json',
 }
 
 # autodoc_typehings settings
