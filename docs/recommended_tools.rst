@@ -29,6 +29,10 @@ To configure add to your :code:`.pre-commit-config.yaml`:
       hooks:
         - id: validate-recipemd
 
+Recipemd-Web
+------------
+`Recipemd-Web <https://github.com/heinrob/recipe-web>`_ is a web frontend for recipe repositories. It can be deployed via `Github Pages <https://pages.github.com/>`_. It features search functionality and recipe scaling.
+
 Pandoc
 ------
 
