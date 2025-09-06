@@ -51,7 +51,7 @@ Here are some RecipeMD repositories. You can also find a collection of recipes a
 * `haeckse <https://github.com/haeckse/recipes>`_
 * `Invisible4ever <https://github.com/Invisible4ever/Recipes>`_
 * `mist <https://github.com/mist/recipes>`_
-* `p3tr0sh <https://github.com/p3tr0sh/recipes>`_
+* `heinrob <https://github.com/heinrob/recipes>`_
 * `rixx <https://github.com/rixx/recipes.rixx.de>`_
 * `tstehr <https://github.com/tstehr/recipes>`_
 
