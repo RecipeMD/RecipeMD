@@ -14,6 +14,14 @@ After installation you can download into the current folder via:
 
     recipmd-extract '<url-of-recipe>'
 
+
+Recipemd-Web
+------------
+`Recipemd-Web <https://github.com/recipemd/recipe-web>`_ is a web frontend for recipe repositories. It can be deployed via `Github Pages <https://pages.github.com/>`_. It features search functionality and recipe scaling. 
+
+You can find an instance at `web.recipemd.org <https://web.recipemd.org>`_. `Open an issue <https://github.com/RecipeMD/recipe-web/issues/new>`_ in the repository if you want to add your repo there.
+
+
 recipemd-validator
 ----------------------------------
 
@@ -28,10 +36,6 @@ To configure add to your :code:`.pre-commit-config.yaml`:
       rev: v0.0.1
       hooks:
         - id: validate-recipemd
-
-Recipemd-Web
-------------
-`Recipemd-Web <https://github.com/heinrob/recipe-web>`_ is a web frontend for recipe repositories. It can be deployed via `Github Pages <https://pages.github.com/>`_. It features search functionality and recipe scaling.
 
 Pandoc
 ------
