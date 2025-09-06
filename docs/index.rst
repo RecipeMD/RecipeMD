@@ -35,7 +35,7 @@ Resources
 You can use `recipemd-extract <https://github.com/AberDerBart/recipemd-extract>`_ to fetch and extract recipes from the web. We
 also maintain a :doc:`list of recommended tools <recommended_tools>` that work nicely with RecipeMD recipes.
 
-Some RecipeMD repositories:
+Here are some RecipeMD repositories. You can also find a collection of recipes at `web.recipemd.org <https://web.recipemd.org>`_.
 
 .. rst-class:: recipemd-repos
 
