@@ -9,6 +9,7 @@ To our knowledge the following other implementation exist:
 
 * Rust: `recipemd-rs <https://github.com/d-k-bo/recipemd-rs>`_
 * TypeScript: `recipemd-ts <https://github.com/d-k-bo/recipemd-ts>`_
+* Swift: `recipemd-swift <https://github.com/davidbettis/recipemd-swift>`_
 
 If you maintain another implementation of RecipeMD, we'd like to include it here. Please `send a pull request
 <https://github.com/RecipeMD/RecipeMD/edit/master/docs/implementations.rst>`_ or `open an issue
