@@ -836,20 +836,25 @@ def get_recipe_with_yield(recipe: Recipe, required_yield: Amount) -> Recipe:
     """
     Scale the given recipe to a required yield.
 
-    Creates a new recipe, which has the yield given by `required_yield`. A recipe can only be scaled if a yield with a matching 
-    unit is present.
+    Creates a new recipe, which has the yield given by `required_yield`. A recipe can only be scaled if a yield with a matching
+    (or convertible) unit is present.
 
     :raises StopIteration: If no yield with a matching unit can be found.
     :raises RuntimeError: If required_yield or the matching yield in the recipe do not have a factor.
     """
-    matching_recipe_yield = next((y for y in recipe.yields if y.unit == required_yield.unit), None)
-    if matching_recipe_yield is None:
+    multiplier: Amount | None = None
+    for y in recipe.yields:
+        try:
+            multiplier = required_yield / y
+        except ValueError:
+            pass
+    if multiplier is None:
         # no unit in required amount is interpreted as "one recipe"
         if required_yield.unit is None:
-            matching_recipe_yield = Amount(Decimal(1))
+            multiplier = required_yield
         else:
             raise StopIteration
-    recipe = multiply_recipe(recipe, required_yield / matching_recipe_yield)
+    recipe = multiply_recipe(recipe, multiplier)
     return recipe
 
 
