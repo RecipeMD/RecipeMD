@@ -24,6 +24,12 @@ T = TypeVar('T')
 @dataclass_json
 @dataclass(frozen=True)
 class IngredientList:
+    """
+    Represents a list of ingredients.
+
+    This is used as a base class for :class:`Recipe` and :class:`IngredientGroup`, allowing common algorithm implementations for
+    both.
+    """
     ingredients: List['Ingredient'] = field(default_factory=list)
     ingredient_groups: List['IngredientGroup'] = field(default_factory=list)
 
@@ -42,6 +48,9 @@ class IngredientList:
 @dataclass_json
 @dataclass(frozen=True)
 class IngredientGroup(IngredientList):
+    """
+    An ingredient group is a list of ingredients and ingredient groups with a title.
+    """
     # This needs to have a default value. It inherits from IngredientList, which has default values for its fields. In the
     # generated dataclass constructor this field comes after the parent fields and fields without a default value need to precede
     # fields without one. We just use empty string here, the value is always overwritten during parse. 
@@ -51,13 +60,19 @@ class IngredientGroup(IngredientList):
 @dataclass_json
 @dataclass(frozen=True)
 class Amount:
+    """
+    Represents an amount, which is a factor with an associated unit.
+    """
     factor: Decimal
     unit: Optional[str] = None
 
 
 @dataclass_json
 @dataclass(frozen=True)
-class Ingredient:
+class Ingredient:    
+    """
+    Represents an ingredient with name and optional amount and link.
+    """
     name: str
     amount: Optional[Amount] = None
     link: Optional[str] = None
@@ -66,6 +81,9 @@ class Ingredient:
 @dataclass_json
 @dataclass(frozen=True)
 class Recipe(IngredientList):
+    """
+    Represents a recipe. 
+    """
     title: Optional[str] = None
     description: Optional[str] = None
     yields: List[Amount] = field(default_factory=list)
@@ -572,8 +590,6 @@ def get_recipe_with_yield(recipe: Recipe, required_yield: Amount) -> Recipe:
     :raises StopIteration: If no yield with a matching unit can be found.
     :raises RuntimeError: If required_yield or the matching yield in the recipe do not have a factor.
     """
-    if required_yield.factor is None:
-        raise RuntimeError("Required yield must contain a factor")
     matching_recipe_yield = next((y for y in recipe.yields if y.unit == required_yield.unit), None)
     if matching_recipe_yield is None:
         # no unit in required amount is interpreted as "one recipe"
@@ -581,13 +597,13 @@ def get_recipe_with_yield(recipe: Recipe, required_yield: Amount) -> Recipe:
             matching_recipe_yield = Amount(Decimal(1))
         else:
             raise StopIteration
-    if matching_recipe_yield.factor is None:
-        raise RuntimeError(f"Recipe yield with matching unit must contain a factor")
     recipe = multiply_recipe(recipe, required_yield.factor / matching_recipe_yield.factor)
     return recipe
 
 
-def _multiply_ingredient_list(ingredient_list: T, multiplier: Decimal) -> T:
+IL = TypeVar('IL', bound=IngredientList)
+
+def _multiply_ingredient_list(ingredient_list: IL, multiplier: Decimal) -> IL:
     ingredients: List[Ingredient] = [_multiply_ingredient(i, multiplier) for i in ingredient_list.ingredients]
     ingredient_groups: List[IngredientGroup] = [_multiply_ingredient_list(ig, multiplier)
                                                 for ig in ingredient_list.ingredient_groups]

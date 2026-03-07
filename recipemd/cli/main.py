@@ -5,14 +5,16 @@ Implements :ref:`cli_recipemd`
 
 import argparse
 import decimal
+import io
 import os
+from pprint import pprint
 import re
 import sys
 import urllib.parse
 import urllib.request
 from pathlib import Path
-from dataclasses import replace
-from typing import Dict, Optional, Set
+from dataclasses import dataclass, replace
+from typing import Dict, FrozenSet, Optional, Set, TypeVar, Union
 
 import argcomplete
 import recipemd
@@ -24,13 +26,21 @@ from yarl import URL
 
 __all__ = ['main']
 
+IL = TypeVar('IL', bound=IngredientList)
 
-def main():
+def main(): # pragma: no cover
     # completions
     argcomplete.autocomplete(parser)
 
+    try:
+        run()
+    except Exit:
+        exit(1)
+
+def run():
+
     # parse args
-    args = parser.parse_args()
+    args = parser.parse_args(namespace=Args())
 
     # initialize
     rp = RecipeParser()
@@ -75,7 +85,7 @@ def _yield_completer(prefix, action, parser, parsed_args):
         return []
 
 
-def _process_scaling(r, args):
+def _process_scaling(r: Recipe, args: 'Args'):
     """Returns recipes scaled according to --multiply or --yield"""
     if args.required_yield is not None:
         try:
@@ -112,7 +122,7 @@ def _make_missing_yield_warning(recipe: Recipe, required_yield: Amount):
     return warning
 
 
-def _export_links(r, args, recipe_url, parser, serializer):
+def _export_links(r: Recipe, args: 'Args', recipe_url: URL, parser: RecipeParser, serializer: RecipeSerializer):
     if type(args.export_links) == bool:
         folder = args.file.name.rsplit('.', 1)[0]
     else:
@@ -125,6 +135,8 @@ def _export_links(r, args, recipe_url, parser, serializer):
             recipe = ingr_to_recipe[ingredient]
         except KeyError:
             continue
+        if ingredient.link is None:
+            raise RuntimeError(f'Ingredient "{ingredient.name}" is missing link!')
         url = recipe_url.join(URL(ingredient.link))
         filename = os.path.join(folder, url.parts[-1])
         with open(filename, 'w', encoding="utf-8") as f:
@@ -132,10 +144,10 @@ def _export_links(r, args, recipe_url, parser, serializer):
             f.write(_create_recipe_output(recipe, serializer, args))
 
 
-def _create_recipe_output(recipe, serializer, args):
+def _create_recipe_output(recipe: Recipe, serializer: RecipeSerializer, args: 'Args') -> str:
     """Serializes a recipes according to formatting options"""
     if args.title:
-        return recipe.title
+        return str(recipe.title)
     elif args.ingredients:
         return "\n".join(_ingredient_to_string(ingr, rounding=args.round) for ingr in recipe.leaf_ingredients)
     elif args.json:
@@ -144,7 +156,7 @@ def _create_recipe_output(recipe, serializer, args):
         return serializer.serialize(recipe, rounding=args.round)
 
 
-def _get_flattened_recipe(recipe: Recipe, *, recipe_url: URL, parser: RecipeParser, exclude_urls: Set[URL] = frozenset()) -> Recipe:
+def _get_flattened_recipe(recipe: Recipe, *, recipe_url: URL, parser: RecipeParser, exclude_urls: FrozenSet[URL] = frozenset()) -> Recipe:
     """Creates a new recipe with linked recipes recursively flattened"""
 
     exclude_urls |= {recipe_url}
@@ -186,7 +198,7 @@ def _get_flattened_recipe(recipe: Recipe, *, recipe_url: URL, parser: RecipePars
     return recipe
 
 
-def _get_linked_recipes(recipe: Recipe, *, recipe_url: URL, parser: RecipeParser, flatten: bool = True, exclude_urls: Set[URL] = frozenset()):
+def _get_linked_recipes(recipe: Recipe, *, recipe_url: URL, parser: RecipeParser, flatten: bool = True, exclude_urls: FrozenSet[URL] = frozenset()):
     """Gets all ingredients that have a link and a dict of the ingredient to recipe instance"""
     link_ingredients = [i for i in recipe.leaf_ingredients if i.link is not None]
     ingr_to_recipe = dict()
@@ -199,7 +211,10 @@ def _get_linked_recipes(recipe: Recipe, *, recipe_url: URL, parser: RecipeParser
     return link_ingredients, ingr_to_recipe
 
 
-def _get_linked_recipe(ingredient: Ingredient, *, recipe_url: URL, parser: RecipeParser, flatten: bool = True, exclude_urls: Set[URL] = frozenset()) -> Recipe:
+def _get_linked_recipe(ingredient: Ingredient, *, recipe_url: URL, parser: RecipeParser, flatten: bool = True, exclude_urls: FrozenSet[URL] = frozenset()) -> Recipe:
+    if ingredient.link is None:
+        raise RuntimeError(f'Ingredient "{ingredient.name}" is missing link!')
+
     url = recipe_url.join(URL(ingredient.link))
 
     if url in exclude_urls:
@@ -229,8 +244,7 @@ def _get_linked_recipe(ingredient: Ingredient, *, recipe_url: URL, parser: Recip
     return link_recipe
 
 
-def _create_flattened_substituted_ingredients(ingredient_list: IngredientList,
-                                              ingr_to_recipe: Dict[Ingredient, Recipe]) -> IngredientList:
+def _create_flattened_substituted_ingredients(ingredient_list: IL, ingr_to_recipe: Dict[Ingredient, Recipe]) -> IL:
     result_ingredients = []
     result_groups = []
 
@@ -279,13 +293,23 @@ def _ingredient_to_string(ingr: Ingredient, *, rounding: Optional[int] = None) -
 class Exit(Exception):
     pass
 
+class Args(argparse.Namespace):
+    file: io.TextIOWrapper
+    title: bool
+    ingredients: bool
+    json: bool
+    round: Optional[int]
+    multiply: Optional[str]
+    required_yield: Optional[str]
+    flatten: bool
+    export_links: Union[bool, str]
 
 # parser is on module level for sphinx-autoprogram
 parser = argparse.ArgumentParser(description='Read and process recipemd recipes')
 
 parser.add_argument(
     'file', type=argparse.FileType('r', encoding='UTF-8'), help='A recipemd file'
-).completer = FilesCompleter(allowednames='*.md')
+).completer = FilesCompleter(allowednames='*.md') # type: ignore
 
 parser.add_argument('-v', '--version', action='version', version=f"%(prog)s ({recipemd.__version__})")
 
@@ -297,14 +321,14 @@ display_parser.add_argument('-j', '--json', action='store_true', help='Display r
 parser.add_argument(
     '-r', '--round', type=lambda s: None if s.lower() == 'no' else int(s), metavar='n', default=2,
     help='Round amount to n digits after decimal point. Default is "2", use "no" to disable rounding.'
-).completer = ChoicesCompleter(('no', *range(0, decimal.getcontext().prec + 1)))
+).completer = ChoicesCompleter(('no', *range(0, decimal.getcontext().prec + 1))) # type: ignore
 
 scale_parser = parser.add_mutually_exclusive_group()
 scale_parser.add_argument('-m', '--multiply', type=str, help='Multiply recipe by N', metavar='N')
 scale_parser.add_argument(
     '-y', '--yield', type=str, help='Scale the recipe for yield Y, e.g. "5 servings"',
     metavar='Y', dest='required_yield'
-).completer = _yield_completer
+).completer = _yield_completer # type: ignore
 
 flatten_parser = parser.add_mutually_exclusive_group()
 flatten_parser.add_argument(
@@ -318,7 +342,4 @@ flatten_parser.add_argument(
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exit:
-        exit(1)
+    main()

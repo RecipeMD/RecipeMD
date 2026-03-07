@@ -41,7 +41,6 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinx.ext.autosectionlabel',
     'm2r2',
-    'sphinxcontrib.fulltoc',
     'sphinxcontrib.autoprogram',
     'sphinx_autodoc_typehints',
     'sphinxcontrib.apidoc',
@@ -62,7 +61,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 autodoc_inherit_docstrings = True
 autodoc_member_order = 'bysource'
 autodoc_default_options = {
-    'exclude-members': 'schema,from_dict,to_dict',
+    'exclude-members': 'schema,from_dict,to_dict,from_json,to_json',
 }
 
 # autodoc_typehings settings
@@ -75,6 +74,7 @@ apidoc_output_dir = '_apidoc'
 apidoc_separate_modules = True
 apidoc_toc_file = False
 apidoc_module_first = True
+apidoc_extra_args = ['-d', '1']
 
 
 # linkcode, based on numpy source (https://github.com/numpy/numpy/blob/master/doc/source/conf.py#L313)
