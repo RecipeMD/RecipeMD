@@ -3,5 +3,5 @@ recipemd.filter module
 
 .. automodule:: recipemd.filter
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
