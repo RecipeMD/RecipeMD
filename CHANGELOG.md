@@ -2,10 +2,11 @@
 
 The `recipemd` package uses [semantic versioning](https://semver.org).
 
-## Version 5.0.1 (unreleased)
+## Version 6.0.0 (unreleased)
 
 - Fix CLI error handling
 - Update Sphinx and dependencies
+- Drop support for Python 3.8 and 3.9 which have reached EOL
 
 ## Version 5.0.0 (2025-02-14)
 
