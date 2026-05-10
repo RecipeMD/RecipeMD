@@ -3,9 +3,9 @@ import setuptools
 from recipemd import __version__
 
 tests_require = [
-    'pytest==6.2.5',
-    'pytest-cov==2.8.1',
-    'tox==4.23.2',
+    'pytest==9.0.3',
+    'pytest-cov==7.1.0',
+    'tox==4.53.1',
     'jsonschema==4.23.0',
 ]
 
