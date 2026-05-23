@@ -6,6 +6,7 @@ The `recipemd` package uses [semantic versioning](https://semver.org).
 
 - Fix CLI error handling
 - Update Sphinx and dependencies
+- Drop `dataclasses-json` in favor of `dacite` for transforming recipe objects to JSON.
 - *Breaking*: Drop support for Python 3.8 and 3.9 which have reached EOL
 - *Breaking*: `RecipeParser.parse_amount` now throws instead of returning `None` for invalid inputs
 

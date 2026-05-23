@@ -3,27 +3,70 @@ Defines the RecipeMD data structures, provides parser, serializer and recipe sca
 """
 #from __future__ import annotations
 
+import json
 import re
 import unicodedata
-from dataclasses import dataclass, field, replace
+from dataclasses import asdict, dataclass, field, replace
 from decimal import Decimal
 from typing import Callable, Generator, List, Optional, Tuple, TypeVar, Union
 
-from dataclasses_json import config, dataclass_json
+from dacite import Config, from_dict
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
 from typing_extensions import Literal
 
 __all__ = ['RecipeParser', 'RecipeSerializer', 'multiply_recipe', 'get_recipe_with_yield',
-           'Recipe', 'Ingredient', 'IngredientGroup', 'Amount', 'IngredientList']
+           'Recipe', 'Ingredient', 'IngredientGroup', 'Amount', 'IngredientList', 'RecipeObj']
 
 
 T = TypeVar('T')
 
-
-@dataclass_json
 @dataclass(frozen=True)
-class IngredientList:
+class RecipeObj:
+    @classmethod
+    def from_dict(cls, input_dict: dict):
+        """
+        Load the given object from a dict.
+
+        The dict must match the object's JSON representation according to ``/testcases/testcase.schema.json``.
+        """
+        return from_dict(cls, input_dict, config=Config(cast=[Decimal]))
+
+    @classmethod
+    def from_json(cls, input_json: str, **kw):
+        """
+        Load the given object from a JSON string.
+
+        The JSON must match the object's JSON representation according to ``/testcases/testcase.schema.json.``.
+
+        Keyword arguments are passed onto :func:`json.loads`.
+        """
+        return cls.from_dict(json.loads(input_json, **kw))
+    
+    def to_dict(self):
+        """
+        Transform the given object into a dict.
+
+        The dict will match the object's JSON representation according to ``/testcases/testcase.schema.json``.
+        """
+        return asdict(self)
+    
+    def to_json(self, **kw):
+        """
+        Transform the given object into a JSON string.
+
+        The JSON will match the object's JSON representation according to ``/testcases/testcase.schema.json``.
+
+        Keyword arguments are passed onto :func:`json.dumps`.
+        """
+        def custom_json(obj):
+            if isinstance(obj, Decimal):
+                return str(obj)
+            raise TypeError(f'Cannot serialize object of {type(obj)}') # pragma: no cover
+        return json.dumps(self.to_dict(), **kw, default=custom_json)
+
+@dataclass(frozen=True)
+class IngredientList(RecipeObj):
     """
     Represents a list of ingredients.
 
@@ -45,7 +88,6 @@ class IngredientList:
         yield from self.ingredient_groups
 
 
-@dataclass_json
 @dataclass(frozen=True)
 class IngredientGroup(IngredientList):
     """
@@ -57,9 +99,8 @@ class IngredientGroup(IngredientList):
     title: str = ""
 
 
-@dataclass_json
 @dataclass(frozen=True)
-class Amount:
+class Amount(RecipeObj):
     """
     Represents an amount, which is a factor with an associated unit.
     """
@@ -67,9 +108,8 @@ class Amount:
     unit: Optional[str] = None
 
 
-@dataclass_json
 @dataclass(frozen=True)
-class Ingredient:    
+class Ingredient(RecipeObj):    
     """
     Represents an ingredient with name and optional amount and link.
     """
@@ -78,7 +118,6 @@ class Ingredient:
     link: Optional[str] = None
 
 
-@dataclass_json
 @dataclass(frozen=True)
 class Recipe(IngredientList):
     """

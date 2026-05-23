@@ -38,7 +38,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires='>=3.10,<4',
     install_requires=[
-        'dataclasses-json>=0.5.2,<0.6.0',
+        'dacite>=1.9.2,<2.0.0',
         'yarl>=1.3.0,<2.0.0',
         'argcomplete>=1.10.0,<2.0.0',
         'pyparsing~=2.4.2',
