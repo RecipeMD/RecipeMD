@@ -95,7 +95,7 @@ def test_filter_builder(builder_ast, expected_ast):
 
 def test_filter_builder_invalid_operands():
     with pytest.raises(TypeError):
-        f("a") | 5
+        f("a") | 5 # type: ignore
 
 
 @pytest.fixture(scope="session")

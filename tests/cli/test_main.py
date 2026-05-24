@@ -8,7 +8,7 @@ from typing import List
 from unittest import mock
 
 import pytest
-from recipemd.cli.main import Exit, main, run
+from recipemd.cli.main import Exit, run
 
 
 @pytest.mark.parametrize(

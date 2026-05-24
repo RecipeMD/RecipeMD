@@ -140,10 +140,10 @@ class RecipeSerializer:
             rep += f'*{", ".join(recipe.tags)}*\n\n'
         if len(recipe.yields) > 0:
             rep += f'**{", ".join(self._serialize_amount(a, rounding=rounding) for a in recipe.yields)}**\n\n'
-        rep += f'---\n\n'
+        rep += '---\n\n'
         rep += ("\n".join(self._serialize_ingredient(g, 2, rounding=rounding) for g in recipe.all_ingredients)).strip()
         if recipe.instructions is not None:
-            rep += f'\n\n---\n\n'
+            rep += '\n\n---\n\n'
             rep += recipe.instructions
         return rep
 
@@ -278,7 +278,7 @@ class RecipeParser:
     def _parse_title(self):
         if not self._block_tokens:
             raise RuntimeError(
-                f"Invalid, title (heading_open with level h1) required, got None instead"
+                "Invalid, title (heading_open with level h1) required, got None instead"
             )
 
         heading_open_token = self._block_tokens.pop(0)
@@ -309,11 +309,11 @@ class RecipeParser:
             token_type, content = peeked_emph_paragraph
             if token_type == "em_open":
                 if tags:
-                    raise RuntimeError(f"Invalid, tags may not be specified multiple times")
+                    raise RuntimeError("Invalid, tags may not be specified multiple times")
                 tags = [t.strip() for t in self._list_split.split(content)]
             else:
                 if yields:
-                    raise RuntimeError(f"Invalid, tags may not be specified multiple times")
+                    raise RuntimeError("Invalid, tags may not be specified multiple times")
                 yields = [self.parse_amount(t.strip()) for t in self._list_split.split(content)]
             
             # consume paragraph
@@ -532,7 +532,6 @@ class RecipeParser:
         return emph_content, rest
 
     def _parse_wrapping_link(self, first_paragraph: str) -> Tuple[Optional[str], str]:
-        p = self._md_link.parseInline(first_paragraph)
         inline_tokens = self._md_link.parseInline(first_paragraph)[0].children or []
 
         RecipeParser._consume_whitespace_text_tokens(inline_tokens)

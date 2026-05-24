@@ -7,14 +7,12 @@ import argparse
 import decimal
 import io
 import os
-from pprint import pprint
 import re
 import sys
-import urllib.parse
 import urllib.request
 from pathlib import Path
-from dataclasses import dataclass, replace
-from typing import Dict, FrozenSet, Optional, Set, TypeVar, Union
+from dataclasses import replace
+from typing import Dict, FrozenSet, Optional, TypeVar, Union
 
 import argcomplete
 import recipemd

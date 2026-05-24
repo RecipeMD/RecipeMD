@@ -1,6 +1,5 @@
 import glob
 import os
-import textwrap
 from dataclasses import replace
 from decimal import Decimal
 from pprint import pprint
@@ -146,9 +145,12 @@ def test_multiply_recipe():
     result = multiply_recipe(recipe, Decimal(2))
 
     assert result.yields[0].factor == Decimal('10')
+    assert result.ingredients[0].amount is not None
     assert result.ingredients[0].amount.factor == Decimal('10')
+    assert result.ingredients[1].amount is not None
     assert result.ingredients[1].amount.factor == Decimal('400')
     assert result.ingredients[2].amount is None
+    assert result.ingredient_groups[0].ingredients[0].amount is not None
     assert result.ingredient_groups[0].ingredients[0].amount.factor == Decimal('4')
 
 
