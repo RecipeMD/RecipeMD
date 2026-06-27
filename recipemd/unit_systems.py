@@ -6,8 +6,9 @@ Provides predefined instances of :class:`recipemd.units.UnitSystem` for differen
 from recipemd._unit_systems._en_us import en_us
 from recipemd._unit_systems._en_us_si import en_us_si
 from recipemd._unit_systems._de import de
+from recipemd._unit_systems._hoa import hoa
 
-
+hoa = hoa
 
 en_us = en_us
 """

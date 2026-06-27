@@ -4,6 +4,7 @@ Implements :ref:`cli_recipemd`
 """
 
 import argparse
+import csv
 import decimal
 import importlib.util
 import io
@@ -250,7 +251,22 @@ def _create_ingredients_output(recipe: Recipe, args: 'Args'):
         ingredients  = _merge_ingredients([*recipe.leaf_ingredients])
     else:
         ingredients = recipe.leaf_ingredients
-    return "\n".join(_ingredient_to_string(ingr, rounding=args.round) for ingr in ingredients)
+    
+    f = io.StringIO()
+    writer = csv.writer(f)
+    for ingr in ingredients:
+        if ingr.amount is not None:
+            writer.writerow([
+                RecipeSerializer._normalize_factor(ingr.amount.factor, rounding=args.round),
+                ingr.amount.unit,
+                ingr.name,
+            ])
+        else:
+            writer.writerow([
+                None,None,ingr.name,
+            ])
+    return f.getvalue()
+
 
 def _merge_ingredients(ingredients: List[Ingredient]):
     i = 0
