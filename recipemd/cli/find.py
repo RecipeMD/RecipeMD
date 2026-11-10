@@ -64,6 +64,8 @@ def list_elements(args, extractor: Callable[[Recipe], Iterable[str]]):
         counter.update(extractor(recipe))
 
     if args.count:
+        if not counter:
+            return
         result = list(counter.items())
         result.sort(key=lambda pair: pair[1], reverse=True)
         max_count_length = max(len(str(c)) for c in counter.values())
